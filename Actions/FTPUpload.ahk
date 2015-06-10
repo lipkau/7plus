@@ -1,4 +1,5 @@
-#include %A_ScriptDir%\Lib\FTP.ahk
+;~ #include %A_ScriptDir%\Lib\FTP.ahk
+#include %A_ScriptDir%\Lib\WinSCP.ahk
 Class CFTPUploadAction Extends CAction
 {
 	static Type := RegisterType(CFTPUploadAction, "Upload to FTP")
