@@ -1,4 +1,5 @@
-﻿SettingsActive()
+﻿#include %A_ScriptDir%\Lib\WinSCP.ahk
+SettingsActive()
 {
 	return IsObject(SettingsWindow) && IsObject(SettingsWindow.Events) 
 }
@@ -1746,11 +1747,13 @@ Finally, here are some settings that you're likely to change at the beginning:
 	AddFTPProfile()
 	{
 		Page := this.Pages.FTPProfiles.Tabs[1].Controls
-		this.FTPProfiles.Insert(Object("Hostname", "Hostname.com", "Port", 21,2,0, "User", "SomeUser", "Password", "", "URL", "http://somehost.com", "NumberOfFTPSubDirs", 0))
+		this.FTPProfiles.Insert(Object("Hostname", "Hostname.com", "Port", 21,"SCP",0, "User", "SomeUser", "Password", "", "URL", "http://somehost.com", "NumberOfFTPSubDirs", 0))
 		len := this.FTPProfiles.MaxIndex()
 		Page.ddlFTPProfile.Items.Add(len ": " this.FTPProfiles[len].Hostname)
-		Page.ddlFTPProfile.SelectedIndex := len
-		Page.ddlFTPProfile.Enabled := true
+		Page.ddlFTPProfile.SelectedIndex 	:= len
+		Page.ddlFTPProfile.Enabled 			:= true
+		Page.ddlFTPProfile.Protocol.text 	:= "FTP"  ; Post fix for ddl.Protocol's default value
+		Page.ddlFTPProfile.Secure.text 		:= "None" ; Post fix for ddl.Secure  's default value
 	}
 
 	btnDeleteFTPProfile_Click()
@@ -1777,6 +1780,8 @@ Finally, here are some settings that you're likely to change at the beginning:
 
 	TestFTPProfile()
 	{
+		global WinSCP ; WinSCP Enums
+		
 		Page := this.Pages.FTPProfiles.Tabs[1].Controls
 		if(!this.FTPProfiles.MaxIndex())
 			return
@@ -1785,29 +1790,50 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Settings := {Hostname : Page.editFTPHostname.Text, Port : Page.editFTPPort.Text, Protocol : Page.ddlFTPProtocol.Text, Secure : Page.ddlFTPSecure.Text, User : Page.editFTPUser.Text, Password : Page.editFTPPassword.Text, Fingerprint : false}
 		
 		if (Settings.Protocol=="sFTP")
-			Settings.Protocol := 0
+			Settings.Protocol := WinSCP.FtpProtocol.Sftp
 		else if (Settings.Protocol=="SCP")
-			Settings.Protocol := 1
-		else if (Settings.Protocol=="FTP")
-			Settings.Protocol := 2
+			Settings.Protocol := WinSCP.FtpProtocol.Scp
+		else
+			Settings.Protocol := WinSCP.FtpProtocol.Ftp
 		
-		if (Settings.Secure=="None")
-			Settings.Secure := 0
-		else if (Settings.Secure=="Implicit")
-			Settings.Secure := 1
+		if (Settings.Secure=="Implicit")
+			Settings.Secure := WinSCP.FtpSecure.Implicit
 		else if (Settings.Secure=="Explicit TLS")
-			Settings.Secure := 2
+			Settings.Secure := WinSCP.FtpSecure.ExplicitTls
 		else if (Settings.Secure=="Explicit SSL")
-			Settings.Secure := 3
+			Settings.Secure := WinSCP.FtpSecure.ExplicitSsl
+		else
+			Settings.Secure := WinSCP.FtpSecure.None 
 		
 		MsgBox % "FTP(" Settings.Hostname "," Settings.User "," Settings.Password "," Settings.Protocol "," Settings.Secure "," Settings.Fingerprint "," Settings.Port ")"
-		if (new FTP(Settings.Hostname,Settings.User,Settings.Password,Settings.Protocol,Settings.Secure,Settings.Fingerprint,Settings.Port))
+		failed := false
+		Try
 		{
+			;Open Session
+			FTPSession := new WinSCP()
+			
+			;Populate
+			FTPSession.Hostname    := Settings.Hostname
+			FTPSession.Port        := Settings.Port
+			FTPSession.Protocol    := Settings.Protocol
+			FTPSession.Secure      := Settings.Secure
+			FTPSession.User        := Settings.User
+			FTPSession.Password    := Settings.Password
+			FTPSession.Fingerprint := Settings.Fingerprint
+			
+			;Open Connection
+			FTPSession.OpenConnection()
+			FTPSession.CloseConnection()
+		} catch e 
+			failed := e
+
+		if (failed)
+		{
+			MsgBox % "Could not connect to " Settings.HostName "!`n`n"e.Message
+			return 0
+		} else {
 			MsgBox % "Connection to " Settings.Hostname " successfully established!"
 			return 1
-		} else {
-			MsgBox % "Could not connect to " Settings.HostName "!"
-			return 0
 		}
 	}
 
@@ -2291,8 +2317,8 @@ Finally, here are some settings that you're likely to change at the beginning:
 							Page.AddControl("Link", 	"linkAHK",			"xs+21 ys+217", 			"<A HREF=""www.autohotkey.com"">www.autohotkey.com</A>")
 							Page.AddControl("Link", 	"linkTwitter",		"xs+176 ys+121", 			"<A HREF=""http://www.twitter.com/7plus"">7plus</A>")
 							Page.AddControl("Link", 	"linkEmail",		"xs+176 ys+105", 			"<A HREF=""mailto://contact@sevenplus.co"">contact@sevenplus.co</A>")
-							Page.AddControl("Link", 	"linkBugs",			"xs+176 ys+73", 			"<A HREF=""http://code.google.com/p/7plus/issues/list"">http://code.google.com/p/7plus/issues/list</A>")
-							Page.AddControl("Link", 	"linkHomepage",		"xs+176 ys+57", 			"<A HREF=""http://code.google.com/p/7plus/"">http://code.google.com/p/7plus/</A>")
+							Page.AddControl("Link", 	"linkBugs",			"xs+176 ys+73", 			"<A HREF=""https://github.com/7plus/7plus/issues/"">https://github.com/7plus/7plus/issues/</A>")
+							Page.AddControl("Link", 	"linkHomepage",		"xs+176 ys+57", 			"<A HREF=""https://github.com/7plus/7plus"">https://github.com/7plus/7plus</A>")
 							Page.AddControl("Link", 	"linkAutoupdater",	"xs+21 ys+281", 			"The Autoupdater uses <A HREF=""http://www.7-zip.org"">7-Zip</A>, which is licensed under the <A HREF=""http://www.gnu.org/licenses/lgpl.html"">LGPL</A>")
 							Page.AddControl("Text", 	"txtCredits",		"xs+21 ys+315", 			"This program would not have been possible without the many scripts, libraries and help from:`nSean, HotKeyIt, majkinetor, polyethene, Lexikos, tic, fincs, TheGood, PhiLho, Temp01, Laszlo, jballi, Shrinker,`nM@x and the other guys and gals on #ahk and the forums.")
 							Page.AddControl("Text", 	"txtLicense",		"xs+21 ys+252", 			"Licensed under")

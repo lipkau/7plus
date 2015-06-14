@@ -16,7 +16,7 @@ Class CFTPUploadAction Extends CAction
 		if(FTPProfiles := this.ReadFTPProfiles())
 			this.FTPProfiles := FTPProfiles
 		else
-			this.FTPProfiles := Array({Hostname : "Hostname.com", Password : "", Port : 21, URL : "http://somehost.com", User : "SomeUser"})
+			this.FTPProfiles := Array({Hostname : "Hostname.com", Port : 21, Protocol :  "FTP", Secure : "None", User : "SomeUser", Password : "", URL : "http://somehost.com"})
 	}
 	OnExit()
 	{
@@ -37,7 +37,7 @@ Class CFTPUploadAction Extends CAction
 		Loop % XMLObject.List.MaxIndex()
 		{
 			ListEntry := XMLObject.List[A_Index]
-			FTPProfiles.Insert(Object("Hostname", ListEntry.Hostname, "Port", ListEntry.Port, "User", ListEntry.User, "Password", ListEntry.Password, "URL", ListEntry.URL, "NumberOfFTPSubDirs", ListEntry.NumberOfFTPSubDirs))
+			FTPProfiles.Insert(Object("Hostname", ListEntry.Hostname, "Port", ListEntry.Port, "Protocol", ListEntry.Protocol, "Secure", ListEntry.Secure, "User", ListEntry.User, "Password", ListEntry.Password, "URL", ListEntry.URL, "NumberOfFTPSubDirs", ListEntry.NumberOfFTPSubDirs))
 		}
 		return FTPProfiles
 	}
@@ -52,7 +52,7 @@ Class CFTPUploadAction Extends CAction
 		Loop % this.FTPProfiles.MaxIndex()
 		{
 			ListEntry := this.FTPProfiles[A_Index]
-			XMLObject.List.Insert(Object("Hostname", ListEntry.Hostname, "Port", ListEntry.Port, "User", ListEntry.User, "Password", ListEntry.Password, "URL", ListEntry.URL, "NumberOfFTPSubDirs", ListEntry.NumberOfFTPSubDirs))
+			XMLObject.List.Insert(Object("Hostname", ListEntry.Hostname, "Port", ListEntry.Port, "Protocol", ListEntry.Protocol, "Secure", ListEntry.Secure, "User", ListEntry.User, "Password", ListEntry.Password, "URL", ListEntry.URL, "NumberOfFTPSubDirs", ListEntry.NumberOfFTPSubDirs))
 		}
 		XML_Save(XMLObject, ConfigPath "\FTPProfiles.xml")
 	}
@@ -133,7 +133,7 @@ Class CFTPUploadAction Extends CAction
 
 			if(files.MaxIndex() > 0)
 			{
-				this.GetFTPVariables(this.FTPProfile, Hostname, Port, User, Password, URL, NumberOfFTPSubDirs)
+				this.GetFTPVariables(this.FTPProfile, Hostname, Port, Protocol, Secure, User, Password, URL, NumberOfFTPSubDirs)
 				if(!Hostname || Hostname = "Hostname.com")
 				{
 					Notify("FTP profile not set", "The FTP profile was not created yet or is invalid. Click here to enter a valid FTP login.", 5, NotifyIcons.Error, new Delegate(this, "NotifyError"))
@@ -150,7 +150,7 @@ Class CFTPUploadAction Extends CAction
 				this.tmpWorkerThread.OnStop.Handler := new Delegate(this, "OnStop")
 				this.tmpWorkerThread.OnData.Handler := new Delegate(this, "OnData")
 				this.tmpWorkerThread.OnFinish.Handler := new Delegate(this, "OnFinish")
-				this.tmpWorkerThread.Start(Event.EventScheduleID, Event.Actions.IndexOf(this), files, Hostname, Port, User, decrypted, URL, NumberOfFTPSubDirs, TargetFolder)
+				this.tmpWorkerThread.Start(Event.EventScheduleID, Event.Actions.IndexOf(this), files, Hostname, Port, Protocol, Secure, User, decrypted, URL, NumberOfFTPSubDirs, TargetFolder)
 				this.tmpWorkerThread.WaitForStart(5)
 				return -1
 			}
@@ -182,7 +182,7 @@ Class CFTPUploadAction Extends CAction
 	}
 	DisplayString()
 	{
-		this.GetFTPVariables(this.FTPProfile, Hostname, "", "", "", "")
+		this.GetFTPVariables(this.FTPProfile, Hostname, "", "", "", "", "", "")
 		return "Upload " this.SourceFiles " to " Hostname (this.TargetFolder ? "/" : "") this.TargetFolder
 	}
 
@@ -212,14 +212,16 @@ Class CFTPUploadAction Extends CAction
 			ShowPlaceholderMenu(sGUI, "TargetFile")
 	}
 	
-	GetFTPVariables(id, ByRef Hostname, ByRef Port, ByRef User, ByRef Password, ByRef URL, ByRef NumberOfFTPSubDirs)
+	GetFTPVariables(id, ByRef Hostname, ByRef Port, ByRef Protocol, ByRef Secure, ByRef User, ByRef Password, ByRef URL, ByRef NumberOfFTPSubDirs)
 	{
-		Hostname := this.FTPProfiles[id].Hostname
-		Port := this.FTPProfiles[id].Port
-		User := this.FTPProfiles[id].User
-		Password := this.FTPProfiles[id].Password
-		URL := this.FTPProfiles[id].URL
-		NumberOfFTPSubDirs := this.FTPProfiles[id].NumberOfFTPSubDirs
+		Hostname 			:= this.FTPProfiles[id].Hostname
+		Port 				:= this.FTPProfiles[id].Port
+		Protocol 			:= this.FTPProfiles[id].Protocol
+		Secure 				:= this.FTPProfiles[id].Secure
+		User				:= this.FTPProfiles[id].User
+		Password 			:= this.FTPProfiles[id].Password
+		URL 				:= this.FTPProfiles[id].URL
+		NumberOfFTPSubDirs	:= this.FTPProfiles[id].NumberOfFTPSubDirs
 	}
 
 	OnStop(WorkerThread, Reason)
@@ -229,6 +231,7 @@ Class CFTPUploadAction Extends CAction
 	}
 
 	;Progress indicates progress of a single file, since this is expected to happen more often
+	;TODO
 	ProgressHandler(WorkerThread, Progress)
 	{
 		this.tmpNotificationWindow.Progress := Round(Progress / WorkerThread.CurrentFile.FileSize * 100)
@@ -236,6 +239,7 @@ Class CFTPUploadAction Extends CAction
 	}
 
 	;Worker thread reports when a new file starts uploading
+	;TODO
 	OnData(WorkerThread, Data)
 	{
 		if(Data.Type = "File")

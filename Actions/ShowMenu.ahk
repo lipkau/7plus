@@ -69,6 +69,7 @@ BuildMenu(Name)
 		Menu, tray, NoStandard
 		Menu, tray, add, Settings, SettingsHandler  ; Creates a new menu item.
 		Menu, tray, Icon, Settings, % A_WinDir "\system32\shell32.dll", 166
+		Menu, tray, Icon, % A_WinDir "\system32\shell32.dll", 166
 		menu, tray, Default, Settings
 	}
 	else if(Name = "ClipboardMenu")
@@ -280,11 +281,11 @@ OpenWikiPage("FAQ")
 return
 
 Tray_ReportBug:
-run http://code.google.com/p/7plus/issues/list
+run https://github.com/7plus/7plus/issues
 return
 
 Tray_VisitHP:
-run http://code.google.com/p/7plus
+run https://github.com/7plus/7plus
 return
 
 Tray_Help:
