@@ -26,25 +26,8 @@ Description
 Scope
 	Global
 */
-WinSCP := { FtpMode:                {Passive:0
-								    ,Active:1}
-           ,FtpSecure:              {None:0
-								    ,Implicit:1
-								    ,ExplicitTls:2  ;for older versions
-								    ,ExplicitSsl:3}
-		   ,FtpProtocol:            {Sftp:0
-								    ,Scp:1
-								    ,Ftp:2}
-		   ,TransferMode:           {Binary:0
-								    ,Ascii:1
-								    ,Automatic:2}
-		   ,SynchronizationMode:    {Local:0
-								    ,Remote:1
-								    ,Both:2}
-		   ,SynchronizationCriteria:{None:0
-			 					    ,Time:1
-								    ,Size:2
-								    ,Either:3}}
+;Defined in Globals.ahk
+;global WinSCPEnum:= {FtpMode:{Passive:0,Active:1},FtpSecure:{None:0,Implicit:1,ExplicitTls:2,ExplicitSsl:3},FtpProtocol:{Sftp:0,Scp:1,Ftp:2},TransferMode:{Binary:0,Ascii:1,Automatic:2},SynchronizationMode:{Local:0,Remote:1,Both:2},SynchronizationCriteria:{None:0,Time:1,Size:2,Either:3}}
 
 ;~ -----------------------------------------------------
 ;~  Event Handlers
@@ -84,14 +67,14 @@ session_RemovalEventArgs(sender, e)
 Description
 	Exmaple on how to use the FileTransferProgress Event to display the Progess using AHK GUI
 */
-session_FileTransferProgress(sender, e)
-{
-	RegExMatch(e.FileName, ".*\\(.+?)$", match)
-	FileName        := match1
-	CPS             := Round(e.CPS / 1024)
-	FileProgress    := Round(e.FileProgress * 100)
-	OverallProgress := Round(e.OverallProgress * 100)
-	action          := (e.Side==0) ? "Uploading" : "Downloading"
+;~ session_FileTransferProgress(sender, e)
+;~ {
+	;~ RegExMatch(e.FileName, ".*\\(.+?)$", match)
+	;~ FileName        := match1
+	;~ CPS             := Round(e.CPS / 1024)
+	;~ FileProgress    := Round(e.FileProgress * 100)
+	;~ OverallProgress := Round(e.OverallProgress * 100)
+	;~ action          := (e.Side==0) ? "Uploading" : "Downloading"
 	
 	;~ GuiControl,, txtTitle, % action " @ " CPS " kbps"
 	;~ GuiControl,, edtFileName, % FileName
@@ -101,12 +84,12 @@ session_FileTransferProgress(sender, e)
 		;~ GuiControl, Enable, btnClose
 	
 	;~ Gui, Show, , File Transfere
-}
+;~ }
 
 ;~ -----------------------------------------------------
 ;~  Class
 ;~ -----------------------------------------------------
-class WinSCP ;extends BaseClassName
+class WinSCP extends CFTPUploadAction
 {
 	;~ -----------------------------------------------------
 	;~  Properties
@@ -122,6 +105,10 @@ class WinSCP ;extends BaseClassName
 	SynchronizationMode     := ""
 	SynchronizationCriteria := ""
 	Fingerprint             := ""
+	
+	;Property for WorkerThread
+	;Used in 7plus/Action/FTPUpload.ahk
+	WorkerThread            := ""
 
 	;http://winscp.net/eng/docs/library_session
 	Session                 := ComObjCreate("WinSCP.Session")
@@ -183,16 +170,16 @@ class WinSCP ;extends BaseClassName
 	*/
 	__New()
 	{
-		global WinSCP ; WinSCP Enums
+		global WinSCPEnum ; WinSCP Enums
 		
 		;~ Set defaults
 		this.Port                    := 21
-		this.Secure                  := WinSCP.FtpSecure.None
-		this.Protocol                := WinSCP.FtpProtocol.Ftp
-		this.Mode                    := WinSCP.FtpMode.Passive
-		this.TransferMode            := WinSCP.TransferMode.Binary
-		this.SynchronizationMode     := WinSCP.SynchronizationMode.Local
-	    this.SynchronizationCriteria := WinSCP.SynchronizationCriteria.Time
+		this.Secure                  := WinSCPEnum.FtpSecure.None
+		this.Protocol                := WinSCPEnum.FtpProtocol.Ftp
+		this.Mode                    := WinSCPEnum.FtpMode.Passive
+		this.TransferMode            := WinSCPEnum.TransferMode.Binary
+		this.SynchronizationMode     := WinSCPEnum.SynchronizationMode.Local
+	    this.SynchronizationCriteria := WinSCPEnum.SynchronizationCriteria.Time
 		this.Fingerprint             := false
 		ComObjConnect(this.Session, "session_")
 	}
@@ -201,11 +188,11 @@ class WinSCP ;extends BaseClassName
 	Description
 		Destructor
 	*/
-	__Delete()
-	{
+	;~ __Delete()
+	;~ {
 		;~ this.Dispose()
 		;~ this.CloseConnection()
-	}
+	;~ }
 	
 	/*
 	Descitipion
@@ -218,7 +205,7 @@ class WinSCP ;extends BaseClassName
 	*/
 	OpenConnection(srv="",uName="",pWord="")
 	{
-		global WinSCP ; WinSCP Enums
+		global WinSCPEnum ; WinSCP Enums
 		
 		this.SessionOptions.HostName := (srv)   ? srv   : this.Hostname
 		this.SessionOptions.UserName := (uName) ? uName : this.User
@@ -235,25 +222,22 @@ class WinSCP ;extends BaseClassName
 		
 		;~ Fingerprint
 		IsEncrypted := this.Secure
-		Encryptions := WinSCP.FtpSecure.Implicit "," WinSCP.FtpSecure.ExplicitTls "," WinSCP.FtpSecure.ExplicitSsl
+		Encryptions := WinSCPEnum.FtpSecure.Implicit "," WinSCPEnum.FtpSecure.ExplicitTls "," WinSCPEnum.FtpSecure.ExplicitSsl
 		if IsEncrypted in %Encryptions%
 		{
 			if (StrLen(this.Fingerprint) > 1)
 			{
-				if (this.Protocol==WinSCP.FtpProtocol.Scp)
+				if (this.Protocol==WinSCPEnum.FtpProtocol.Scp)
 					this.SessionOptions.SshHostKeyFingerprint := this.Fingerprint
 				else
 					this.SessionOptions.TlsHostCertificateFingerprint := this.Fingerprint
 			} else {
-				if (this.Protocol==WinSCP.FtpProtocol.Scp)
+				if (this.Protocol==WinSCPEnum.FtpProtocol.Scp)
 					this.SessionOptions.GiveUpSecurityAndAcceptAnySshHostKey := true
 				else
 					this.SessionOptions.GiveUpSecurityAndAcceptAnyTlsHostCertificate := true
 			}
 		}
-		
-		;~ MsgBox % "s " . this.SessionOptions.FtpSecure . ". p " . this.SessionOptions.Protocol . ". m " . this.SessionOptions.FtpMode . ". u " . this.SessionOptions.UserName . ". p " this.SessionOptions.Password
-		;~ MsgBox % this.SessionOptions.SshHostKeyFingerprint " - " this.SessionOptions.TlsHostCertificateFingerprint " - " this.SessionOptions.GiveUpSecurityAndAcceptAnyTlsHostCertificate " - " this.SessionOptions.GiveUpSecurityAndAcceptAnySshHostKey
 		
 		this.Session.Open(this.SessionOptions)
 	}
@@ -265,7 +249,8 @@ class WinSCP ;extends BaseClassName
 	*/
 	CloseConnection()
 	{
-		this.Session.Close()
+		try
+			this.Session.Close()
 	}
 	
 	/*
@@ -274,7 +259,8 @@ class WinSCP ;extends BaseClassName
 	*/
 	Dispose()
 	{
-		this.Session.Dispose()
+		try
+			this.Session.Dispose()
 	}
 	
 	/*
@@ -367,20 +353,16 @@ class WinSCP ;extends BaseClassName
 		[TransferOperationResult]
 		See also Capturing results of operations.
 	*/
-	GetFiles(remotePath, localPath, remove=false, options="")
+	GetFiles(remotePath, localPath, remove=false)
 	{
-		global WinSCP ; WinSCP Enums
+		global WinSCPEnum ; WinSCP Enums
 		
 		;~ Check
 		;remove
 		if remove not in 0,1
 			throw "Invalid value for remove"
 		
-		;TransferOptions
-		if (options && (ComObjType(options,"Name")=="_TransferOptions"))
-			throw "Invalid TransferOptions"
-		
-		return this.Session.GetFiles(remotePath, localPath, remove, options)
+		return this.Session.GetFiles(remotePath, localPath, remove, this.TransferOptions)
 	}
 	
 	/*
@@ -410,7 +392,7 @@ class WinSCP ;extends BaseClassName
 	*/
 	PutFiles(localPath, remotePath, remove:=false)
 	{
-		global WinSCP ; WinSCP Enums
+		global WinSCPEnum ; WinSCP Enums
 		
 		;~ Checks
 		;localPath
@@ -421,7 +403,7 @@ class WinSCP ;extends BaseClassName
 		if remove not in 0,1
 			throw "Invalid value for remove"
 		
-		this.Session.PutFiles(localPath, remotePath, remove, this.TransferOptions)
+		return this.Session.PutFiles(localPath, remotePath, remove, this.TransferOptions)
 	}
 	
 	/*
@@ -488,11 +470,11 @@ class WinSCP ;extends BaseClassName
 	*/
 	SynchronizeDirectories(SynchronizationMode, localPath, remotePath, removeFiles, mirror=false, SynchronizationCriteria=1)
 	{
-		global WinSCP ; WinSCP Enums
+		global WinSCPEnum ; WinSCP Enums
 		
 		;~ Checks
 		;Mode
-		if SynchronizationMode not in % this.StringJoin(WinSCP.SynchronizationMode,",")
+		if SynchronizationMode not in % this.StringJoin(WinSCPEnum.SynchronizationMode,",")
 			throw "Invalid SynchronizationMode"
 		
 		;localPath
@@ -502,17 +484,17 @@ class WinSCP ;extends BaseClassName
 		;removeFiles
 		if removeFiles not in 0,1
 			throw "Invalid removeFiles"
-		if (removeFiles && (removeFiles==WinSCP.SynchronizationMode.Both))
+		if (removeFiles && (removeFiles==WinSCPEnum.SynchronizationMode.Both))
 			throw "Deletion of obsolete files cannot be used for SynchronizationMode.Both"
 		
 		;mirror
 		if mirror not in 0,1
 			throw "Invalid mirror"
-		if (mirror && (removeFiles==WinSCP.SynchronizationMode.Both))
+		if (mirror && (removeFiles==WinSCPEnum.SynchronizationMode.Both))
 			throw "Synchronization in mirror mode (synchronizes also older files) cannot be used for SynchronizationMode.Both"
 		
 		;SynchronizationCriteria
-		if SynchronizationCriteria not in % this.StringJoin(WinSCP.SynchronizationCriteria,",")
+		if SynchronizationCriteria not in % this.StringJoin(WinSCPEnum.SynchronizationCriteria,",")
 			throw "Invalid SynchronizationCriteria"
 		
 		;TransferOptions
@@ -520,7 +502,7 @@ class WinSCP ;extends BaseClassName
 			throw "Invalid TransferOptions"
 		
 		if (!this.TransferOptions.TransferMode)
-			this.SetTransferOptions(,,,,,WinSCP.TransferMode.Binary)
+			this.SetTransferOptions(,,,,,WinSCPEnum.TransferMode.Binary)
 		
 		this.Session.SynchronizeDirectories(SynchronizationMode, localPath, remotePath, removeFiles, mirror, SynchronizationCriteria, this.TransferOptions)
 	}
@@ -553,7 +535,7 @@ class WinSCP ;extends BaseClassName
 	*/
 	SetTransferOptions(FileMask="",FilePermissions="",PreserveTimestamp=true,ResumeSupport="",SpeedLimit="",TransferMode=0)
 	{
-		global WinSCP ; WinSCP Enums
+		global WinSCPEnum ; WinSCP Enums
 		
 		;~ Check
 		;FilePermissions
@@ -573,7 +555,7 @@ class WinSCP ;extends BaseClassName
 			throw "Invalid SpeedLimit"
 		
 		;TransferMode
-		if TransferMode not in % this.StringJoin(WinSCP.TransferMode,",")
+		if TransferMode not in % this.StringJoin(WinSCPEnum.TransferMode,",")
 			throw "Invalid TransferMode"
 		
 		this.TransferOptions.FileMask 			:= (FileMask) ? FileMask : ""

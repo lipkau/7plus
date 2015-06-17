@@ -1,5 +1,4 @@
-﻿#include %A_ScriptDir%\Lib\WinSCP.ahk
-SettingsActive()
+﻿SettingsActive()
 {
 	return IsObject(SettingsWindow) && IsObject(SettingsWindow.Events) 
 }
@@ -1730,8 +1729,8 @@ Finally, here are some settings that you're likely to change at the beginning:
 		{
 			CurrentProfile.Hostname	:= strTrimRight(Page.editFTPHostname.Text, "/")
 			CurrentProfile.Port		:= Page.editFTPPort.Text
-			CurrentProfile.Protocol := Page.editFTPProtocol.Text
-			CurrentProfile.Secure 	:= Page.editFTPSecure.Text
+			CurrentProfile.Protocol := Page.ddlFTPProtocol.Text
+			CurrentProfile.Secure 	:= Page.ddlFTPSecure.Text
 			CurrentProfile.User 	:= Page.editFTPUser.Text
 			CurrentProfile.Password := Encrypt(Page.editFTPPassword.Text)
 			CurrentProfile.URL 		:= strTrimRight(Page.editFTPURL.Text, "/")
@@ -1780,7 +1779,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 
 	TestFTPProfile()
 	{
-		global WinSCP ; WinSCP Enums
+		global WinSCPEnum ; WinSCP Enums
 		
 		Page := this.Pages.FTPProfiles.Tabs[1].Controls
 		if(!this.FTPProfiles.MaxIndex())
@@ -1790,51 +1789,47 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Settings := {Hostname : Page.editFTPHostname.Text, Port : Page.editFTPPort.Text, Protocol : Page.ddlFTPProtocol.Text, Secure : Page.ddlFTPSecure.Text, User : Page.editFTPUser.Text, Password : Page.editFTPPassword.Text, Fingerprint : false}
 		
 		if (Settings.Protocol=="sFTP")
-			Settings.Protocol := WinSCP.FtpProtocol.Sftp
+			Settings.Protocol := WinSCPEnum.FtpProtocol.Sftp
 		else if (Settings.Protocol=="SCP")
-			Settings.Protocol := WinSCP.FtpProtocol.Scp
+			Settings.Protocol := WinSCPEnum.FtpProtocol.Scp
 		else
-			Settings.Protocol := WinSCP.FtpProtocol.Ftp
+			Settings.Protocol := WinSCPEnum.FtpProtocol.Ftp
 		
 		if (Settings.Secure=="Implicit")
-			Settings.Secure := WinSCP.FtpSecure.Implicit
+			Settings.Secure := WinSCPEnum.FtpSecure.Implicit
 		else if (Settings.Secure=="Explicit TLS")
-			Settings.Secure := WinSCP.FtpSecure.ExplicitTls
+			Settings.Secure := WinSCPEnum.FtpSecure.ExplicitTls
 		else if (Settings.Secure=="Explicit SSL")
-			Settings.Secure := WinSCP.FtpSecure.ExplicitSsl
+			Settings.Secure := WinSCPEnum.FtpSecure.ExplicitSsl
 		else
-			Settings.Secure := WinSCP.FtpSecure.None 
+			Settings.Secure := WinSCPEnum.FtpSecure.None 
 		
-		MsgBox % "FTP(" Settings.Hostname "," Settings.User "," Settings.Password "," Settings.Protocol "," Settings.Secure "," Settings.Fingerprint "," Settings.Port ")"
-		failed := false
+		;Create Session
+		FTPSession := new WinSCP()
+		
+		;Populate
+		FTPSession.Hostname    := Settings.Hostname
+		FTPSession.Port        := Settings.Port
+		FTPSession.Protocol    := Settings.Protocol
+		FTPSession.Secure      := Settings.Secure
+		FTPSession.User        := Settings.User
+		FTPSession.Password    := Settings.Password
+		FTPSession.Fingerprint := Settings.Fingerprint
+		
 		Try
 		{
-			;Open Session
-			FTPSession := new WinSCP()
-			
-			;Populate
-			FTPSession.Hostname    := Settings.Hostname
-			FTPSession.Port        := Settings.Port
-			FTPSession.Protocol    := Settings.Protocol
-			FTPSession.Secure      := Settings.Secure
-			FTPSession.User        := Settings.User
-			FTPSession.Password    := Settings.Password
-			FTPSession.Fingerprint := Settings.Fingerprint
-			
 			;Open Connection
-			FTPSession.OpenConnection()
-			FTPSession.CloseConnection()
-		} catch e 
-			failed := e
-
-		if (failed)
-		{
-			MsgBox % "Could not connect to " Settings.HostName "!`n`n"e.Message
-			return 0
-		} else {
+			a := FTPSession.OpenConnection()
+			;~ FTPSession.Dispose()
 			MsgBox % "Connection to " Settings.Hostname " successfully established!"
-			return 1
-		}
+		} catch e 
+			MsgBox % "Could not connect to " Settings.HostName "!"
+		
+		
+		
+		
+		;~ try
+			;~ FTPSession.Dispose()
 	}
 
 	ddlFTPProfile_SelectionChanged()
@@ -2439,6 +2434,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 PrepareFolderBand:
 PrepareFolderBand()
 return
+
 
 Settings_EditEvent:
 SettingsWindow.EditEvent(0)

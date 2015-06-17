@@ -231,15 +231,13 @@ Class CFTPUploadAction Extends CAction
 	}
 
 	;Progress indicates progress of a single file, since this is expected to happen more often
-	;TODO
 	ProgressHandler(WorkerThread, Progress)
 	{
-		this.tmpNotificationWindow.Progress := Round(Progress / WorkerThread.CurrentFile.FileSize * 100)
-		this.tmpNotificationWindow.Text := WorkerThread.CurrentFile.RemoteName " - " FormatFileSize(Progress) " / " FormatFileSize(WorkerThread.CurrentFile.FileSize)
+		this.tmpNotificationWindow.Progress := Progress
+		this.tmpNotificationWindow.Text := WorkerThread.CurrentFile.RemoteName " - " FormatFileSize(WorkerThread.CurrentFile.FileSize)
 	}
 
 	;Worker thread reports when a new file starts uploading
-	;TODO
 	OnData(WorkerThread, Data)
 	{
 		if(Data.Type = "File")
@@ -254,7 +252,8 @@ Class CFTPUploadAction Extends CAction
 				this.tmpNumFiles--
 				this.tmpNotificationWindow.Title := "Uploading " this.tmpNumFiles " file" (this.tmpNumFiles = 1 ? "":"s") " to " WorkerThread.Task.Parameters[4]
 				this.tmpNotificationWindow.Text := Data.RemoteName " - " FormatFileSize(0) " / " FormatFileSize(size)
-				this.tmpNotificationWindow.Progress := 0
+				;~ ; Toggle for single file progress
+				;~ this.tmpNotificationWindow.Progress := 0
 			}
 		}
 	}
@@ -267,79 +266,89 @@ Class CFTPUploadAction Extends CAction
 		}
 	}
 }
-FTPUploadThread(WorkerThread, EventScheduleID, ActionIndex, files, Hostname, Port, User, decrypted, URL, NumberOfFTPSubDirs, TargetFolder)
+FTPUploadThread(WorkerThread, EventScheduleID, ActionIndex, files, Hostname, Port, Protocol, Secure, User, decrypted, URL, NumberOfFTPSubDirs, TargetFolder)
 {
-	global FTP
+	global FTP, WinSCPEnum ; WinSCP Enums
 	cliptext := ""
 	result := 1
-	; connect to FTP server 
-	FTP := FTP_Init()
+	
+	;Create Session
+	FTP := new WinSCP()
 	FTP.WorkerThread := WorkerThread
-	FTP.Port := Port
+	
+	if (Protocol=="sFTP")
+		FTP.Protocol := WinSCPEnum.FtpProtocol.Sftp
+	else if (Protocol=="SCP")
+		FTP.Protocol := WinSCPEnum.FtpProtocol.Scp
+	else
+		FTP.Protocol := WinSCPEnum.FtpProtocol.Ftp
+	
+	if (Secure=="Implicit")
+		FTP.Secure := WinSCPEnum.FtpSecure.Implicit
+	else if (Secure=="Explicit TLS")
+		FTP.Secure := WinSCPEnum.FtpSecure.ExplicitTls
+	else if (Secure=="Explicit SSL")
+		FTP.Secure := WinSCPEnum.FtpSecure.ExplicitSsl
+	else
+		FTP.Secure := WinSCPEnum.FtpSecure.None 
+
+	FTP.Port     := Port
 	FTP.Hostname := Hostname
-	if(!FTP.Open(Hostname, User, decrypted))
+	FTP.Fingerprint := false
+	FTP.User     := User
+	FTP.Password := decrypted
+	
+	try
+		FTP.OpenConnection()
+	
+	if (!FTP.Connected)
 	{
 		WorkerThread.Stop({Title : "Connection Error", Text : "Couldn't connect to " Hostname ". Correct host/username/password?"})
-		result := 0
+		return false
 	}
-	else
+	
+	;go into target directory, optionally creating directories along the way.
+	if(TargetFolder != "")
 	{
-		;go into target directory, optionally creating directories along the way.
-		if(TargetFolder != "" && FTP.SetCurrentDirectory(TargetFolder) != true)
+		if (!FTP.FileExists(targetDir))
+			FTP.CreateDirectory(targetDir)
+		if (!FTP.FileExists(targetDir))
 		{
-			Loop, Parse, TargetFolder, /\
-			{
-				;Skip current level if it exists
-				if(ftp.SetCurrentDirectory(A_LoopField))
-					continue
-				;Try to create current level
-				if(ftp.CreateDirectory(A_LoopField) != true)
-				{
-					WorkerThread.Stop({Title : "FTP Error", Text : "Couldn't create target directory " A_LoopField ". Check permissions!"})
-					result := 0
-					break
-				}
-				;Try to go into newly created directory
-				if(ftp.SetCurrentDirectory(A_LoopField) != true)
-				{
-					WorkerThread.Stop({Title : "FTP Error", Text : "Couldn't switch to created target directory" A_LoopField ". Check permissions!"})
-					result := 0
-					break
-				}
-			}
+			WorkerThread.Stop({Title : "FTP Error", Text : "Couldn't create target directory " A_LoopField ". Check permissions!"})
+			result := 0
 		}
-		if(result != 0)
+	}
+	if(result != 0)
+	{
+		for index, File in files
 		{
-			FTPBaseDir := FTP.GetCurrentDirectory()
-			for index, File in files
-			{
-				if(WorkerThread.State != "Running")
-					return
-				;Report the progress of the worker thread.
-				WorkerThread.SendData({Type : "File", File : File.File, RemoteName : File.TargetFile})
-				;Upload the file
-				result := FTPUploadThread_UploadSingleFile(File, TargetFolder, FTPBaseDir, URL)
-				if(!result.status)
-					WorkerThread.Stop({Title : "FTP Error", Text : (result.error ? result.error : "Couldn't upload " File.File " properly.`nMake sure you have write rights and the path exists")})
-				if(result.URL)
-					cliptext .= (index = 1 ? "" : "`r`n") result.URL
-			}
-			FTP.Close()
-			
-			;Send URLs to main thread
-			return {Type : "URLs", URLs : cliptext}
+			if(WorkerThread.State != "Running")
+				return
+			;Report the progress of the worker thread.
+			WorkerThread.SendData({Type : "File", File : File.File, RemoteName : File.TargetFile})
+			;Upload the file
+			result := FTPUploadThread_UploadSingleFile(File, TargetFolder, URL)
+			if(!result.status)
+				WorkerThread.Stop({Title : "FTP Error", Text : (result.error ? result.error : "Couldn't upload " File.File " properly.`nMake sure you have write rights and the path exists")})
+			if(result.URL)
+				cliptext .= (index = 1 ? "" : "`r`n") result.URL
 		}
+		FTP.CloseConnection()
+		
+		;Send URLs to main thread
+		return {Type : "URLs", URLs : cliptext}
 	}
 	return result
 }
 
 ;Called to upload a single file on the upload thread.
 ;This function requires an established FTP connection.
-FTPUploadThread_UploadSingleFile(File, TargetFolder, FTPBaseDir, URL)
+FTPUploadThread_UploadSingleFile(File, TargetFolder, URL)
 {
 	global FTP
 	status := 1
 	error := ""
+	
 	;The url is sometimes mapped differently on FTP vs. Web.
 	;FTP might have more directories while the webserver only mirrors a part of the directory structure.
 	;The code below allows skipping some directories
@@ -356,64 +365,43 @@ FTPUploadThread_UploadSingleFile(File, TargetFolder, FTPBaseDir, URL)
 		}
 	}
 
-	;Go back into base dir
-	if(A_Index > 1)
-		FTP.SetCurrentDirectory(FTPBaseDir)
-
 	;go into target directory, optionally creating directories along the way.
 	TargetPath := File.TargetPath
-	if(TargetPath != "" && FTP.SetCurrentDirectory(TargetPath) != true)
+	if(TargetFolder != "")
 	{
-		Loop, Parse, TargetPath, \/
+		if (!FTP.FileExists(targetDir))
+			FTP.CreateDirectory(targetDir)
+		if (!FTP.FileExists(targetDir))
 		{
-			;Skip current level if it exists
-			if(ftp.SetCurrentDirectory(A_LoopField))
-				continue
-			;Try to create current level
-			if(ftp.CreateDirectory(A_LoopField) != true)
-			{
-				error := "Couldn't create target directory " A_LoopField ". Check permissions!"
-				status := 0
-				break
-			}
-			;Try to go into newly created directory
-			if(ftp.SetCurrentDirectory(A_LoopField) != true)
-			{
-				error := "Couldn't switch to created target directory" A_LoopField ". Check permissions!"
-				status := 0
-				break
-			}
+			error := "Couldn't create target directory " A_LoopField ". Check permissions!"
+			status := 0
 		}
 	}
 
 	if(status)
 	{
 		FullPath := File.File
-		status := FTP.InternetWriteFile(FullPath,  File.TargetFile, "Action_FTPUpload_Progress")
+		tmpstatus   := FTP.PutFiles(FullPath, File.TargetFile)
+		status := tmpstatus.IsSuccess
 	}
 
-	if(status != 0 && URL)
+	if(status.IsSuccess != 0 && URL)
 		FileURL := StringReplace(URL "/" URLTargetFolder (URLTargetFolder ? "/" : "") File.TargetFile, " ", "%20", 1)
 	return {status : status, URL : FileURL, Error : Error}
 }
 
-Action_FTPUpload_Progress()
+session_FileTransferProgress(sender, e)
 {
 	global FTP
+	
+	CPS             := Round(e.CPS / 1024)    ;Speed
+	FileProgress    := Round(e.FileProgress * 100)
+	OverallProgress := Round(e.OverallProgress * 100)
+	
 	;Report progress
-	FTP.WorkerThread.Progress := FTP.File.BytesTransfered
-	;my := FTP.File
-	;done := my.BytesTransfered
-	;total := my.BytesTotal
-	;if(!FTP.init)
-	;{
-	;	FTP.NotificationWindow := Notify("Uploading " FTP.NumFiles " file" (FTP.NumFiles = 1 ? "":"s") " to " FTP.Hostname, my.RemoteName " - " FormatFileSize(done) " / " FormatFileSize(total), "", NotifyIcons.Internet, "", {min : 0, max : 100, value : 0})
-	;	FTP.init := 1
-	;	return 1
-	;}
-	;FTP.NotificationWindow.Progress := done / total * 100
-	;FTP.NotificationWindow.Text := my.RemoteName " - " FormatFileSize(done) " / " FormatFileSize(total)
-	;FTP.NotificationWindow.Title := "Uploading " FTP.NumFiles " file" (FTP.NumFiles = 1 ? "":"s") " to " FTP.Hostname
+	FTP.WorkerThread.Progress := OverallProgress
+	;~ ; Toggle for single file progress
+	;~ FTP.WorkerThread.Progress := FileProgress
 }
 Action_Upload_Placeholders_SourceFiles:
 GetCurrentSubEvent().GuiShow("", "Placeholders_SourceFiles")
