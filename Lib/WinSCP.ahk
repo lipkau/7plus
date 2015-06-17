@@ -36,32 +36,32 @@ Scope
 Description
 	Example on how to zse the FileTransferred Event
 */
-session_FileTransferred(sender, e)
-{
-	;~ MsgBox % e.FileName " => "  e.Destination
-}
+;~ session_FileTransferred(sender, e)
+;~ {
+	;~ ;MsgBox % e.FileName " => "  e.Destination
+;~ }
 
 /*
 Description
 	Example on how to zse the Failed Event
 */
-session_Failed(sender, e)
-{
-	;~ MsgBox % e.FileName " => "  e.Destination
-}
+;~ session_Failed(sender, e)
+;~ {
+	;~ ;MsgBox % e.FileName " => "  e.Destination
+;~ }
 
 /*
 Description
 	Example on how to zse the RemovalEventArgs Event
 	http://winscp.net/eng/docs/library_removaleventargs
 */
-session_RemovalEventArgs(sender, e)
-{
-	;~ if (e.Error)
-		;~ MsgBox % "Failed to remove " e.FileName " => "  e.Error
-	;~ else
-		;~ MsgBox % "Removed " e.FileName
-}
+;~ session_RemovalEventArgs(sender, e)
+;~ {
+	;~ ;if (e.Error)
+		;~ ;MsgBox % "Failed to remove " e.FileName " => "  e.Error
+	;~ ;else
+		;~ ;MsgBox % "Removed " e.FileName
+;~ }
 
 /*
 Description
@@ -75,15 +75,6 @@ Description
 	;~ FileProgress    := Round(e.FileProgress * 100)
 	;~ OverallProgress := Round(e.OverallProgress * 100)
 	;~ action          := (e.Side==0) ? "Uploading" : "Downloading"
-	
-	;~ GuiControl,, txtTitle, % action " @ " CPS " kbps"
-	;~ GuiControl,, edtFileName, % FileName
-	;~ GuiControl,, proFileName, % FileProgress
-	;~ GuiControl,, proOverall, % OverallProgress
-	;~ if (OverallProgress==100)
-		;~ GuiControl, Enable, btnClose
-	
-	;~ Gui, Show, , File Transfere
 ;~ }
 
 ;~ -----------------------------------------------------
@@ -355,8 +346,6 @@ class WinSCP extends CFTPUploadAction
 	*/
 	GetFiles(remotePath, localPath, remove=false)
 	{
-		global WinSCPEnum ; WinSCP Enums
-		
 		;~ Check
 		;remove
 		if remove not in 0,1
@@ -392,8 +381,6 @@ class WinSCP extends CFTPUploadAction
 	*/
 	PutFiles(localPath, remotePath, remove:=false)
 	{
-		global WinSCPEnum ; WinSCP Enums
-		
 		;~ Checks
 		;localPath
 		if (!FileExist(localPath))

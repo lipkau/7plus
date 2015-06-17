@@ -9,7 +9,6 @@ global WIN_XP64 := 5.2
 global WIN_VISTA := 6.0
 global WIN_7 := 6.1
 global WIN_8 := 6.2
-
 global WinSCPEnum:= {FtpMode:{Passive:0,Active:1},FtpSecure:{None:0,Implicit:1,ExplicitTls:2,ExplicitSsl:3},FtpProtocol:{Sftp:0,Scp:1,Ftp:2},TransferMode:{Binary:0,Ascii:1,Automatic:2},SynchronizationMode:{Local:0,Remote:1,Both:2},SynchronizationCriteria:{None:0,Time:1,Size:2,Either:3}}
 
 ;~ global Vista7 := IsVista7()

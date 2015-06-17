@@ -1819,14 +1819,11 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Try
 		{
 			;Open Connection
-			a := FTPSession.OpenConnection()
+			FTPSession.OpenConnection()
 			;~ FTPSession.Dispose()
 			MsgBox % "Connection to " Settings.Hostname " successfully established!"
 		} catch e 
 			MsgBox % "Could not connect to " Settings.HostName "!"
-		
-		
-		
 		
 		;~ try
 			;~ FTPSession.Dispose()
@@ -2434,7 +2431,6 @@ Finally, here are some settings that you're likely to change at the beginning:
 PrepareFolderBand:
 PrepareFolderBand()
 return
-
 
 Settings_EditEvent:
 SettingsWindow.EditEvent(0)

@@ -1,4 +1,3 @@
-;~ #include %A_ScriptDir%\Lib\FTP.ahk
 #include %A_ScriptDir%\Lib\WinSCP.ahk
 Class CFTPUploadAction Extends CAction
 {
@@ -246,14 +245,13 @@ Class CFTPUploadAction Extends CAction
 			FileGetSize, size, % Data.File
 			WorkerThread.CurrentFile.FileSize := size
 			if(!this.HasKey("tmpNotificationWindow"))
-				this.tmpNotificationWindow := Notify("Uploading " this.tmpNumFiles " file" (this.tmpNumFiles = 1 ? "":"s") " to " WorkerThread.Task.Parameters[4], Data.RemoteName " - " FormatFileSize(0) " / " FormatFileSize(size), "", NotifyIcons.Internet, "", {min : 0, max : 100, value : 0})
+				this.tmpNotificationWindow := Notify("Uploading " this.tmpNumFiles " file" (this.tmpNumFiles = 1 ? "":"s") " to " WorkerThread.Task.Parameters[4], Data.RemoteName " - " FormatFileSize(size), "", NotifyIcons.Internet, "", {min : 0, max : 100, value : 0})
 			else
 			{
 				this.tmpNumFiles--
 				this.tmpNotificationWindow.Title := "Uploading " this.tmpNumFiles " file" (this.tmpNumFiles = 1 ? "":"s") " to " WorkerThread.Task.Parameters[4]
-				this.tmpNotificationWindow.Text := Data.RemoteName " - " FormatFileSize(0) " / " FormatFileSize(size)
-				;~ ; Toggle for single file progress
-				;~ this.tmpNotificationWindow.Progress := 0
+				this.tmpNotificationWindow.Text := Data.RemoteName " - " FormatFileSize(size)
+				this.tmpNotificationWindow.Progress := 0
 			}
 		}
 	}
@@ -399,9 +397,7 @@ session_FileTransferProgress(sender, e)
 	OverallProgress := Round(e.OverallProgress * 100)
 	
 	;Report progress
-	FTP.WorkerThread.Progress := OverallProgress
-	;~ ; Toggle for single file progress
-	;~ FTP.WorkerThread.Progress := FileProgress
+	FTP.WorkerThread.Progress := FileProgress
 }
 Action_Upload_Placeholders_SourceFiles:
 GetCurrentSubEvent().GuiShow("", "Placeholders_SourceFiles")
