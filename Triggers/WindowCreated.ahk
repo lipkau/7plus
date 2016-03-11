@@ -1,27 +1,27 @@
 Class CWindowCreatedTrigger Extends CTrigger
 {
-	static Type := RegisterType(CWindowCreatedTrigger, "Window created")
-	static Category := RegisterCategory(CWindowCreatedTrigger, "Window")
-	static __WikiLink := "WindowCreated"
-	static _ImplementsWindowFilter := ImplementWindowFilterInterface(CWindowCreatedTrigger)
-	
-	Matches(Filter)
-	{
-		return this.WindowFilterMatches(Filter.Window, Filter)
-	}
+    static Type := RegisterType(CWindowCreatedTrigger, "Window created")
+    static Category := RegisterCategory(CWindowCreatedTrigger, "Window")
+    static __WikiLink := "WindowCreated"
+    static _ImplementsWindowFilter := ImplementWindowFilterInterface(CWindowCreatedTrigger)
 
-	DisplayString()
-	{
-		return "Window created: " this.WindowFilterDisplayString()
-	}
+    Matches(Filter)
+    {
+        return this.WindowFilterMatches(Filter.Window, Filter)
+    }
 
-	GuiShow(GUI)
-	{
-		this.WindowFilterGuiShow(GUI)
-	}
+    DisplayString()
+    {
+        return "Window created: " this.WindowFilterDisplayString()
+    }
 
-	GuiSubmit(GUI)
-	{
-		this.WindowFilterGuiSubmit(GUI)
-	}
+    GuiShow(GUI)
+    {
+        this.WindowFilterGuiShow(GUI)
+    }
+
+    GuiSubmit(GUI)
+    {
+        this.WindowFilterGuiSubmit(GUI)
+    }
 }

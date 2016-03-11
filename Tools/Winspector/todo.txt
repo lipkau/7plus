@@ -1,7 +1,7 @@
 Copyright (c)  Gipsysoft. All Rights Reserved.
 Please see the file "licence.txt" for licencing details.
-File:	todo.txt
-Owner:	russf@gipsysoft.com
+File:    todo.txt
+Owner:    russf@gipsysoft.com
 Purpose: My list of stuff to do.
 
 This is my list of things I want to do. 

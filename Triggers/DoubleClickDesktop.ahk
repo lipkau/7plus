@@ -1,13 +1,13 @@
 Class CDoubleClickDesktopTrigger Extends CTrigger
 {
-	static Type := RegisterType(CDoubleClickDesktopTrigger, "Double click on desktop")
-	static Category := RegisterCategory(CDoubleClickDesktopTrigger, "Hotkeys")
-	static __WikiLink := "DoubleClickDesktop"
-	
-	Matches(Filter)
-	{
-		return true ;type is checked elsewhere
-	}
+    static Type := RegisterType(CDoubleClickDesktopTrigger, "Double click on desktop")
+    static Category := RegisterCategory(CDoubleClickDesktopTrigger, "Hotkeys")
+    static __WikiLink := "DoubleClickDesktop"
+
+    Matches(Filter)
+    {
+        return true ;type is checked elsewhere
+    }
 }
 
 #MaxThreadsPerHotkey 2
@@ -18,11 +18,11 @@ Class CDoubleClickDesktopTrigger Extends CTrigger
 
 DoubleClickDesktop()
 {
-	CurrentDesktopFiles := Navigation.GetSelectedFilepaths()
-	if(IsDoubleClick() && !CurrentDesktopFiles.MaxIndex())
-	{
-		Trigger := new CDoubleClickDesktopTrigger()
-		EventSystem.OnTrigger(Trigger)
-	}
-	Return
+    CurrentDesktopFiles := Navigation.GetSelectedFilepaths()
+    if(IsDoubleClick() && !CurrentDesktopFiles.MaxIndex())
+    {
+        Trigger := new CDoubleClickDesktopTrigger()
+        EventSystem.OnTrigger(Trigger)
+    }
+    Return
 }

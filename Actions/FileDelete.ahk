@@ -1,33 +1,33 @@
 Class CFileDeleteAction Extends CAction
 {
-	static Type := RegisterType(CFileDeleteAction, "Delete file")
-	static Category := RegisterCategory(CFileDeleteAction, "File")
-	static __WikiLink := "Delete"
-	static _ImplementsFileOperation := ImplementFileOperationInterface(CFileDeleteAction)
+    static Type := RegisterType(CFileDeleteAction, "Delete file")
+    static Category := RegisterCategory(CFileDeleteAction, "File")
+    static __WikiLink := "Delete"
+    static _ImplementsFileOperation := ImplementFileOperationInterface(CFileDeleteAction)
 
-	Execute(Event)
-	{
-		this.FileOperationProcessPaths(Event, sources, targets, flags)
-		ShellFileOperation(0x3, sources, "", flags, A_ScriptHwnd)  
-		return 1
-	}
+    Execute(Event)
+    {
+        this.FileOperationProcessPaths(Event, sources, targets, flags)
+        ShellFileOperation(0x3, sources, "", flags, A_ScriptHwnd)
+        return 1
+    }
 
-	DisplayString()
-	{
-		return this.FileOperationDisplayString()
-	}
+    DisplayString()
+    {
+        return this.FileOperationDisplayString()
+    }
 
-	GuiShow(GUI, GoToLabel = "")
-	{	
-		static sGUI
-		if(GoToLabel = "")
-		{
-			sGUI := GUI
-			this.AddControl(GUI, "Edit", "SourceFile", "", "", "Source File(s):", "Placeholders", "Action_Delete_Placeholders_Source")
-		}
-		else if(GoToLabel = "PlaceholdersSource")
-			ShowPlaceholderMenu(sGUI, "SourceFile")
-	}
+    GuiShow(GUI, GoToLabel = "")
+    {
+        static sGUI
+        if(GoToLabel = "")
+        {
+            sGUI := GUI
+            this.AddControl(GUI, "Edit", "SourceFile", "", "", "Source File(s):", "Placeholders", "Action_Delete_Placeholders_Source")
+        }
+        else if(GoToLabel = "PlaceholdersSource")
+            ShowPlaceholderMenu(sGUI, "SourceFile")
+    }
 }
 
 Action_Delete_Placeholders_Source:

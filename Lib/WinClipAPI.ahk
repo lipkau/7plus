@@ -5,22 +5,22 @@
       return WinClip_base[ aTarget ].( this, aParams* )
     throw Exception( "Unknown function '" aTarget "' requested from object '" this.__Class "'", -1 )
   }
-  
+
   Err( msg ) {
     throw Exception( this.__Class " : " msg ( A_LastError != 0 ? "`n" this.ErrorFormat( A_LastError ) : "" ), -2 )
   }
-  
+
   ErrorFormat( error_id ) {
     VarSetCapacity(msg,1000,0)
     if !len := DllCall("FormatMessageW"
-          ,"UInt",FORMAT_MESSAGE_FROM_SYSTEM := 0x00001000 | FORMAT_MESSAGE_IGNORE_INSERTS := 0x00000200		;dwflags
-          ,"Ptr",0		;lpSource
-          ,"UInt",error_id	;dwMessageId
-          ,"UInt",0			;dwLanguageId
-          ,"Ptr",&msg			;lpBuffer
-          ,"UInt",500)			;nSize
+          ,"UInt",FORMAT_MESSAGE_FROM_SYSTEM := 0x00001000 | FORMAT_MESSAGE_IGNORE_INSERTS := 0x00000200        ;dwflags
+          ,"Ptr",0        ;lpSource
+          ,"UInt",error_id    ;dwMessageId
+          ,"UInt",0            ;dwLanguageId
+          ,"Ptr",&msg            ;lpBuffer
+          ,"UInt",500)            ;nSize
       return
-    return 	strget(&msg,len)
+    return     strget(&msg,len)
   }
 }
 
@@ -61,7 +61,7 @@ class WinClipAPI extends WinClip_base
     return DllCall( "SetClipboardData", "Uint", format, "Ptr", hMem )
   }
   GetClipboardData( format ) {
-    return DllCall( "GetClipboardData", "Uint", format ) 
+    return DllCall( "GetClipboardData", "Uint", format )
   }
   EmptyClipboard() {
     return DllCall( "EmptyClipboard" )
@@ -94,25 +94,25 @@ class WinClipAPI extends WinClip_base
   ErrorFormat(error_id) {
     VarSetCapacity(msg,1000,0)
     if !len := DllCall("FormatMessageW"
-          ,"UInt",FORMAT_MESSAGE_FROM_SYSTEM := 0x00001000 | FORMAT_MESSAGE_IGNORE_INSERTS := 0x00000200		;dwflags
-          ,"Ptr",0		;lpSource
-          ,"UInt",error_id	;dwMessageId
-          ,"UInt",0			;dwLanguageId
-          ,"Ptr",&msg			;lpBuffer
-          ,"UInt",500)			;nSize
+          ,"UInt",FORMAT_MESSAGE_FROM_SYSTEM := 0x00001000 | FORMAT_MESSAGE_IGNORE_INSERTS := 0x00000200        ;dwflags
+          ,"Ptr",0        ;lpSource
+          ,"UInt",error_id    ;dwMessageId
+          ,"UInt",0            ;dwLanguageId
+          ,"Ptr",&msg            ;lpBuffer
+          ,"UInt",500)            ;nSize
       return
-    return 	strget(&msg,len)
+    return     strget(&msg,len)
   }
   IsInteger( var ) {
     if var is integer
       return True
-    else 
+    else
       return False
   }
   LoadDllFunction( file, function ) {
       if !hModule := DllCall( "GetModuleHandleW", "Wstr", file, "UPtr" )
           hModule := DllCall( "LoadLibraryW", "Wstr", file, "UPtr" )
-      
+
       ret := DllCall("GetProcAddress", "Ptr", hModule, "AStr", function, "UPtr")
       return ret
   }
@@ -130,7 +130,7 @@ class WinClipAPI extends WinClip_base
   }
   WinGetFocus( hwnd ) {
     GUITHREADINFO_cbsize := 24 + A_PtrSize*6
-    VarSetCapacity( GuiThreadInfo, GUITHREADINFO_cbsize, 0 )	;GuiThreadInfoSize = 48
+    VarSetCapacity( GuiThreadInfo, GUITHREADINFO_cbsize, 0 )    ;GuiThreadInfoSize = 48
     NumPut(GUITHREADINFO_cbsize, GuiThreadInfo, 0, "UInt")
     threadWnd := this.GetWindowThreadProcessId( hwnd )
     if not DllCall( "GetGUIThreadInfo", "uint", threadWnd, "UPtr", &GuiThreadInfo )
@@ -150,7 +150,7 @@ class WinClipAPI extends WinClip_base
     ;~ LONG  biYPelsPerMeter;     28
     ;~ DWORD biClrUsed;           32
     ;~ DWORD biClrImportant;      36
-    
+
     bmi := &DIB  ;BITMAPINFOHEADER  pointer from DIB
     biSize := numget( bmi+0, 0, "UInt" )
     ;~ return bmi + biSize
@@ -172,7 +172,7 @@ class WinClipAPI extends WinClip_base
   Gdip_Startup() {
     if !DllCall( "GetModuleHandleW", "Wstr", "gdiplus", "UPtr" )
           DllCall( "LoadLibraryW", "Wstr", "gdiplus", "UPtr" )
-    
+
     VarSetCapacity(GdiplusStartupInput , 3*A_PtrSize, 0), NumPut(1,GdiplusStartupInput ,0,"UInt") ; GdiplusVersion = 1
     DllCall("gdiplus\GdiplusStartup", "Ptr*", pToken, "Ptr", &GdiplusStartupInput, "Ptr", 0)
     return pToken
@@ -186,7 +186,7 @@ class WinClipAPI extends WinClip_base
   StrSplit(str,delim,omit = "") {
     if (strlen(delim) > 1)
     {
-      StringReplace,str,str,% delim,ƒ,1 		;■¶╬
+      StringReplace,str,str,% delim,ƒ,1         ;■¶╬
       delim = ƒ
     }
     ra := Array()

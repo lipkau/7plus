@@ -1,27 +1,27 @@
 Class CWindowActivatedTrigger Extends CTrigger
 {
-	static Type := RegisterType(CWindowActivatedTrigger, "Window activated")
-	static Category := RegisterCategory(CWindowActivatedTrigger, "Window")
-	static __WikiLink := "WindowActivated"
-	static _ImplementsWindowFilter := ImplementWindowFilterInterface(CWindowActivatedTrigger)
-	
-	Matches(Filter)
-	{
-		return this.WindowFilterMatches("A", Filter)
-	}
+    static Type := RegisterType(CWindowActivatedTrigger, "Window activated")
+    static Category := RegisterCategory(CWindowActivatedTrigger, "Window")
+    static __WikiLink := "WindowActivated"
+    static _ImplementsWindowFilter := ImplementWindowFilterInterface(CWindowActivatedTrigger)
 
-	DisplayString()
-	{
-		return "Window activated: " this.WindowFilterDisplayString()
-	}
+    Matches(Filter)
+    {
+        return this.WindowFilterMatches("A", Filter)
+    }
 
-	GuiShow(GUI)
-	{
-		this.WindowFilterGuiShow(GUI)
-	}
+    DisplayString()
+    {
+        return "Window activated: " this.WindowFilterDisplayString()
+    }
 
-	GuiSubmit(GUI)
-	{
-		this.WindowFilterGuiSubmit(GUI)
-	}
+    GuiShow(GUI)
+    {
+        this.WindowFilterGuiShow(GUI)
+    }
+
+    GuiSubmit(GUI)
+    {
+        this.WindowFilterGuiSubmit(GUI)
+    }
 }

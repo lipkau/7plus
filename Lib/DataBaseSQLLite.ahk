@@ -2,21 +2,21 @@
 
 class SQLite
 {
-	GetVersion(){
-		return SQLite_LibVersion()
-	}
-	
-	SQLiteExe(dbFile, commands, ByRef output){
-		return SQLite_SQLiteExe(dbFile, commands, output)
-	}
-	
-	__New(){
-		throw Exception("This is a static Class. Don't create Instances from it!",-1)
-	}
+    GetVersion(){
+        return SQLite_LibVersion()
+    }
+
+    SQLiteExe(dbFile, commands, ByRef output){
+        return SQLite_SQLiteExe(dbFile, commands, output)
+    }
+
+    __New(){
+        throw Exception("This is a static Class. Don't create Instances from it!",-1)
+    }
 }
 
 /*
-	Represents a Connection to a SQLite Database
+    Represents a Connection to a SQLite Database
 */
 class DataBaseSQLLite extends DBA.DataBase
 {
@@ -110,32 +110,32 @@ class DataBaseSQLLite extends DBA.DataBase
     InsertMany(records, tableName){
         if(!is(records, Collection) || records.IsEmpty())
             return false
-        
+
         colString := ""
         valString := ""
         columns := {}
-        
+
         for column, value in records.First()
         {
             colString .= "," this.QuoteIdentifier(column)
             valString .= ",?"
             columns[column] := A_Index
         }
-        sql := "INSERT INTO " this.QuoteIdentifier(tableName) "`n(" SubStr(colstring, 2) ")`nVALUES`n(" SubStr(valString, 2) ")" 
-        
+        sql := "INSERT INTO " this.QuoteIdentifier(tableName) "`n(" SubStr(colstring, 2) ")`nVALUES`n(" SubStr(valString, 2) ")"
+
         types := []
         for i,row in this._GetTableObj("PRAGMA table_info(" this.QuoteIdentifier(tableName) ")").Rows
         {
             if columns.HasKey(row.name)
                 types[columns[row.name]] := row.types
         }
-        
+
         this.BeginTransaction()
-        
+
         query := SQLite_Query(this._handleDB, sql) ;prepare the query
         if ErrorLevel
             msgbox % errorlevel
-        
+
         try
         {
             for i, record in records
@@ -160,20 +160,20 @@ class DataBaseSQLLite extends DBA.DataBase
         this.EndTransaction()
         return True
     }
-    
+
     Insert(record, tableName){
         col := new Collection()
         col.Add(record)
         return this.InsertMany(col, tableName)
     }
-    
+
     _GetTableObj(sql, maxResult = -1) {
         err := 0, rc := 0, GetRows := 0
         i := 0
         rows := cols := 0
         names := new Collection()
         dbh := this._handleDB
-        
+
         SQLite_LastError(" ")
 
        if(!_SQLite_CheckDB(dbh)) {
@@ -202,7 +202,7 @@ class DataBaseSQLLite extends DBA.DataBase
        }
 
        if (maxResult = 0) {
-          DllCall("SQLite3\sqlite3_free_table", "Ptr", mytable, "Cdecl")   
+          DllCall("SQLite3\sqlite3_free_table", "Ptr", mytable, "Cdecl")
           If (ErrorLevel) {
              SQLite_LastError("ERROR: DLLCall sqlite3_close failed!")
              Return False
@@ -216,7 +216,7 @@ class DataBaseSQLLite extends DBA.DataBase
        else
           GetRows := rows
        Offset := 0
-       
+
        Loop, % cols
        {
           names.Add(StrGet(NumGet(mytable+0, Offset), "UTF-8"))
@@ -227,7 +227,7 @@ class DataBaseSQLLite extends DBA.DataBase
         Loop, %GetRows% {
             i := A_Index
             fields := new Collection()
-            Loop, % Cols 
+            Loop, % Cols
             {
                 fields.Add(StrGet(NumGet(mytable+0, Offset), "UTF-8"))
                 Offset += A_PtrSize
@@ -235,16 +235,16 @@ class DataBaseSQLLite extends DBA.DataBase
             myRows.Add(new DBA.Row(Names, fields))
         }
         tbl := new DBA.Table(myRows, Names)
-        
+
         ; Free Results Memory
-        DllCall("SQLite3\sqlite3_free_table", "Ptr", mytable, "Cdecl")   
+        DllCall("SQLite3\sqlite3_free_table", "Ptr", mytable, "Cdecl")
         if (ErrorLevel) {
             SQLite_LastError("ERROR: DLLCall sqlite3_close failed!")
             return false
         }
         return tbl
     }
-    
+
     ReturnCode(RC) {
       static RCODE := {SQLITE_OK: 0          ; Successful result
                      , SQLITE_ERROR: 1       ; SQL error or missing database

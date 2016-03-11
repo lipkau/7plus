@@ -1,8 +1,8 @@
 {
-	"folders":
-	[
-		{
-			"path": ".",
+    "folders":
+    [
+        {
+            "path": ".",
             "file_exclude_patterns": [
                 "*.pdf",
                 "*.ico",
@@ -16,8 +16,8 @@
                 "Patches",
                 "ShellExtension"
             ],
-		}
-	],
+        }
+    ],
     "settings":
     {
         "tab_size": 4,

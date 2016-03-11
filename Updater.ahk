@@ -1,6 +1,6 @@
 #NoTrayIcon
 if(!A_IsCompiled)
-	ExitApp
+    ExitApp
 SetWorkingDir %A_Temp%\7plus
 IniRead, ConfigPath, %A_Temp%\7plus\Update.ini, Update, ConfigPath, %A_AppData%\7plus
 IniRead, ScriptDir, %A_Temp%\7plus\Update.ini, Update, ScriptDir, %A_ProgramFiles%\7plus
@@ -16,7 +16,7 @@ FileDelete 7za.exe
 FileDelete Update.zip
 FileMoveDir %A_Temp%\7plus\Update\ReleasePatch,%A_Temp%\7plus\ReleasePatch, 2
 if(FileExist(ScriptDir "\7plus.ahk"))
-	run %ScriptDir%\7plus.ahk
+    run %ScriptDir%\7plus.ahk
 else if(FileExist(ScriptDir "\7plus.exe"))
-	run %ScriptDir%\7plus.exe
+    run %ScriptDir%\7plus.exe
 ExitApp

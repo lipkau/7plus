@@ -1,24 +1,24 @@
 ;: Title: FTP Functions [AHK_L]
 
-/* 
+/*
 Original FTP Functions by Olfen & Andreone -> http://www.autohotkey.com/forum/viewtopic.php?t=10393
 Modified by ahklerner
 
-Modified by me for AHK_L, 
-- added object syntax 
-- added GetCurrentDirectory() 
-- corrected FileTime retrieval from Win32_Find_Data structure 
-- created documentation (thanks fincs for GenDocs and Scite4Autohotkey) 
+Modified by me for AHK_L,
+- added object syntax
+- added GetCurrentDirectory()
+- corrected FileTime retrieval from Win32_Find_Data structure
+- created documentation (thanks fincs for GenDocs and Scite4Autohotkey)
 
-Update 2011-01-17: 
-- Added FTP_Init(), which needs to be called first to retrieve Object reference 
-- Error/Extended Error (if any) is retrieved in human readable form [.LastError property] 
-- FTP connection properties can be set (see documentation) 
-- Uses only one global variable (an object) 
+Update 2011-01-17:
+- Added FTP_Init(), which needs to be called first to retrieve Object reference
+- Error/Extended Error (if any) is retrieved in human readable form [.LastError property]
+- FTP connection properties can be set (see documentation)
+- Uses only one global variable (an object)
 
-Update 2011-01-21: 
-- Added .InternetReadFile() and .InternetWriteFile() methods 
-- Progress indicator for uploads and downloads 
+Update 2011-01-21:
+- Added .InternetReadFile() and .InternetWriteFile() methods
+- Progress indicator for uploads and downloads
 
 Update 2011-02-03:
 - Bugfixes
@@ -46,7 +46,7 @@ FTP_Init( Proxy = "" , ProxyBypass = "" ) {
   global ftp_$obj$
   if !ftp_$obj$
     ftp_$obj$ := Object()
-  
+
   AccessType := (Proxy = "") ? 1 : 3  ;0-registry conf, 1-direct, 3-named proxy, 4- prevent using java/script
   ftp_$obj$.hModule := DllCall("LoadLibrary", "str", "wininet.dll", "Ptr")
   ftp_$obj$.o_hInternet := DllCall("wininet\InternetOpen"
@@ -57,7 +57,7 @@ FTP_Init( Proxy = "" , ProxyBypass = "" ) {
 
   If (ErrorLevel != 0 or ftp_$obj$.o_hInternet = 0)
     Return 0 , FTP_Close()
-  
+
   ftp_$obj$.InternetConnectFlags := 0
   ftp_$obj$.Port := 21
   ftp_$obj$.Open := "FTP_Open"
@@ -109,7 +109,7 @@ FTP_Open(Server, Username=0, Password=0) {
   , "uint" , 1 ;dwService (INTERNET_SERVICE_FTP = 1)
   , "uint", ftp_$obj$.InternetConnectFlags ;dwFlags
   , "uint", 0, "Ptr") ;dwContext
-  
+
   If (ErrorLevel or !ftp_$obj$.hInternet)
     Return 0 , ftp_$obj$.LastError := GetModuleErrorText(ftp_$obj$.hModule,A_LastError)
   Return 1 , ftp_$obj$.LastError := 0
@@ -155,7 +155,7 @@ FTP_GetCurrentDirectory() {
 ;
 FTP_SetCurrentDirectory(DirName) {
   global ftp_$obj$
-  
+
   r := DllCall("wininet\FtpSetCurrentDirectory", "PTR", ftp_$obj$.hInternet, "str", DirName)
   If (ErrorLevel or !r)
     Return 0 , ftp_$obj$.LastError := GetModuleErrorText(ftp_$obj$.hModule,A_LastError)
@@ -213,12 +213,12 @@ FTP_RemoveDirectory(DirName) {
 
 FTP_OpenFile(FileName,Write = 0) {
   global ftp_$obj$
-  
+
   access := Write ? 0x40000000 : 0x80000000
   r := DllCall( "wininet\FtpOpenFile", "PTR", ftp_$obj$.hInternet ,"str" , FileName
    ,"UInt" , access ;dwAccess
    ,"UInt" , 0 ;dwFlags
-   ,"UInt" , 0) ;dwContext   
+   ,"UInt" , 0) ;dwContext
   If (ErrorLevel or !r)
     Return 0 , ftp_$obj$.LastError := GetModuleErrorText(ftp_$obj$.hModule,A_LastError)
   Return r , ftp_$obj$.LastError := 0
@@ -272,7 +272,7 @@ FTP_InternetWriteFile(LocalFile, NewRemoteFile="", FnProgress = "FTP_Progress") 
   SplitPath,LocalFile,tvar
   my.RemoteName := (NewRemoteFile="") ? tvar : NewRemoteFile
   my.LocalName := tvar
-  
+
   hFile := FTP_OpenFile(my.RemoteName,1) ;Write
   if !hFile
     Return 0 , ftp_$obj$.LastError := GetModuleErrorText(ftp_$obj$.hModule,A_LastError)
@@ -351,7 +351,7 @@ FTP_InternetReadFile(RemoteFile, NewLocalFile = "", FnProgress = "FTP_Progress")
   SplitPath,RemoteFile,tvar
   my.LocalName := (NewLocalFile="") ? tvar : NewLocalFile
   my.RemoteName := tvar
-  
+
   hFile := FTP_OpenFile(RemoteFile) ;Read
   if !hFile
     Return 0 , ftp_$obj$.LastError := GetModuleErrorText(ftp_$obj$.hModule,A_LastError)
@@ -369,7 +369,7 @@ FTP_InternetReadFile(RemoteFile, NewLocalFile = "", FnProgress = "FTP_Progress")
   if ( DllCall("wininet\InternetReadFile", "PTR", hFile , "PTR", &Buffer , "UInt", my.BufferSize , "UIntP", outSize) )
     {
     oFile.RawWrite(Buffer,my.BufferSize)
-    my.BytesTransfered := my.BytesTransfered + my.BufferSize , my.CurrentTime := A_TickCount , 
+    my.BytesTransfered := my.BytesTransfered + my.BufferSize , my.CurrentTime := A_TickCount ,
     %FnProgress%()
     }
   else
@@ -416,7 +416,7 @@ FTP_Progress() {
 ;      Puts a file to FTP location
 ; Syntax: oFTP.PutFile(LocalFile, [NewRemoteFile, Flags])
 ; Parameters:
-;      LocalFile - Existing file name 
+;      LocalFile - Existing file name
 ;      NewRemoteFile - Remote path to the file to be created (fully qualified path or relative path to current dir)
 ;      Flags - See remarks
 ; Remarks:
@@ -618,20 +618,20 @@ FTP_Close() {
 ;
 FTP_GetFileInfo(ByRef @FindData) { ;http://www.autohotkey.com/forum/viewtopic.php?p=408830#408830
 if !IsObject(fiObj)
-	fiObj := Object()
+    fiObj := Object()
 
-VarSetCapacity(value, 1040, 0) 
-DllCall("RtlMoveMemory", "str", value, "uint", &@FindData + 44, "uint", 1040) 
-VarSetCapacity(value, -1) 
+VarSetCapacity(value, 1040, 0)
+DllCall("RtlMoveMemory", "str", value, "uint", &@FindData + 44, "uint", 1040)
+VarSetCapacity(value, -1)
 fiObj.Name := value
 
-VarSetCapacity(ftstr, 8) 
+VarSetCapacity(ftstr, 8)
 DllCall("RtlMoveMemory", "str", ftstr, "uint", &@FindData + 4, "uint", 8)
 fiObj.CreationTime := FileTimeToStr(ftstr)
 DllCall("RtlMoveMemory", "str", ftstr, "uint", &@FindData + 12, "uint", 8)
 fiObj.LastAccessTime := FileTimeToStr(ftstr)
 DllCall("RtlMoveMemory", "str", ftstr, "uint", &@FindData + 20, "uint", 8)
-fiObj.LastWriteTime := FileTimeToStr(ftstr) 
+fiObj.LastWriteTime := FileTimeToStr(ftstr)
 fiObj.Size := NumGet(@FindData, 28, "UInt") << 32 | NumGet(@FindData, 32, "UInt")
 
 value=
@@ -649,13 +649,13 @@ value .= (NumGet(@FindData, 0, "UInt") & 65536) != 0 ? "V" : ""
 fiObj.Attribs := value
 
 Return fiObj
-} 
+}
 
-FileTimeToStr(FileTime) { 
-   VarSetCapacity(SystemTime, 16, 0) 
+FileTimeToStr(FileTime) {
+   VarSetCapacity(SystemTime, 16, 0)
    If (!NumGet(FileTime,"UInt") && !NumGet(FileTime,4,"UInt"))
      Return 0
-   DllCall("FileTimeToSystemTime", "PTR", &FileTime, "PTR", &SystemTime) 
+   DllCall("FileTimeToSystemTime", "PTR", &FileTime, "PTR", &SystemTime)
    Return NumGet(SystemTime,6,"short") ;date
       . "/" . NumGet(SystemTime,2,"short") ;month
       . "/" . NumGet(SystemTime,0,"short") ;year
@@ -671,7 +671,7 @@ FileTimeToStr(FileTime) {
 ;      Get first file
 ; Syntax: oFTP.FindFirstFile(SearchFile)
 ; Parameters:
-;      SearchFile - file(mask) to search for 
+;      SearchFile - file(mask) to search for
 ; Return Value:
 ;      Returns an object (oFile) with file details (properties described below)
 ;      oFile.Name - Name of File
@@ -682,23 +682,23 @@ FileTimeToStr(FileTime) {
 ;      oFile.Attribs - String of file attributes
 ; Related: oFTP.GetFileInfo, oFTP.FindNextFile
 ;
-FTP_FindFirstFile(SearchFile) { 
-   ; WIN32_FIND_DATA structure size is 4 + 3*8 + 4*4 + 260*4 + 14*4 = 1140 
+FTP_FindFirstFile(SearchFile) {
+   ; WIN32_FIND_DATA structure size is 4 + 3*8 + 4*4 + 260*4 + 14*4 = 1140
   global ftp_$obj$
   ftp_$obj$.LastError := 0
 
-  VarSetCapacity(@FindData, 1140, 0) 
-  ftp_$obj$.hEnum := DllCall("wininet\FtpFindFirstFile" 
+  VarSetCapacity(@FindData, 1140, 0)
+  ftp_$obj$.hEnum := DllCall("wininet\FtpFindFirstFile"
     , "PTR", ftp_$obj$.hInternet
-    , "str", SearchFile 
-    , "PTR", &@FindData 
-    , "uint", 0 
-    , "PTR", 0, "PTR") 
+    , "str", SearchFile
+    , "PTR", &@FindData
+    , "uint", 0
+    , "PTR", 0, "PTR")
 
-  If(!ftp_$obj$.hEnum) 
+  If(!ftp_$obj$.hEnum)
     Return 0 , VarSetCapacity(@FindData, 0) , ftp_$obj$.LastError := GetModuleErrorText(ftp_$obj$.hModule,A_LastError)
   Return oFile := FTP_GetFileInfo(@FindData)
-} 
+}
 
 ;
 ; Function: oFTP.FindNextFile
@@ -715,19 +715,19 @@ FTP_FindFirstFile(SearchFile) {
 ;      oFile.Attribs - String of file attributes
 ; Related: oFTP.GetFileInfo, oFTP.FindFirstFile
 ;
-FTP_FindNextFile() { 
+FTP_FindNextFile() {
   global ftp_$obj$
   ftp_$obj$.LastError := 0
-  VarSetCapacity(@FindData, 1140, 0) 
-  If !DllCall("wininet\InternetFindNextFile" , "PTR", ftp_$obj$.hEnum , "PTR", &@FindData) 
+  VarSetCapacity(@FindData, 1140, 0)
+  If !DllCall("wininet\InternetFindNextFile" , "PTR", ftp_$obj$.hEnum , "PTR", &@FindData)
     Return 0 , VarSetCapacity(@FindData, 0) , ftp_$obj$.LastError := GetModuleErrorText(ftp_$obj$.hModule,A_LastError)
   Return oFile := FTP_GetFileInfo(@FindData)
-} 
+}
 
 ;
 ; Property: oFile
 ; Description:
-;      Properties of object (oFile) returned by .FindFirstFile()/.FindNextFile() 
+;      Properties of object (oFile) returned by .FindFirstFile()/.FindNextFile()
 ; Parameters:
 ;      oFile.Name - Name of File
 ;      oFile.CreationTime - Creation Time (0 if absent)
@@ -738,20 +738,20 @@ FTP_FindNextFile() {
 ;
 GetModuleErrorText(hModule,errNr) ;http://msdn.microsoft.com/en-us/library/ms679351(v=vs.85).aspx
 {
-	bufferSize = 1024 ; Arbitrary, should be large enough for most uses
-	VarSetCapacity(buffer, bufferSize)
+    bufferSize = 1024 ; Arbitrary, should be large enough for most uses
+    VarSetCapacity(buffer, bufferSize)
     if (errNr = 12003)  ;ERROR_INTERNET_EXTENDED_ERROR
-	{
-		VarSetCapacity(ErrorMsg,4)
-		DllCall("wininet\InternetGetLastResponseInfo", "UIntP", &ErrorMsg, "PTR", &buffer, "UIntP", &bufferSize)
-		Msg := StrGet(&buffer,bufferSize)
-		Return "Error : " errNr . "`n" . Msg
-	}
-	DllCall("FormatMessage"
-	 , "UInt", FORMAT_MESSAGE_FROM_HMODULE := 0x00000800
-	 , "PTR", hModule , "UInt", errNr
-	 , "UInt", 0 ;0 - looks in following order -> langNuetral->thread->user->system->USEnglish
-	 , "Str", buffer , "UInt", bufferSize
-	 , "PTR", 0)
-	Return "Error : " . errNr . " - " . buffer
+    {
+        VarSetCapacity(ErrorMsg,4)
+        DllCall("wininet\InternetGetLastResponseInfo", "UIntP", &ErrorMsg, "PTR", &buffer, "UIntP", &bufferSize)
+        Msg := StrGet(&buffer,bufferSize)
+        Return "Error : " errNr . "`n" . Msg
+    }
+    DllCall("FormatMessage"
+     , "UInt", FORMAT_MESSAGE_FROM_HMODULE := 0x00000800
+     , "PTR", hModule , "UInt", errNr
+     , "UInt", 0 ;0 - looks in following order -> langNuetral->thread->user->system->USEnglish
+     , "Str", buffer , "UInt", bufferSize
+     , "PTR", 0)
+    Return "Error : " . errNr . " - " . buffer
 }

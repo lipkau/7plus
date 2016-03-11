@@ -8,32 +8,32 @@ This means that real sparse arrays are not supported by this enumerator by desig
 To make an object use this iterator, insert this function in the class definition:
 |_NewEnum()
 |{
-|	return new CEnumerator(this)
+|    return new CEnumerator(this)
 |}
 */
 Class CEnumerator
 {
-	__New(Object)
-	{
-		this.Object := Object
-		this.first := true
-		;Cache for speed. Useful if custom MaxIndex() functions have crappy performance.
-		;In return that means that no key-value pairs may be inserted during iteration or the range will become invalid.
-		this.ObjMaxIndex := Object.MaxIndex()
-	}
-	Next(byref key, byref value)
-	{
-		if(this.first)
-		{
-			this.Remove("first")
-			key := this.Object.MinIndex.Name && IsFunc(this.Object.MinIndex) ? this.Object.MinIndex() : 1
-		}
-		else
-			key++
-		if(key <= this.ObjMaxIndex)
-			value := this.Object[key]
-		else
-			key := ""
-		return key != ""
-	}
+    __New(Object)
+    {
+        this.Object := Object
+        this.first := true
+        ;Cache for speed. Useful if custom MaxIndex() functions have crappy performance.
+        ;In return that means that no key-value pairs may be inserted during iteration or the range will become invalid.
+        this.ObjMaxIndex := Object.MaxIndex()
+    }
+    Next(byref key, byref value)
+    {
+        if(this.first)
+        {
+            this.Remove("first")
+            key := this.Object.MinIndex.Name && IsFunc(this.Object.MinIndex) ? this.Object.MinIndex() : 1
+        }
+        else
+            key++
+        if(key <= this.ObjMaxIndex)
+            value := this.Object[key]
+        else
+            key := ""
+        return key != ""
+    }
 }

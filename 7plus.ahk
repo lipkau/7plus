@@ -8,13 +8,13 @@ Suspend On
 #IfTimeout 150ms ;Might soften up mouse hook timeout problem
 #MaxHotkeysPerInterval 1000 ;Required for mouse wheel
 SetBatchLines, -1
-SetMouseDelay, -1 ; no pause after mouse clicks 
-SetKeyDelay, -1 ; no pause after keys sent 
+SetMouseDelay, -1 ; no pause after mouse clicks
+SetKeyDelay, -1 ; no pause after keys sent
 SetDefaultMouseSpeed, 0
 CoordMode, Mouse, Screen
 SetWinDelay, -1
-#NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases. 
-SendMode Input  ; Recommended for new scripts due to its superior speed and reliability. 
+#NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
+SendMode Input  ; Recommended for new scripts due to its superior speed and reliability.
 SetWorkingDir, %A_ScriptDir%  ; Ensures a consistent starting directory.
 DetectHiddenWindows, On ;We don't want to miss any usually
 SetTitleMatchMode, 2 ;Match anywhere in title

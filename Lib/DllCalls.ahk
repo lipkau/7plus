@@ -7,7 +7,7 @@ HICON WINAPI ExtractIcon(
 */
 ; ExtractIcon(hInst, lpszExeFileName, nIconIndex)
 ; {
-	; return DllCall("ExtractIcon", "Ptr", hInst, "str", lpszExeFileName, "uint", nIconIndex, "Ptr")
+    ; return DllCall("ExtractIcon", "Ptr", hInst, "str", lpszExeFileName, "uint", nIconIndex, "Ptr")
 ; }
 
 /*
@@ -19,7 +19,7 @@ int ImageList_ReplaceIcon(
 */
 ImageList_ReplaceIcon(himl, i, hicon)
 {
-	return DllCall("ImageList_ReplaceIcon", "Ptr", himl, Int, i, "Ptr", hicon)
+    return DllCall("ImageList_ReplaceIcon", "Ptr", himl, Int, i, "Ptr", hicon)
 }
 
 /*
@@ -36,9 +36,9 @@ ExtractAssociatedIcon(hInst, lpIconPath, ByRef lpiIcon)
   LogAddRef("hIcon")
   VarSetCapacity(Path, 260 * 2) ;MAXPATH
   Path := lpIconPath
-	return DllCall("Shell32\ExtractAssociatedIcon", "Ptr", hInst, "Str", Path, "UShortP", lpiIcon, "Ptr")
+    return DllCall("Shell32\ExtractAssociatedIcon", "Ptr", hInst, "Str", Path, "UShortP", lpiIcon, "Ptr")
  }
- 
+
  /*
  HMODULE WINAPI GetModuleHandle(
   __in_opt  LPCTSTR lpModuleName
@@ -46,7 +46,7 @@ ExtractAssociatedIcon(hInst, lpIconPath, ByRef lpiIcon)
  */
  GetModuleHandle(lpModuleName)
 {
-	return DllCall("GetModuleHandle", "Str", lpModuleName, "Ptr")
+    return DllCall("GetModuleHandle", "Str", lpModuleName, "Ptr")
 }
 
 /*
@@ -57,7 +57,7 @@ FARPROC WINAPI GetProcAddress(
 */
 GetProcAddress(hModule, lpProcName)
 {
-	return DllCall("GetProcAddress", "Ptr", hModule, "AStr", lpProcName)
+    return DllCall("GetProcAddress", "Ptr", hModule, "AStr", lpProcName)
 }
 
 /*
@@ -67,7 +67,7 @@ HWND WINAPI GetParent(
 */
 GetParent(hWnd)
 {
-	return DllCall("GetParent", "Ptr", hWnd, "Ptr")
+    return DllCall("GetParent", "Ptr", hWnd, "Ptr")
 }
 
 /*
@@ -78,7 +78,7 @@ HWND WINAPI GetWindow(
 */
 GetWindow(hWnd,uCmd)
 {
-	return DllCall( "GetWindow", "Ptr", hWnd, "uint", uCmd, "Ptr")
+    return DllCall( "GetWindow", "Ptr", hWnd, "uint", uCmd, "Ptr")
 }
 
 /*
@@ -86,7 +86,7 @@ HWND WINAPI GetForegroundWindow(void);
 */
 GetForegroundWindow()
 {
-	return DllCall("GetForeGroundWindow", "Ptr")
+    return DllCall("GetForeGroundWindow", "Ptr")
 }
 
 /*
@@ -96,7 +96,7 @@ BOOL WINAPI IsWindowVisible(
 */
 IsWindowVisible(hWnd)
 {
-	return DllCall("IsWindowVisible","Ptr",h)
+    return DllCall("IsWindowVisible","Ptr",h)
 }
 
 /*
@@ -107,6 +107,6 @@ DWORD WINAPI GetWindowThreadProcessId(
 */
 GetWindowThreadProcessId(hWnd)
 {
-	DllCall("GetWindowThreadProcessId", "Ptr", hWnd, "UIntP", lpdwProcessId)
-	return lpdwProcessId
+    DllCall("GetWindowThreadProcessId", "Ptr", hWnd, "UIntP", lpdwProcessId)
+    return lpdwProcessId
 }

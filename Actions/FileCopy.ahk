@@ -1,29 +1,29 @@
 Class CFileCopyAction Extends CAction
 {
-	static Type := RegisterType(CFileCopyAction, "Copy file")
-	static Category := RegisterCategory(CFileCopyAction, "File")
-	static __WikiLink := "Copy"
-	static _ImplementsFileOperation := ImplementFileOperationInterface(CFileCopyAction)
+    static Type := RegisterType(CFileCopyAction, "Copy file")
+    static Category := RegisterCategory(CFileCopyAction, "File")
+    static __WikiLink := "Copy"
+    static _ImplementsFileOperation := ImplementFileOperationInterface(CFileCopyAction)
 
-	Execute(Event)
-	{
-		this.FileOperationProcessPaths(Event, sources, targets, flags)
-		ShellFileOperation(0x2, sources, targets, flags, A_ScriptHwnd)  
-		return 1
-	}
+    Execute(Event)
+    {
+        this.FileOperationProcessPaths(Event, sources, targets, flags)
+        ShellFileOperation(0x2, sources, targets, flags, A_ScriptHwnd)
+        return 1
+    }
 
-	DisplayString()
-	{
-		return this.FileOperationDisplayString()
-	}
+    DisplayString()
+    {
+        return this.FileOperationDisplayString()
+    }
 
-	GuiShow(GUI, GoToLabel = "")
-	{	
-		this.FileOperationGuiShow(GUI)
-	}
-	GuiSubmit(GUI)
-	{
-		this.FileOperationGuiSubmit(GUI)
-		Base.GuiSubmit(GUI)
-	}
+    GuiShow(GUI, GoToLabel = "")
+    {
+        this.FileOperationGuiShow(GUI)
+    }
+    GuiSubmit(GUI)
+    {
+        this.FileOperationGuiSubmit(GUI)
+        Base.GuiSubmit(GUI)
+    }
 }

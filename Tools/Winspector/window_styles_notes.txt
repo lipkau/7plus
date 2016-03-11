@@ -55,8 +55,8 @@ paul noble - added TVS_FULLROWSELECT excludes TVS_HASLINES  to SysTreeView32
 
 paul noble - ComboBoxEx control added
     Control also supports these extended styles (not added to xml) -
-	CBES_EX_NOEDITIMAGE         = 0x00000001
-	CBES_EX_NOEDITIMAGEINDENT   = 0x00000002
+    CBES_EX_NOEDITIMAGE         = 0x00000001
+    CBES_EX_NOEDITIMAGEINDENT   = 0x00000002
     CBES_EX_PATHWORDBREAKPROC   = 0x00000004
     CBES_EX_NOSIZELIMIT         = 0x00000008
     CBES_EX_CASESENSITIVE       = 0x00000010

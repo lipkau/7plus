@@ -1,5 +1,5 @@
 ﻿/*
-	DataBase NameSpace Import
+    DataBase NameSpace Import
 */
 
 #Include <Base>
@@ -12,16 +12,16 @@
 
 class DBA ; namespace DBA
 {
-	#Include <DataBaseFactory>
-	#Include <DataBaseAbstract>
-	
+    #Include <DataBaseFactory>
+    #Include <DataBaseAbstract>
 
-	; Concrete SQL Providers
-	#Include <DataBaseSQLLite>
-	;#Include <DataBaseMySQL>
-	;#Include <DataBaseADO>
-	
-	#Include <RecordSetSqlLite>
-	;#Include <RecordSetADO>
-	;#Include <RecordSetMySQL>
+
+    ; Concrete SQL Providers
+    #Include <DataBaseSQLLite>
+    ;#Include <DataBaseMySQL>
+    ;#Include <DataBaseADO>
+
+    #Include <RecordSetSqlLite>
+    ;#Include <RecordSetADO>
+    ;#Include <RecordSetMySQL>
 }

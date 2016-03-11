@@ -6,17 +6,17 @@
 ;      sizeof() is based on AHK_L Objects and supports both, ANSI and UNICODE version, so to use it you will require <a href=http://www.autohotkey.com/forum/viewtopic.php?t=43049>Lexikos AutoHotkey_L.exe</a> or other versions based on it that supports objects.<br><br>nsizeof is used to calculate the size of structures or data types. <br>Visit <a href=http://www.autohotkey.com/forum/viewtopic.php?t=43049>sizeof at AutoHotkey</a> forum, any feedback is welcome.
 ; Syntax: size:= sizeof(Structure_Definition or Structure_Object)
 ; Parameters:
-;	   Field types - All AutoHotkey and Windows Data Types are supported<br>AutoHotkey Data Types<br> Int, Uint, Int64, UInt64, Char, UChar, Short, UShort, Fload and Double.<br>Windows Data Types<br> - note, TCHAR UCHAR and CHAR return actual character rather than the value, use Asc() function to find out the value/code<br>Windows Data types: Asc(char)<br>ATOM,BOOL,BOOLEAN,BYTE,CHAR,COLORREF,DWORD,DWORDLONG,DWORD_PTR,<br>DWORD32,DWORD64,FLOAT,HACCEL,HALF_PTR,HANDLE,HBITMAP,HBRUSH,HCOLORSPACE,HCONV,HCONVLIST,HCURSOR,HDC,<br>HDDEDATA,HDESK,HDROP,HDWP,HENHMETAFILE,HFILE,HFONT,HGDIOBJ,HGLOBAL,HHOOK,HICON,HINSTANCE,HKEY,HKL,<br>HLOCAL,HMENU,HMETAFILE,HMODULE,HMONITOR,HPALETTE,HPEN,HRESULT,HRGN,HRSRC,HSZ,HWINSTA,HWND,INT,<br>INT_PTR,INT32,INT64,LANGID,LCID,LCTYPE,LGRPID,LONG,LONGLONG,LONG_PTR,LONG32,LONG64,LPARAM,LPBOOL,<br>LPBYTE,LPCOLORREF,LPCSTR,LPCTSTR,LPCVOID,LPCWSTR,LPDWORD,LPHANDLE,LPINT,LPLONG,LPSTR,LPTSTR,LPVOID,<br>LPWORD,LPWSTR,LRESULT,PBOOL,PBOOLEAN,PBYTE,PCHAR,PCSTR,PCTSTR,PCWSTR,PDWORD,PDWORDLONG,PDWORD_PTR,<br>PDWORD32,PDWORD64,PFLOAT,PHALF_PTR,PHANDLE,PHKEY,PINT,PINT_PTR,PINT32,PINT64,PLCID,PLONG,PLONGLONG,<br>PLONG_PTR,PLONG32,PLONG64,POINTER_32,POINTER_64,POINTER_SIGNED,POINTER_UNSIGNED,PSHORT,PSIZE_T,<br>PSSIZE_T,PSTR,PTBYTE,PTCHAR,PTSTR,PUCHAR,PUHALF_PTR,PUINT,PUINT_PTR,PUINT32,PUINT64,PULONG,PULONGLONG,<br>PULONG_PTR,PULONG32,PULONG64,PUSHORT,PVOID,PWCHAR,PWORD,PWSTR,SC_HANDLE,SC_LOCK,SERVICE_STATUS_HANDLE,<br>SHORT,SIZE_T,SSIZE_T,TBYTE,TCHAR,UCHAR,UHALF_PTR,UINT,UINT_PTR,UINT32,UINT64,ULONG,ULONGLONG,<br>ULONG_PTR,ULONG32,ULONG64,USHORT,USN,WCHAR,WORD,WPARAM
-;	   <b>Parameters</b> - <b>Description</b>
-;	   size - The size of structure or data type
-;	   Structure_Definition - C/C++ syntax or usual definition (must not be multiline) e.g. "Int x,Int y", C/C++ definitions must be multiline.
+;       Field types - All AutoHotkey and Windows Data Types are supported<br>AutoHotkey Data Types<br> Int, Uint, Int64, UInt64, Char, UChar, Short, UShort, Fload and Double.<br>Windows Data Types<br> - note, TCHAR UCHAR and CHAR return actual character rather than the value, use Asc() function to find out the value/code<br>Windows Data types: Asc(char)<br>ATOM,BOOL,BOOLEAN,BYTE,CHAR,COLORREF,DWORD,DWORDLONG,DWORD_PTR,<br>DWORD32,DWORD64,FLOAT,HACCEL,HALF_PTR,HANDLE,HBITMAP,HBRUSH,HCOLORSPACE,HCONV,HCONVLIST,HCURSOR,HDC,<br>HDDEDATA,HDESK,HDROP,HDWP,HENHMETAFILE,HFILE,HFONT,HGDIOBJ,HGLOBAL,HHOOK,HICON,HINSTANCE,HKEY,HKL,<br>HLOCAL,HMENU,HMETAFILE,HMODULE,HMONITOR,HPALETTE,HPEN,HRESULT,HRGN,HRSRC,HSZ,HWINSTA,HWND,INT,<br>INT_PTR,INT32,INT64,LANGID,LCID,LCTYPE,LGRPID,LONG,LONGLONG,LONG_PTR,LONG32,LONG64,LPARAM,LPBOOL,<br>LPBYTE,LPCOLORREF,LPCSTR,LPCTSTR,LPCVOID,LPCWSTR,LPDWORD,LPHANDLE,LPINT,LPLONG,LPSTR,LPTSTR,LPVOID,<br>LPWORD,LPWSTR,LRESULT,PBOOL,PBOOLEAN,PBYTE,PCHAR,PCSTR,PCTSTR,PCWSTR,PDWORD,PDWORDLONG,PDWORD_PTR,<br>PDWORD32,PDWORD64,PFLOAT,PHALF_PTR,PHANDLE,PHKEY,PINT,PINT_PTR,PINT32,PINT64,PLCID,PLONG,PLONGLONG,<br>PLONG_PTR,PLONG32,PLONG64,POINTER_32,POINTER_64,POINTER_SIGNED,POINTER_UNSIGNED,PSHORT,PSIZE_T,<br>PSSIZE_T,PSTR,PTBYTE,PTCHAR,PTSTR,PUCHAR,PUHALF_PTR,PUINT,PUINT_PTR,PUINT32,PUINT64,PULONG,PULONGLONG,<br>PULONG_PTR,PULONG32,PULONG64,PUSHORT,PVOID,PWCHAR,PWORD,PWSTR,SC_HANDLE,SC_LOCK,SERVICE_STATUS_HANDLE,<br>SHORT,SIZE_T,SSIZE_T,TBYTE,TCHAR,UCHAR,UHALF_PTR,UINT,UINT_PTR,UINT32,UINT64,ULONG,ULONGLONG,<br>ULONG_PTR,ULONG32,ULONG64,USHORT,USN,WCHAR,WORD,WPARAM
+;       <b>Parameters</b> - <b>Description</b>
+;       size - The size of structure or data type
+;       Structure_Definition - C/C++ syntax or usual definition (must not be multiline) e.g. "Int x,Int y", C/C++ definitions must be multiline.
 ; Return Value:
 ;     sizeof returns size of structures or data types
 ; Remarks:
-;		None.
+;        None.
 ; Related:
 ; Example:
-;		file:
+;        file:
 
 sizeof(_TYPE_){
   ;Windows and AHK Data Types, used to find out the corresponding size
@@ -47,9 +47,9 @@ sizeof(_TYPE_){
      ,PULONG64:" A_PtrSize ",PUSHORT:" A_PtrSize ",PVOID:" A_PtrSize ",PWCHAR:" A_PtrSize ",PWORD:" A_PtrSize ",PWSTR:" A_PtrSize ",SC_HANDLE:" A_PtrSize "
      ,SC_LOCK:" A_PtrSize ",SERVICE_STATUS_HANDLE:" A_PtrSize ",SIZE_T:" A_PtrSize ",UINT_PTR:" A_PtrSize ",ULONG_PTR:" A_PtrSize ",VOID:" A_PtrSize "
      )"
-  
+
   _offset_:=0           ; Init size/offset to 0
-  
+
   If IsObject(_TYPE_){    ; If structure object - check for offset in structure and return pointer + last offset + its data size
     for _union_,_struct_ in _TYPE_
     {
@@ -64,7 +64,7 @@ sizeof(_TYPE_){
         _offset_:=_TYPE_["`r"]?A_PtrSize:sizeof(_TYPE_["`t"])
     Return _offset_  ;(_TYPE_["`t"]?4:0) ; if offset 0 and memory set,must be a pointer
   }
-  
+
   If (RegExMatch(_TYPE_,"^[\w\d.]+$") && !this.base.HasKey(_TYPE_)) ; structures name was supplied, resolve to global var and run again
       If InStr(_types_,"," _TYPE_ ":")
         Return SubStr(_types_,InStr(_types_,"," _TYPE_ ":") + 2 + StrLen(_TYPE_),1)
@@ -75,7 +75,7 @@ sizeof(_TYPE_){
           else _defobj_:=_defobj_[A_LoopField]
         Return sizeof(_defobj_)
       } else Return sizeof(%_TYPE_%)
-      
+
   If InStr(_TYPE_,"`n") {   ; C/C++ style definition, convert
     _offset_:=""            ; This will hold new structure
     _struct_:=[]            ; This will keep track if union is structure
@@ -107,13 +107,13 @@ sizeof(_TYPE_){
     _TYPE_:=_offset_
     _offset_:=0           ; Init size/offset to 0
   }
-  
+
   ; Following keep track of union size/offset
   _union_:=[]               ; keep track of union level, required to reset offset after union is parsed
   _struct_:=[]              ; for each union level keep track if it is a structure (because here offset needs to increase
   _union_size_:=[]        ; keep track of highest member within the union or structure, used to calculate new offset after union
   _total_union_size_:=0   ; used in combination with above, each loop the total offset is updated if current data size is higher
-  
+
   ; Parse given structure definition and calculate size
   ; Structures will be resolved by recrusive calls (a structure must be global)
   Loop,Parse,_TYPE_,`,`;,%A_Space%%A_Tab%`n`r
@@ -125,11 +125,11 @@ sizeof(_TYPE_){
         ,_union_size_.Insert(0)
         ,_struct_.Insert(RegExMatch(_LF_,"i)struct\s*\{")?1:0)
         ,_LF_:=SubStr(_LF_,RegExMatch(_LF_,"i)(struct|union)?\s*\{\K"))
-      
+
     _LF_BKP_:=_LF_ ;to check for ending brackets = union,struct
     StringReplace,_LF_,_LF_,},,A
-    
-    
+
+
     If InStr(_LF_,"*") ; It's a pointer, size will be always A_PtrSize
       _offset_ += A_PtrSize
     else {
@@ -137,7 +137,7 @@ sizeof(_TYPE_){
       RegExMatch(_LF_,"^\s*(?<ArrType_>[\w\d.]+)?\s*(?<ArrName_>\w+)?\s*\[?(?<ArrSize_>\d+)?\]?\s*$",_)
       If (!_ArrName_ && !_ArrSize_ && !InStr( _types_  ,"," _ArrType_ ":"))
         _ArrName_:=_ArrType_,_ArrType_:="UInt"
-      
+
       If InStr(this["`t" _key_],"."){ ;check for object that holds structure definition
         _ArrType_:=this["`t" _key_]
         Loop,Parse,_ArrType_,.
@@ -156,7 +156,7 @@ sizeof(_TYPE_){
                                             ?(_offset_ - _union_[_union_.MaxIndex()]):_union_size_[_union_.MaxIndex()]
     If (_union_.MaxIndex() && !_struct_[_struct_.MaxIndex()])
       _offset_:=_union_[_union_.MaxIndex()]
-      
+
     ; Check for ENDING union and reset offset and union helpers
     While (SubStr(_LF_BKP_,0)="}"){
       If !_union_.MaxIndex(){

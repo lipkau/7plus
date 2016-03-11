@@ -1,27 +1,27 @@
 Class CWindowClosedTrigger Extends CTrigger
 {
-	static Type := RegisterType(CWindowClosedTrigger, "Window closed")
-	static Category := RegisterCategory(CWindowClosedTrigger, "Window")
-	static __WikiLink := "WindowClosed"
-	static _ImplementsWindowFilter := ImplementWindowFilterInterface(CWindowClosedTrigger)
-	
-	Matches(Filter)
-	{
-		return this.WindowFilterMatches(Filter.Window, Filter)
-	}
+    static Type := RegisterType(CWindowClosedTrigger, "Window closed")
+    static Category := RegisterCategory(CWindowClosedTrigger, "Window")
+    static __WikiLink := "WindowClosed"
+    static _ImplementsWindowFilter := ImplementWindowFilterInterface(CWindowClosedTrigger)
 
-	DisplayString()
-	{
-		return "Window closed: " this.WindowFilterDisplayString()
-	}
+    Matches(Filter)
+    {
+        return this.WindowFilterMatches(Filter.Window, Filter)
+    }
 
-	GuiShow(GUI)
-	{
-		this.WindowFilterGuiShow(GUI)
-	}
+    DisplayString()
+    {
+        return "Window closed: " this.WindowFilterDisplayString()
+    }
 
-	GuiSubmit(GUI)
-	{
-		this.WindowFilterGuiSubmit(GUI)
-	}
+    GuiShow(GUI)
+    {
+        this.WindowFilterGuiShow(GUI)
+    }
+
+    GuiSubmit(GUI)
+    {
+        this.WindowFilterGuiSubmit(GUI)
+    }
 }

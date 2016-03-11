@@ -1,8 +1,8 @@
 /*
 fileO:
-FO_MOVE   := 0x1 
-FO_COPY   := 0x2 
-FO_DELETE := 0x3 
+FO_MOVE   := 0x1
+FO_COPY   := 0x2
+FO_DELETE := 0x3
 FO_RENAME := 0x4
 
 flags:
@@ -12,14 +12,14 @@ Const FOF_NOCONFIRMATION = 16
 Const FOF_NOERRORUI = 1024
 http://msdn.microsoft.com/en-us/library/bb759795(VS.85).aspx for more
 */
-ShellFileOperation( fileO=0x0, fSource="", fTarget="", flags=0x0, ghwnd=0x0 )     
+ShellFileOperation( fileO=0x0, fSource="", fTarget="", flags=0x0, ghwnd=0x0 )
 {
    ;dout_f(A_ThisFunc)
    FO_MOVE   := 0x1
    FO_COPY   := 0x2
    FO_DELETE := 0x3
    FO_RENAME := 0x4
-   
+
    FOF_MULTIDESTFILES :=           0x1            ; Indicates that the to member specifies multiple destination files (one for each source file) rather than one directory where all source files are to be deposited.
    FOF_SILENT :=                0x4            ; Does not display a progress dialog box.
    FOF_RENAMEONCOLLISION :=       0x8            ; Gives the file being operated on a new name (such as "Copy #1 of...") in a move, copy, or rename operation if a file of the target name already exists.
@@ -34,25 +34,25 @@ ShellFileOperation( fileO=0x0, fSource="", fTarget="", flags=0x0, ghwnd=0x0 )
    FOF_NO_CONNECTED_ELEMENTS :=    0x2000         ; Do not move connected files as a group (e.g. html file together with images). Only move the specified files.
    FOF_WANTNUKEWARNING :=          0x4000         ; Send a warning if a file is being destroyed during a delete operation rather than recycled. This flag partially overrides FOF_NOCONFIRMATION.
 
-   
+
    ; no more annoying numbers to deal with (but they should still work, if you really want them to)
    fileO := %fileO% ? %fileO% : fileO
-   
+
    ; the double ternary was too fun to pass up
    _flags := 0
    Loop Parse, flags, |
-      _flags |= %A_LoopField%   
+      _flags |= %A_LoopField%
    flags := _flags ? _flags : (%flags% ? %flags% : flags)
-   
+
    If ( SubStr(fSource,0) != "|" )
       fSource := fSource . "|"
 
    If ( SubStr(fTarget,0) != "|" )
       fTarget := fTarget . "|"
-   
+
    char_size := A_IsUnicode ? 2 : 1
    char_type := A_IsUnicode ? "UShort" : "Char"
-   
+
    fsPtr := &fSource
    Loop % StrLen(fSource)
       if NumGet(fSource, (A_Index-1)*char_size, char_type) = 124
@@ -121,66 +121,66 @@ ShellFileOperation_InterpretReturn(c)
       dict[0x10000]   :=   "RRORONDEST   - An unspecified error occurred on the destination."
       dict[0x10074]   :=   "E_ROOTDIR | ERRORONDEST   - Destination is a root directory and cannot be renamed."
    }
-   
+
    return dict[c] ? dict[c] : "Error code not recognized"
 }
 
 IsDialog(window=0,ListViewSelected = False)
 {
-	result:=0
-	if(window)
-		window:="ahk_id " window
-	else
-		window:="A"
-	if(WinGetClass(window)="#32770")
-	{
-		;Check for new FileOpen dialog
-		ControlGet, hwnd, Hwnd , , DirectUIHWND3, %window%
-		if(hwnd)
-		{
-			ControlGet, hwnd, Hwnd , , SysTreeView321, %window%
-			if(hwnd)
-			{
-				ControlGet, hwnd, Hwnd , , Edit1, %window%
-				if(hwnd)
-				{
-					ControlGet, hwnd, Hwnd , , Button2, %window%
-					if(hwnd)
-					{
-						ControlGet, hwnd, Hwnd , , ComboBox2, %window%
-						if(hwnd)
-						{
-						ControlGet, hwnd, Hwnd , , ToolBarWindow323, %window%
-						if(hwnd)
-							result:=(!ListViewSelected||IsControlActive("DirectUIHWND2")||IsControlActive("SysTreeView321"))
-						}
-					}
-				}
-			}
-		}
-		;Check for old FileOpen dialog
-		if(!result)
-		{ 
-			ControlGet, hwnd, Hwnd , , ToolbarWindow321, %window%
-			if(hwnd)
-			{
-				ControlGet, hwnd, Hwnd , , SysListView321, %window%
-				if(hwnd)
-				{
-					ControlGet, hwnd, Hwnd , , ComboBox3, %window%
-					if(hwnd)
-					{
-						ControlGet, hwnd, Hwnd , , Button3, %window%
-						if(hwnd)
-						{
-							ControlGet, hwnd, Hwnd , , SysHeader321 , %window%
-							if(hwnd)
-								result:=(!ListViewSelected||IsControlActive("DirectUIHWND2")||IsControlActive("SysTreeView321")) ? 2 : 0
-						}
-					}
-				}
-			}
-		}
-	}
-	return result
+    result:=0
+    if(window)
+        window:="ahk_id " window
+    else
+        window:="A"
+    if(WinGetClass(window)="#32770")
+    {
+        ;Check for new FileOpen dialog
+        ControlGet, hwnd, Hwnd , , DirectUIHWND3, %window%
+        if(hwnd)
+        {
+            ControlGet, hwnd, Hwnd , , SysTreeView321, %window%
+            if(hwnd)
+            {
+                ControlGet, hwnd, Hwnd , , Edit1, %window%
+                if(hwnd)
+                {
+                    ControlGet, hwnd, Hwnd , , Button2, %window%
+                    if(hwnd)
+                    {
+                        ControlGet, hwnd, Hwnd , , ComboBox2, %window%
+                        if(hwnd)
+                        {
+                        ControlGet, hwnd, Hwnd , , ToolBarWindow323, %window%
+                        if(hwnd)
+                            result:=(!ListViewSelected||IsControlActive("DirectUIHWND2")||IsControlActive("SysTreeView321"))
+                        }
+                    }
+                }
+            }
+        }
+        ;Check for old FileOpen dialog
+        if(!result)
+        {
+            ControlGet, hwnd, Hwnd , , ToolbarWindow321, %window%
+            if(hwnd)
+            {
+                ControlGet, hwnd, Hwnd , , SysListView321, %window%
+                if(hwnd)
+                {
+                    ControlGet, hwnd, Hwnd , , ComboBox3, %window%
+                    if(hwnd)
+                    {
+                        ControlGet, hwnd, Hwnd , , Button3, %window%
+                        if(hwnd)
+                        {
+                            ControlGet, hwnd, Hwnd , , SysHeader321 , %window%
+                            if(hwnd)
+                                result:=(!ListViewSelected||IsControlActive("DirectUIHWND2")||IsControlActive("SysTreeView321")) ? 2 : 0
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return result
 }
