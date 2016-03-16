@@ -5,6 +5,7 @@ Suspend On
 ; #InstallMouseHook
 ; #InstallKeyBdHook
 #MaxThreads 255
+#MaxMem, 128
 #IfTimeout 150ms ;Might soften up mouse hook timeout problem
 #MaxHotkeysPerInterval 1000 ;Required for mouse wheel
 SetBatchLines, -1
@@ -30,6 +31,7 @@ StartupTime := A_TickCount
 #include %A_ScriptDir%\AutoExecute.ahk ;include first to avoid issues with autoexecute ending too soon because of labels
 #include <RichObject>
 #include <Array>
+#Include <base64>
 #include <CQueue>
 #include <Delegate>
 #include <CGUI>
@@ -38,7 +40,7 @@ StartupTime := A_TickCount
 #include <Edit>
 #include <Functions>
 #include <gdip>
-;#include <json> ;Can be used for CURLPlugin Chrome bookmark import. Right now lson is used because that is included anyway.
+#include <json>
 #include <Monster>
 #include <Navigation>
 #include <Parse>
