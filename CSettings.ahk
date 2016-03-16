@@ -9,6 +9,17 @@ Class CSettings
     ;Notes:
     ;- All class names must start with C, but their instance variables must not!
     ;- The ini file will only use the name of the current (sub)category, not the full hierarchy, so the names of the (sub)categories should be unique.
+    Class CConnection
+    {
+        static UseProxy := false
+        static ProxyAddress := ""
+        static ProxyPort := ""
+        static ProxyType := 1
+        static ProxyUser := ""
+        static ProxyAuth := ""
+    }
+    Connection := new this.CConnection()
+
     Class CExplorer
     {
         Class CFastFolders

@@ -25,7 +25,7 @@ Class CSettingsWindow Extends CGUI
     btnApply := this.AddControl("Button", "btnApply", "x+5 w73 h23", "Apply")
 
     ;This contains the settings pages after Introduction, Events and Accessor
-    PageNames := "Clipboard|Explorer|Explorer Tabs|Fast Folders|FTP Profiles|HotStrings|If this then that Integration|Windows|Windows Settings|Misc|About"
+    PageNames := "Clipboard|Connection|Explorer|Explorer Tabs|Fast Folders|FTP Profiles|HotStrings|If this then that Integration|Windows|Windows Settings|Misc|About"
 
     __New()
     {
@@ -1470,6 +1470,52 @@ Finally, here are some settings that you're likely to change at the beginning:
     }
 
 
+    ;Connection
+    CreateConnection()
+    {
+        Page := this.Pages.Connection.Tabs[1]
+        Page.AddControl("Text",            "txtConnectionDescription",        "xs+37 ys+20",                 "You can define global Connection Settings.")
+        chkUseProxy := Page.AddControl("CheckBox", "chkUseProxy", "xs+40 ys+52 h17", "Use proxy for Internet Connections")
+
+        Page.AddControl("Text", "txtProxyAddress", "xs+56 ys+82 w190 h13", "Proxy Address:")
+        Page.Controls.editProxyAddress := chkUseProxy.AddControl("Edit", "editProxyAddress", "xs+150 ys+82 w239 h20", "", 1)
+
+        Page.AddControl("Text", "txtProxyPort", "xs+56 ys+112 w190 h13", "Proxy Port:")
+        Page.Controls.editProxyPort := chkUseProxy.AddControl("Edit", "editProxyPort", "xs+150 ys+112 w89 h20", "", 1)
+
+        Page.AddControl("Text", "txtProxyType", "xs+56 ys+142 w190 h13", "Proxy Type:")
+        Page.Controls.ddlProxyType := chkUseProxy.AddControl("DropDownList", "ddlProxyType", "xs+150 ys+142 w89", "HTTP||SOCKS4|SOCKS5", 1)
+
+        Page.AddControl("Text", "txtProxyUser", "xs+56 ys+172 w190 h13", "Username:")
+        Page.Controls.editProxyUser := chkUseProxy.AddControl("Edit", "editProxyUser", "xs+150 ys+172 w239 h20", "", 1)
+
+        Page.AddControl("Text", "txtProxyPassword", "xs+56 ys+202 w190 h13", "Password:")
+        Page.Controls.editProxyPassword := chkUseProxy.AddControl("Edit", "editProxyPassword", "xs+150 ys+202 w239 h20 Password", "", 1)
+    }
+
+    InitConnection()
+    {
+        Page := this.Pages.Connection.Tabs[1].Controls
+        Page.chkUseProxy.Checked := Settings.Connection.UseProxy
+        Page.editProxyAddress.Text := Settings.Connection.ProxyAddress
+        Page.editProxyPort.Text := Settings.Connection.ProxyPort
+        Page.ddlProxyType.SelectedIndex := Settings.Connection.ProxyType
+        Page.editProxyUser.Text := Settings.Connection.ProxyUser
+        Page.editProxyPassword.Text := Settings.Connection.ProxyAuth ? "lorem ipsum dolor sum" : ""
+    }
+
+    ApplyConnection()
+    {
+        Page := this.Pages.Connection.Tabs[1].Controls
+        Settings.Connection.UseProxy := Page.chkUseProxy.Checked
+        Settings.Connection.ProxyAddress := Page.editProxyAddress.Text
+        Settings.Connection.ProxyPort := Page.editProxyPort.Text
+        Settings.Connection.ProxyType := Page.ddlProxyType.SelectedIndex
+        Settings.Connection.ProxyUser := Page.editProxyUser.Text
+        Settings.Connection.ProxyAuth := Page.editProxyPassword.Text ? Base64Encode(Page.editProxyUser.Text ":" Page.editProxyPassword.Text) : ""
+    }
+
+
     ;Explorer
     CreateExplorer()
     {
@@ -1669,32 +1715,32 @@ Finally, here are some settings that you're likely to change at the beginning:
     CreateFTPProfiles()
     {
         Page := this.Pages.FTPProfiles.Tabs[1]
-                    Page.AddControl("Text",            "txtFTPDescription",        "xs+37 ys+20",                 "You can define FTP profiles for use with the upload action here.`nBy default the selected files and folders can be uploaded by pressing CTRL + U.")
-                    Page.AddControl("DropDownList",    "ddlFTPProfile",            "xs+37 ys+62 w297",         "")
-                    Page.AddControl("Button",        "btnAddFTPProfile",            "x+10 ys+60 w80",            "&Add profile")
+        Page.AddControl("Text",            "txtFTPDescription",        "xs+37 ys+20",                 "You can define FTP profiles for use with the upload action here.`nBy default the selected files and folders can be uploaded by pressing CTRL + U.")
+        Page.AddControl("DropDownList",    "ddlFTPProfile",            "xs+37 ys+62 w297",         "")
+        Page.AddControl("Button",        "btnAddFTPProfile",            "x+10 ys+60 w80",            "&Add profile")
         Page.Controls.btnAddFTPProfile.SetImage(A_ScriptDir "\Icons\add.ico", 16, 16, 0)
-                    Page.AddControl("Button",        "btnDeleteFTPProfile",        "x+10 w80",                    "&Delete")
+        Page.AddControl("Button",        "btnDeleteFTPProfile",        "x+10 w80",                    "&Delete")
         Page.Controls.btnDeleteFTPProfile.SetImage(A_WinDir "\system32\shell32.dll:131", 16, 16, 0)
-                    Page.AddControl("Button",        "btnTestFTPProfile",        "x+30",                        "&Test profile")
-                    Page.AddControl("Text",            "txtFTPHostname",            "xs+37 ys+101",                "Hostname:")
-                    Page.AddControl("Edit",            "editFTPHostname",            "xp+178",                    "")
-                    Page.AddControl("Text",            "txtFTPPort",                "xs+37 y+6",                "Port:")
-                    Page.AddControl("Edit",            "editFTPPort",                "xp+178",                    "")
-                    Page.AddControl("Text",            "txtFTPProtocol",            "xs+37 y+6",                "Protocol:")
-                    Page.AddControl("DropDownList", "ddlFTPProtocol",            "xp+178",                    "sFTP|SCP|FTP||",1)
-                    Page.AddControl("Text",            "txtFTPSecure",                "xs+37 y+6",                "Security:")
-                    Page.AddControl("DropDownList", "ddlFTPSecure",                "xp+178",                    "None||Implicit|Explicit TLS|Explicit SSL",1)
-                    Page.AddControl("Text",            "txtFTPUser",                "xs+37 y+6",                "User:")
-                    Page.AddControl("Edit",            "editFTPUser",                "xp+178",                    "")
-                    Page.AddControl("Text",            "txtFTPPassword",            "xs+37 y+6",                "Password:")
-                    Page.AddControl("Edit",            "editFTPPassword",            "xp+178 Password",             "")
-                    Page.AddControl("Text",            "txtFTPURL",                "xs+37 y+6",                "URL:")
-                    Page.AddControl("Edit",            "editFTPURL",                "xp+178",                    "")
-                    Page.AddControl("Text",            "txtFTPNumberOfSubDirs",    "xs+37 y+6",                "Number of subdirectories:")
+        Page.AddControl("Button",        "btnTestFTPProfile",        "x+30",                        "&Test profile")
+        Page.AddControl("Text",            "txtFTPHostname",            "xs+37 ys+101",                "Hostname:")
+        Page.AddControl("Edit",            "editFTPHostname",            "xp+178",                    "")
+        Page.AddControl("Text",            "txtFTPPort",                "xs+37 y+6",                "Port:")
+        Page.AddControl("Edit",            "editFTPPort",                "xp+178",                    "")
+        Page.AddControl("Text",            "txtFTPProtocol",            "xs+37 y+6",                "Protocol:")
+        Page.AddControl("DropDownList", "ddlFTPProtocol",            "xp+178",                    "sFTP|SCP|FTP||",1)
+        Page.AddControl("Text",            "txtFTPSecure",                "xs+37 y+6",                "Security:")
+        Page.AddControl("DropDownList", "ddlFTPSecure",                "xp+178",                    "None||Implicit|Explicit TLS|Explicit SSL",1)
+        Page.AddControl("Text",            "txtFTPUser",                "xs+37 y+6",                "User:")
+        Page.AddControl("Edit",            "editFTPUser",                "xp+178",                    "")
+        Page.AddControl("Text",            "txtFTPPassword",            "xs+37 y+6",                "Password:")
+        Page.AddControl("Edit",            "editFTPPassword",            "xp+178 Password",             "")
+        Page.AddControl("Text",            "txtFTPURL",                "xs+37 y+6",                "URL:")
+        Page.AddControl("Edit",            "editFTPURL",                "xp+178",                    "")
+        Page.AddControl("Text",            "txtFTPNumberOfSubDirs",    "xs+37 y+6",                "Number of subdirectories:")
         subdirs :=     Page.AddControl("Edit",            "editFTPNumberOfSubDirs",    "xp+178",                    "")
         subdirs.ToolTip := "Some webservers display a deeper file structure on FTP compared to the HTTP URL.`nEnter the number of additional directories here to adjust the copied URL"
 
-                    Page.AddControl("Text",            "txtFTPDescription2",        "xs+37 y+6",                 "Target folder and filename are set separately for each event that uses the FTP upload function on the Events page.")
+        Page.AddControl("Text",            "txtFTPDescription2",        "xs+37 y+6",                 "Target folder and filename are set separately for each event that uses the FTP upload function on the Events page.")
     }
 
     InitFTPProfiles()
