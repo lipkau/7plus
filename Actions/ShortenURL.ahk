@@ -58,19 +58,20 @@ return
 ;Written By Flak
 googl(url)
 {
-    static apikey := "AIzaSyBXD-RmnD2AKzQcDHGnzZh4humG-7Rpdmg"
-    http := ComObjCreate("WinHttp.WinHttpRequest.5.1")
-    main := "https://www.googleapis.com/urlshortener/v1/url"
-    params := "?key=" apikey
-    try
-    {
-        http.open("POST", main . params, false)
-        http.SetRequestHeader("Content-Type", "application/json")
-        http.send("{""longUrl"": """ url """}")
-        RegExMatch(http.ResponseText, """id"": ""(.*?)""", match)
-        return match1
-    } catch e {
-        OutputDebug, Unable to connect to %main%
-        return false
-    }
+    static apikey := "AIzaSyDGT9QHcU4vE8zuOiGK9t-3CPaoFJ9sDYY"
+    ApiURi := "https://www.googleapis.com/urlshortener/v1/url"
+    ApiURi .= "?fields=id&key=" apikey
+
+    Headers := "Content-Type: application/json`n"
+    Headers .= "Referer: http://code.google.com/p/7plus/`n"
+    Headers .= Settings.Connection.UseProxy && Settings.Connection.ProxyAuth ? "Proxy-Authorization: Basic " Settings.Connection.ProxyAuth "" : ""
+    Options := "Method: POST`n"
+    Options .= "Charset: UTF-8`n"
+    Options .= Settings.Connection.UseProxy ? "Proxy: " Settings.Connection.ProxyAddress ":" Settings.Connection.ProxyPort "`n" : ""
+
+    POSTdata := "{""longUrl"": """ url """}"
+    HTTPRequest(ApiURi , POSTdata, Headers, Options)
+    OutputDebug % "HTTPRequest response: " Headers
+
+    return % json(POSTdata, "id")
 }
