@@ -103,16 +103,20 @@ QueryGoogleResult()
 return
 QueryGoogleResult()
 {
+    static ApiUri := "http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=" uriEncode(Filter) "&rsz=8&key=ABQIAAAA7YzZ21dHSNKA2c0eu0LVKRTn4CuOUlhiyluSCHXJ1XXcqBr54RRnE69I0b16vHAVgBri6LxRQYtELw"
+
     outputdebug query google result
     if(InStr(CAccessor.Instance.FilterWithoutTimer, CGooglePlugin.Instance.Settings.Keyword " ") != 1)
         return
     outputdebug do it
     Filter := strTrim(CAccessor.Instance.FilterWithoutTimer, CGooglePlugin.Instance.Settings.Keyword " ")
 
-    URL := "http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=" uriEncode(Filter) "&rsz=8&key=ABQIAAAA7YzZ21dHSNKA2c0eu0LVKRTn4CuOUlhiyluSCHXJ1XXcqBr54RRnE69I0b16vHAVgBri6LxRQYtELw"
-    Headers := "Referer: http://code.google.com/p/7plus/"
-    ;~ https://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=Paris%20Hilton&key=INSERT-YOUR-KEY
-    HTTPRequest(URL, GoogleQuery, Headers, "")
+    Headers := "Referer: http://code.google.com/p/7plus/`n"
+    Headers .= Settings.Connection.UseProxy && Settings.Connection.ProxyAuth ? "Proxy-Authorization: Basic " Settings.Connection.ProxyAuth : ""
+    Options := Settings.Connection.UseProxy ? "Proxy: " Settings.Connection.ProxyAddress ":" Settings.Connection.ProxyPort : ""
+
+    HTTPRequest(ApiUri, GoogleQuery, Headers, Options)
+    OutputDebug % "HTTPRequest response: " Headers
 
     CGooglePlugin.Instance.List := Array()
 
