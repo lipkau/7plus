@@ -12,9 +12,9 @@ Class CShortenURLAction Extends CAction
     {
         URL := Event.ExpandPlaceholders(this.URL)
         if(!IsURL(URL))
-        return 0
+            return 0
         if(this.Method = "Goo.gl")
-        ShortURL := googl(URL)
+            ShortURL := googl(URL)
 
         if(ShortURL)
         {
@@ -64,14 +64,24 @@ googl(url)
 
     Headers := "Content-Type: application/json`n"
     Headers .= "Referer: http://code.google.com/p/7plus/`n"
-    Headers .= Settings.Connection.UseProxy && Settings.Connection.ProxyAuth ? "Proxy-Authorization: Basic " Settings.Connection.ProxyAuth "" : ""
+    ; if (Settings.Connection.UseProxy && Settings.Connection.ProxyUser)
+        ; Headers .= "Proxy-Authorization: " (Settings.Connection.ProxyAuthType == 2 ? "NTLM " : "Basic ") Base64Encode(Settings.Connection.ProxyUser ":" decrypt(Settings.Connection.ProxyPassword)) "`n"
+    Headers .= Settings.Connection.UseProxy && Settings.Connection.ProxyPassword ? "Proxy-Authorization: Basic " Base64Encode(Settings.Connection.ProxyUser ":" decrypt(Settings.Connection.ProxyPassword)) : ""
+
     Options := "Method: POST`n"
     Options .= "Charset: UTF-8`n"
     Options .= Settings.Connection.UseProxy ? "Proxy: " Settings.Connection.ProxyAddress ":" Settings.Connection.ProxyPort "`n" : ""
 
     POSTdata := "{""longUrl"": """ url """}"
-    HTTPRequest(ApiURi , POSTdata, Headers, Options)
-    OutputDebug % "HTTPRequest response: " Headers
 
-    return % json(POSTdata, "id")
+    Debug("HTTPRequest request HEADER:", Headers)
+    Debug("HTTPRequest request Options:", Options)
+
+    HTTPRequest(ApiURi , POSTdata, Headers, Options)
+
+    Debug("HTTPRequest response HEADER:", Headers)
+    Debug("HTTPRequest response BODY:", POSTdata)
+
+    obj := Jxon_Load(POSTdata)
+    return % obj.id
 }
