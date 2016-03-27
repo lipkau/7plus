@@ -1486,11 +1486,14 @@ Finally, here are some settings that you're likely to change at the beginning:
         Page.AddControl("Text", "txtProxyType", "xs+56 ys+142 w190 h13", "Proxy Type:")
         Page.Controls.ddlProxyType := chkUseProxy.AddControl("DropDownList", "ddlProxyType", "xs+150 ys+142 w89", "HTTP||SOCKS4|SOCKS5", 1)
 
-        Page.AddControl("Text", "txtProxyUser", "xs+56 ys+172 w190 h13", "Username:")
-        Page.Controls.editProxyUser := chkUseProxy.AddControl("Edit", "editProxyUser", "xs+150 ys+172 w239 h20", "", 1)
+        Page.AddControl("Text", "txtProxyAuthType", "xs+56 ys+172 w190 h13", "Proxy Authentication Type:")
+        Page.Controls.ddlProxyAuthType := chkUseProxy.AddControl("DropDownList", "ddlProxyAuthType", "xs+150 ys+172 w89", "Basic||NTLM", 1)
 
-        Page.AddControl("Text", "txtProxyPassword", "xs+56 ys+202 w190 h13", "Password:")
-        Page.Controls.editProxyPassword := chkUseProxy.AddControl("Edit", "editProxyPassword", "xs+150 ys+202 w239 h20 Password", "", 1)
+        Page.AddControl("Text", "txtProxyUser", "xs+56 ys+202 w190 h13", "Username:")
+        Page.Controls.editProxyUser := chkUseProxy.AddControl("Edit", "editProxyUser", "xs+150 ys+202 w239 h20", "", 1)
+
+        Page.AddControl("Text", "txtProxyPassword", "xs+56 ys+232 w190 h13", "Password:")
+        Page.Controls.editProxyPassword := chkUseProxy.AddControl("Edit", "editProxyPassword", "xs+150 ys+232 w239 h20 Password", "", 1)
     }
 
     InitConnection()
@@ -1500,8 +1503,9 @@ Finally, here are some settings that you're likely to change at the beginning:
         Page.editProxyAddress.Text := Settings.Connection.ProxyAddress
         Page.editProxyPort.Text := Settings.Connection.ProxyPort
         Page.ddlProxyType.SelectedIndex := Settings.Connection.ProxyType
+        Page.ddlProxyAuthType.SelectedIndex := Settings.Connection.ProxyAuthType
         Page.editProxyUser.Text := Settings.Connection.ProxyUser
-        Page.editProxyPassword.Text := Settings.Connection.ProxyAuth ? "lorem ipsum dolor sum" : ""
+        Page.editProxyPassword.Text := (Settings.Connection.ProxyPassword) ? "lorem ipsum dolor sum" : ""
     }
 
     ApplyConnection()
@@ -1511,8 +1515,10 @@ Finally, here are some settings that you're likely to change at the beginning:
         Settings.Connection.ProxyAddress := Page.editProxyAddress.Text
         Settings.Connection.ProxyPort := Page.editProxyPort.Text
         Settings.Connection.ProxyType := Page.ddlProxyType.SelectedIndex
+        Settings.Connection.ProxyAuthType := Page.ddlProxyAuthType.SelectedIndex
         Settings.Connection.ProxyUser := Page.editProxyUser.Text
-        Settings.Connection.ProxyAuth := Page.editProxyPassword.Text ? Base64Encode(Page.editProxyUser.Text ":" Page.editProxyPassword.Text) : ""
+        Settings.Connection.ProxyPassword := (Page.editProxyPassword.Text != "" && Page.editProxyPassword.Text != "lorem ipsum dolor sum") ? encrypt(Page.editProxyPassword.Text) : ""
+        ; Settings.Connection.ProxyAuth := Page.editProxyPassword.Text && Page.editProxyPassword.Text != "lorem ipsum dolor sum" ? Base64Encode(Page.editProxyUser.Text ":" Page.editProxyPassword.Text) : ""
     }
 
 
@@ -1826,6 +1832,8 @@ Finally, here are some settings that you're likely to change at the beginning:
     TestFTPProfile()
     {
         global WinSCPEnum ; WinSCP Enums
+        global Settings
+        Connection := Settings.Connection
 
         Page := this.Pages.FTPProfiles.Tabs[1].Controls
         if(!this.FTPProfiles.MaxIndex())
@@ -1861,6 +1869,30 @@ Finally, here are some settings that you're likely to change at the beginning:
         FTPSession.User        := Settings.User
         FTPSession.Password    := Settings.Password
         FTPSession.Fingerprint := Settings.Fingerprint
+
+        if (Connection.UseProxy)
+        {
+            if (Connection.ProxyType == 1)
+                FTPSession.AddSetting("ProxyMethod", 3)
+            else if (Connection.ProxyType == 2)
+                FTPSession.AddSetting("ProxyMethod", 1)
+            else if (Connection.ProxyType == 3)
+                FTPSession.AddSetting("ProxyMethod", 2)
+
+            if (Connection.ProxyAddress)
+                FTPSession.AddSetting("ProxyHost", Connection.ProxyAddress)
+
+            if (Connection.ProxyPort)
+                FTPSession.AddSetting("ProxyPort", Connection.ProxyPort)
+
+            if (Connection.ProxyUser)
+                FTPSession.AddSetting("ProxyUsername", Connection.ProxyUser)
+
+            if (Connection.ProxyPassword)
+                FTPSession.AddSetting("ProxyPassword", decrypt(Connection.ProxyPassword))
+        }
+
+
 
         Try
         {

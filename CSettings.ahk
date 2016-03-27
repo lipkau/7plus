@@ -15,7 +15,9 @@ Class CSettings
         static ProxyAddress := ""
         static ProxyPort := ""
         static ProxyType := 1
+        static ProxyAuthType := 1
         static ProxyUser := ""
+        static ProxyPassword := ""
         static ProxyAuth := ""
     }
     Connection := new this.CConnection()

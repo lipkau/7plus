@@ -149,7 +149,7 @@ Class CFTPUploadAction Extends CAction
                 this.tmpWorkerThread.OnStop.Handler := new Delegate(this, "OnStop")
                 this.tmpWorkerThread.OnData.Handler := new Delegate(this, "OnData")
                 this.tmpWorkerThread.OnFinish.Handler := new Delegate(this, "OnFinish")
-                this.tmpWorkerThread.Start(Event.EventScheduleID, Event.Actions.IndexOf(this), files, Hostname, Port, Protocol, Secure, User, decrypted, URL, NumberOfFTPSubDirs, TargetFolder)
+                this.tmpWorkerThread.Start(Event.EventScheduleID, Event.Actions.IndexOf(this), files, Hostname, Port, Protocol, Secure, User, decrypted, URL, NumberOfFTPSubDirs, TargetFolder, Settings)
                 this.tmpWorkerThread.WaitForStart(5)
                 return -1
             }
@@ -264,7 +264,7 @@ Class CFTPUploadAction Extends CAction
         }
     }
 }
-FTPUploadThread(WorkerThread, EventScheduleID, ActionIndex, files, Hostname, Port, Protocol, Secure, User, decrypted, URL, NumberOfFTPSubDirs, TargetFolder)
+FTPUploadThread(WorkerThread, EventScheduleID, ActionIndex, files, Hostname, Port, Protocol, Secure, User, decrypted, URL, NumberOfFTPSubDirs, TargetFolder, Settings)
 {
     global FTP, WinSCPEnum ; WinSCP Enums
     cliptext := ""
@@ -295,6 +295,36 @@ FTPUploadThread(WorkerThread, EventScheduleID, ActionIndex, files, Hostname, Por
     FTP.Fingerprint := false
     FTP.User     := User
     FTP.Password := decrypted
+
+    if (Settings.Connection.UseProxy)
+    {
+        if (Settings.Connection.ProxyType == 1)
+            this.AddSetting("ProxyMethod", 3)
+        else if (Settings.Connection.ProxyType == 2)
+            this.AddSetting("ProxyMethod", 1)
+        else if (Settings.Connection.ProxyType == 3)
+            this.AddSetting("ProxyMethod", 2)
+
+        if (Settings.Connection.ProxyAddress) {
+            outputdebug % "adding Proxy Address"
+            this.AddSetting("ProxyHost", Settings.Connection.ProxyAddress)
+        }
+
+        if (Settings.Connection.ProxyPort) {
+            outputdebug % "adding Proxy Address"
+            this.AddSetting("ProxyPort", Settings.Connection.ProxyPort)
+        }
+
+        if (Settings.Connection.ProxyUser) {
+            outputdebug % "adding Proxy Address"
+            this.AddSetting("ProxyUsername", Settings.Connection.ProxyUser)
+        }
+
+        if (Settings.Connection.ProxyPassword) {
+            outputdebug % "adding Proxy Address" decrypt(Settings.Connection.ProxyPassword)
+            this.AddSetting("ProxyPassword", decrypt(Settings.Connection.ProxyPassword))
+        }
+    }
 
     try
         FTP.OpenConnection()

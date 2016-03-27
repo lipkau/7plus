@@ -18,6 +18,8 @@ Class CImageUploadAction Extends CAction
     }
     Execute(Event)
     {
+        global Settings
+
         if(!this.HasKey("tmpFiles"))
         {
             Files := Event.ExpandPlaceholders(this.SourceFiles)
@@ -60,7 +62,7 @@ Class CImageUploadAction Extends CAction
                 this.tmpWorkerThread.OnProgress.Handler := "Action_ImageUpload_ProgressHandler"
                 this.tmpWorkerThread.OnStop.Handler := "Action_ImageUpload_OnStop"
                 this.tmpWorkerThread.OnFinish.Handler := "Action_ImageUpload_OnFinish"
-                this.tmpWorkerThread.Start(File, Event.EventScheduleID, this.Hoster, Event.Actions.IndexOf(this))
+                this.tmpWorkerThread.Start(File, Event.EventScheduleID, this.Hoster, Event.Actions.IndexOf(this), Settings)
                 return -1
             }
             else ;Upload still running, keep Action in EventSchedule
@@ -132,36 +134,58 @@ GetImageHosterList()
 }
 
 ;This function is run in another 7plus process to prevent blocking the only available real thread
-ImageUploadThread(WorkerThread, File, EventScheduleID, Hoster, ActionIndex)
+ImageUploadThread(WorkerThread, File, EventScheduleID, Hoster, ActionIndex, Settings)
 {
     if(!FileExist(File))
     {
         WorkerThread.Stop()
         return
     }
-    URL := %Hoster%_Upload(File,xml)
+    URL := %Hoster%_Upload(File, xml, Settings)
     If(URL)
         FileAppend, %URL%, %A_Temp%\7plus\Upload%EventScheduleID%.txt
     else
         WorkerThread.Stop()
 }
 
-Imgur_Upload( image_file, byref output_XML="" ) { ; -----------------------------
-; Uploads one image file to Imgur via the anonymous API and returns the URL to the image.
-; To acquire an anonymous API key, please register at http://imgur.com/register/api_anon.
-; This function was written by [VxE] and relies on the HTTPRequest function, also by [VxE].
-; HTTPRequest can be found at http://www.autohotkey.com/forum/viewtopic.php?t=73040
-   Static Imgur_Upload_Endpoint := "http://api.imgur.com/2/upload.xml"
-   Static Anonymous_API_Key := Decrypt("F5QTo=^aqmf^h|C}@ERLI;GG;T>sjV""t")
-   FileGetSize, size, % image_file
-   FileRead, output_XML, % "*c " image_file
-   If HTTPRequest( Imgur_Upload_Endpoint "?key=" Anonymous_API_Key, output_XML
-      , Response_Headers := "Content-Type: application/octet-stream`nContent-Length: " size
-      , "Callback: Imgur_Callback" )
-   && ( pos := InStr( output_XML, "<original>" ) )
-      Return SubStr( output_XML, pos + 10, Instr( output_XML, "</original>", 0, pos ) - pos - 10 )
-   Else Return "" ; error: see response
-} ; Imgur_Upload( image_path, Anonymous_API_Key, byref output_XML="" ) -----------------------------
+Imgur_Upload(image_file, byref output_XML="", Settings="")
+{
+    ; -----------------------------
+    ; Uploads one image file to Imgur via the anonymous API and returns the URL to the image.
+    ; To acquire an anonymous API key, please register at http://imgur.com/register/api_anon.
+    ; This function was written by [VxE] and relies on the HTTPRequest function, also by [VxE].
+    ; HTTPRequest can be found at http://www.autohotkey.com/forum/viewtopic.php?t=73040
+    Static Imgur_Upload_Endpoint := "http://api.imgur.com/2/upload.xml"
+    Static Anonymous_API_Key := Decrypt("F5QTo=^aqmf^h|C}@ERLI;GG;T>sjV""t")
+
+    FileGetSize, size, % image_file
+    FileRead, output_XML, % "*c " image_file
+    ApiURi := Imgur_Upload_Endpoint "?key=" Anonymous_API_Key
+
+    Headers := "Content-Type: application/octet-stream`n"
+    Headers .= "Content-Length: " size "`n"
+    Headers .= "Referer: http://code.google.com/p/7plus/`n"
+    ; if (Settings.Connection.UseProxy && Settings.Connection.ProxyUser)
+        ; Headers .= "Proxy-Authorization: " (Settings.Connection.ProxyAuthType == 2 ? "NTLM " : "Basic ") Base64Encode(Settings.Connection.ProxyUser ":" decrypt(Settings.Connection.ProxyPassword)) "`n"
+    Headers .= Settings.Connection.UseProxy && Settings.Connection.ProxyPassword ? "Proxy-Authorization: Basic " Base64Encode(Settings.Connection.ProxyUser ":" decrypt(Settings.Connection.ProxyPassword)) : ""
+    Options := "Method: POST`n"
+    Options .= "Callback: Imgur_Callback`n"
+    Options .= Settings.Connection.UseProxy ? "Proxy: " Settings.Connection.ProxyAddress ":" Settings.Connection.ProxyPort "`n" : ""
+
+    Outputdebug % "p: " decrypt(Settings.Connection.ProxyPassword)
+    Debug("HTTPRequest request HEADER:", Headers)
+    Debug("HTTPRequest request Options:", Options)
+
+    response := HTTPRequest(ApiURi, output_XML, Headers, Options)
+
+    Debug("HTTPRequest response HEADER:", Headers)
+    Debug("HTTPRequest response BODY:", output_XML)
+
+    if response && ( pos := InStr( output_XML, "<original>" ) )
+        return SubStr( output_XML, pos + 10, Instr( output_XML, "</original>", 0, pos ) - pos - 10 )
+    else
+        return ""
+}
 
 ;Callback from ImgUr_Upload()
 Imgur_Callback(Percent, FileSize)
