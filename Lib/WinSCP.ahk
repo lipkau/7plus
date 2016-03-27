@@ -108,6 +108,7 @@ class WinSCP extends CFTPUploadAction
     ;http://winscp.net/eng/docs/library_filepermissions
     FilePermissions         := ComObjCreate("WinSCP.FilePermissions")
 
+
     /*
     Description
         Create a Property for Log Path. Class Session should be transperant in Class FTP.
@@ -124,6 +125,7 @@ class WinSCP extends CFTPUploadAction
         }
     }
 
+
     /*
     Description
         Create a Property for the HomePath. Class Session should be transperant in Class FTP.
@@ -139,6 +141,7 @@ class WinSCP extends CFTPUploadAction
             return this.Session.HomePath := value
         }
     }
+
 
     /*
     Description
@@ -175,6 +178,7 @@ class WinSCP extends CFTPUploadAction
         ComObjConnect(this.Session, "session_")
     }
 
+
     /*
     Description
         Destructor
@@ -184,6 +188,22 @@ class WinSCP extends CFTPUploadAction
         ;~ this.Dispose()
         ;~ this.CloseConnection()
     ;~ }
+
+
+    /*
+    Description
+        Add RAW settings to Session
+        http://winscp.net/eng/docs/rawsettings
+
+    Input
+        key       : [string] identifier of the setting
+        value     : [string] value for the setting
+    */
+    AddSetting(key, value)
+    {
+        this.SessionOptions.AddRawSettings(key, value)
+    }
+
 
     /*
     Descitipion
@@ -233,6 +253,7 @@ class WinSCP extends CFTPUploadAction
         this.Session.Open(this.SessionOptions)
     }
 
+
     /*
     Descitipion
         Closes session.
@@ -244,6 +265,7 @@ class WinSCP extends CFTPUploadAction
             this.Session.Close()
     }
 
+
     /*
     Descitipion
         If session was opened, closes it, terminates underlying WinSCP process, deletes XML log file and disposes object.
@@ -253,6 +275,7 @@ class WinSCP extends CFTPUploadAction
         try
             this.Session.Dispose()
     }
+
 
     /*
     Description:
@@ -270,6 +293,7 @@ class WinSCP extends CFTPUploadAction
         return this.Session.ListDirectory(remotePath)
     }
 
+
     /*
     Description:
         Creates remote directory.
@@ -285,6 +309,7 @@ class WinSCP extends CFTPUploadAction
     {
         return this.Session.CreateDirectory(remotePath)
     }
+
 
     /*
     Description:
@@ -302,6 +327,7 @@ class WinSCP extends CFTPUploadAction
         return this.Session.FileExists(remotePath)
     }
 
+
     /*
     Description:
         Retrieves information about remote file.
@@ -318,6 +344,7 @@ class WinSCP extends CFTPUploadAction
     {
         return this.Session.GetFileInfo(remotePath)
     }
+
 
     /*
     Description:
@@ -353,6 +380,7 @@ class WinSCP extends CFTPUploadAction
 
         return this.Session.GetFiles(remotePath, localPath, remove, this.TransferOptions)
     }
+
 
     /*
     Description:
@@ -393,6 +421,7 @@ class WinSCP extends CFTPUploadAction
         return this.Session.PutFiles(localPath, remotePath, remove, this.TransferOptions)
     }
 
+
     /*
     Description:
         Moves remote file to another remote directory and/or renames remote file.
@@ -409,6 +438,7 @@ class WinSCP extends CFTPUploadAction
     {
         return this.Session.MoveFile(sourcePath, targetPath)
     }
+
 
     /*
     Description:
@@ -430,6 +460,7 @@ class WinSCP extends CFTPUploadAction
     {
         return this.Session.RemoveFiles(remotePath)
     }
+
 
     /*
     Description:
@@ -553,6 +584,7 @@ class WinSCP extends CFTPUploadAction
         this.TransferOptions.TransferMode          := (TransferMode) ? TransferMode : ""
     }
 
+
     /*
     Description
         Converts special characters in file path to make it unambiguous file mask/wildcard.
@@ -565,6 +597,7 @@ class WinSCP extends CFTPUploadAction
     {
         return this.Session.EscapeFileMask(FileMask)
     }
+
 
     /*
     Description

@@ -260,3 +260,9 @@ MsgBox(Text)
 {
     MsgBox, %Text%
 }
+Debug(Title, InputObject, Delimiter = "`n")
+{
+    OutputDebug % Title
+    Loop, Parse, InputObject, %Delimiter%
+        OutputDebug % "    " A_LoopField
+}
