@@ -145,40 +145,59 @@ QueryWeatherResult()
     CWeatherPlugin.Instance.List := Array()
     if(Filter)
     {
-        URL := "http://www.google.com/ig/api?weather=" uriEncode(Filter) "&oe=utf-8"
-        FileDelete, %A_Temp%\7plus\WeatherQuery.xml
-        headers := ""
-        HttpRequest(URL, WeatherQuery, headers, "BINARY")
-        WeatherQuery := StrGet(&WeatherQuery, "UTF-8")
+        static apikey := "e1765e788f29842afa23fafb5bcba9ee"
+        static iconApi := "http://openweathermap.org/img/w/"
+        static KelvinToCelsius := 273.15
+        ApiURi := "http://api.openweathermap.org/data/2.5/weather?q=" uriEncode(Filter)
+        ApiURi .= "&appid=" apikey
 
-        Loop 5
-            pos%A_Index% := 0
+        Headers := "Content-Type: application/json`n"
+        Headers .= "Referer: http://code.google.com/p/7plus/`n"
+        Headers .= Settings.Connection.UseProxy && Settings.Connection.ProxyPassword ? "Proxy-Authorization: Basic " Base64Encode(Settings.Connection.ProxyUser ":" decrypt(Settings.Connection.ProxyPassword)) : ""
 
-        RegexMatch(WeatherQuery, "i)<city data=""(.*?)""/>", city, 1)
-        if(!city1) ;No results
-            return
-        WeatherQuery := SubStr(WeatherQuery, InStr(WeatherQuery, "/curren"))
-        Loop
+        Options := Settings.Connection.UseProxy ? "Proxy: " Settings.Connection.ProxyAddress ":" Settings.Connection.ProxyPort "`n" : ""
+
+        Debug("HTTPRequest request HEADER:", Headers)
+        Debug("HTTPRequest request Options:", Options)
+        HttpRequest(ApiURi, WeatherQuery, Headers, Options)
+
+        Debug("HTTPRequest response HEADER:", Headers)
+        Debug("HTTPRequest response BODY:", WeatherQuery)
+
+        result := Jxon_Load(WeatherQuery)
+        updated = 1970
+
+        if (result.sys.country)
         {
-            pos1 := RegexMatch(WeatherQuery, "i)<condition data=""(.*?)""/>", condition, pos1+1)
-            pos2 := RegexMatch(WeatherQuery, "i)<low data=""(.*?)""/>", low, pos2+1)
-            pos3 := RegexMatch(WeatherQuery, "i)<high data=""(.*?)""/>", high, pos3+1)
-            pos4 := RegexMatch(WeatherQuery, "i)<day_of_week data=""(.*?)""/>", day_of_week, pos4+1)
-            pos5 := RegexMatch(WeatherQuery, "i)<icon data=""(.*?)""/>", icon, pos5+1)
-
-            if(pos1 && pos2 && pos3 && pos4 && pos5 && condition1 && low1 && high1 && day_of_week1 && icon1)
+            city := result.name ", " result.sys.country
+            low := result.main.temp_min
+            high := result.main.temp_max
+            updated += result.dt,s
+            for index, weather in result.weather
             {
-                name := SubStr(icon1, InStr(icon1, "/", 0, 0) + 1)
-                if(!FileExist(A_Temp "\7plus\" name))
-                    URLDownloadToFile, http://www.google.com%icon1%, %A_Temp%\7plus\%name%
-                pBitmap := Gdip_CreateBitmapFromFile(A_Temp "\7plus\" name)
-                hIcon := Gdip_CreateHICONFromBitmap(pBitmap)
-                low1 := Round((5/9)*(low1-32)) ;Convert °F to °C
-                high1 := Round((5/9)*(high1-32)) ;Convert °F to °C
-                CWeatherPlugin.Instance.List.Insert(Object("Title", day_of_week1 ": " condition1 ", Low: " low1 "°C, high: " high1 "°C", "Path", "Weather in " city1, "Icon", hIcon ))
+                condition := weather.description
+                Icon := weather.icon ".png"
             }
-            else
-                break
+
+            Headers := "Referer: http://code.google.com/p/7plus/`n"
+            Headers .= Settings.Connection.UseProxy && Settings.Connection.ProxyPassword ? "Proxy-Authorization: Basic " Base64Encode(Settings.Connection.ProxyUser ":" decrypt(Settings.Connection.ProxyPassword)) : ""
+            Options .= "BINARY"
+
+            size := HttpRequest(iconApi "" Icon, WeatherIcon, Headers, Options)
+            Debug("HTTPRequest response HEADER:", Headers)
+            Debug("HTTPRequest response BODY:", WeatherIcon)
+            Debug("HTTPRequest response SIZE:", size)
+
+            if (!FileExist(A_Temp "\7plus\" Icon))
+                write_bin(WeatherIcon, A_Temp "\7plus\" Icon, size)
+            OutputDebug % "Does WeatherIcon File exist? " FileExist(A_Temp "\7plus\" Icon)
+
+            pBitmap := Gdip_CreateBitmapFromFile(A_Temp "\7plus\" Icon, 1)
+            hIcon := Gdip_CreateHICONFromBitmap(pBitmap)
+            low := Round(low - KelvinToCelsius) ;Convert °K to °C
+            high := Round(high - KelvinToCelsius) ;Convert °K to °C
+
+            CWeatherPlugin.Instance.List.Insert(Object("Title", condition " with Low: " low "°C - High: " high "°C", "Path", "Weather in " city, "Icon", hIcon ))
         }
     }
     Accessor.RefreshList()
