@@ -226,7 +226,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Post a tweet from within the Accessor by writing "tweet Text". This event works in conjunction with the &lt;A HREF="www.ifttt.com"&gt;If this then that&lt;/A&gt; integration so it requires an account at this web service and you need to enter the login details of the email address you use for it &lt;A HREF="Settings:If this then that Integration"&gt;here&lt;/A&gt;. Additionally, you need to use &lt;A HREF="http://ifttt.com/recipes/50333"&gt;this recipe&lt;/A&gt;.</Description>
 <DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
+<Enabled>0</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
 <ID>1665</ID>
 <Name>Accessor & IFTTT: Post a tweet</Name>
