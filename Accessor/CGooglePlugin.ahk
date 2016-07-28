@@ -103,33 +103,40 @@ QueryGoogleResult()
 return
 QueryGoogleResult()
 {
-
-    outputdebug query google result
+    static ApiToken := "AIzaSyD6DzFckD2ZVPAP9PWOKoG6IjLshQZDdHM"
+    static CSEid    := "005570427367324167253:wrxcsmzl9a8"
     if(InStr(CAccessor.Instance.FilterWithoutTimer, CGooglePlugin.Instance.Settings.Keyword " ") != 1)
         return
-    outputdebug do it
+    Debug("Accessor tigger:", "Google Plugin")
     Filter := strTrim(CAccessor.Instance.FilterWithoutTimer, CGooglePlugin.Instance.Settings.Keyword " ")
-    ApiUri := "http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=" uriEncode(Filter) "&rsz=8&key=ABQIAAAA7YzZ21dHSNKA2c0eu0LVKRTn4CuOUlhiyluSCHXJ1XXcqBr54RRnE69I0b16vHAVgBri6LxRQYtELw"
+
+    ApiURi := "https://www.googleapis.com/customsearch/v1?key=" ApiToken "&cx=" CSEid "&q=" uriEncode(Filter)
 
     Headers := "Referer: http://code.google.com/p/7plus/`n"
+    ; if (Settings.Connection.UseProxy && Settings.Connection.ProxyUser)
+        ; Headers .= "Proxy-Authorization: " (Settings.Connection.ProxyAuthType == 2 ? "NTLM " : "Basic ") Base64Encode(Settings.Connection.ProxyUser ":" decrypt(Settings.Connection.ProxyPassword)) "`n"
     Headers .= Settings.Connection.UseProxy && Settings.Connection.ProxyPassword ? "Proxy-Authorization: Basic " Base64Encode(Settings.Connection.ProxyUser ":" decrypt(Settings.Connection.ProxyPassword)) : ""
-    Options := Settings.Connection.UseProxy ? "Proxy: " Settings.Connection.ProxyAddress ":" Settings.Connection.ProxyPort : ""
+
+    Options := "Method: GET`n"
+    Options .= "Charset: UTF-8`n"
+    Options .= Settings.Connection.UseProxy ? "Proxy: " Settings.Connection.ProxyAddress ":" Settings.Connection.ProxyPort "`n" : ""
 
     Debug("HTTPRequest request HEADER:", Headers)
     Debug("HTTPRequest request Options:", Options)
 
-    HTTPRequest(ApiUri, GoogleQuery, Headers, Options)
+    HTTPRequest(ApiURi, GETdata, Headers, Options)
 
     Debug("HTTPRequest response HEADER:", Headers)
-    Debug("HTTPRequest response BODY:", GoogleQuery)
+    Debug("HTTPRequest response BODY:", GETdata)
 
     CGooglePlugin.Instance.List := Array()
 
-    results := Jxon_Load(GoogleQuery)
-    for index, result in results.responseData.results
+    results := Jxon_Load(GETdata)
+
+    for index, result in results.items
     {
-        titleNoFormatting := unhtml(Deref_Umlauts(result.titleNoFormatting))
-        CGooglePlugin.Instance.List.Insert(Object("unescapedURL",result.unescapedURL,"visibleUrl", result.visibleUrl, "titleNoFormatting", titleNoFormatting))
+        titleNoFormatting := unhtml(Deref_Umlauts(result.title))
+        CGooglePlugin.Instance.List.Insert(Object("unescapedURL",result.link,"visibleUrl", result.displayLink, "titleNoFormatting", titleNoFormatting))
     }
     CAccessor.Instance.RefreshList()
 }
