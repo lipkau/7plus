@@ -48,7 +48,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Activate notification windows, flashing windows in the taskbar, or toggle between the current and the previously active window. Very useful for quickly responding to chats and switching back. Capslock state can still be changed by pressing a modifier key like CONTROL together with CAPSLOCK.&n;&n;This event is disabled by default to avoid confusing new users.</Description>
 <DisableAfterUse>0</DisableAfterUse>
-<Enabled>0</Enabled>
+<Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
 <ID>307</ID>
 <Name>Activate notification/flashing/previous window</Name>
@@ -65,43 +65,31 @@
 <ShowState>1</ShowState>
 <Type>Change window state</Type>
 <Value>100</Value>
-<WindowFilterClass></WindowFilterClass>
-<WindowFilterExecutable></WindowFilterExecutable>
-<WindowFilterTitle></WindowFilterTitle>
 <WindowMatchType>UnderMouse</WindowMatchType>
 </Action><Action>
 <Action>Start timer</Action>
-<Time></Time>
 <TimerID>311</TimerID>
 <Type>Control timer</Type>
 </Action><Action>
 <Action>Enable Event</Action>
-<Compare></Compare>
 <EventID>309</EventID>
 <Operator>equals</Operator>
 <Type>Control event</Type>
-<With></With>
 </Action><Action>
 <Action>Enable Event</Action>
-<Compare></Compare>
 <EventID>310</EventID>
 <Operator>equals</Operator>
 <Type>Control event</Type>
-<With></With>
 </Action><Action>
 <Action>Trigger Event</Action>
-<Compare></Compare>
 <EventID>309</EventID>
 <Operator>equals</Operator>
 <Type>Control event</Type>
-<With></With>
 </Action><Action>
 <Action>Trigger Event</Action>
-<Compare></Compare>
 <EventID>310</EventID>
 <Operator>equals</Operator>
 <Type>Control event</Type>
-<With></With>
 </Action></Actions>
 <Category>Window Handling</Category>
 <Conditions>
@@ -109,10 +97,6 @@
 <MouseOverType>Titlebar</MouseOverType>
 <Negate>0</Negate>
 <Type>Mouse over</Type>
-<WindowFilterClass></WindowFilterClass>
-<WindowFilterExecutable></WindowFilterExecutable>
-<WindowFilterTitle></WindowFilterTitle>
-<WindowMatchType></WindowMatchType>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Right click on the titlebar of a window to toggle its "Always on top" property. This is useful for keeping a window visible so that you can easily copy data from and to it.</Description>
@@ -136,18 +120,14 @@
 <WriteText>0</WriteText>
 </Action><Action>
 <Action>Disable Event</Action>
-<Compare></Compare>
 <EventID>311</EventID>
 <Operator>equals</Operator>
 <Type>Control event</Type>
-<With></With>
 </Action><Action>
 <Action>Disable Event</Action>
-<Compare></Compare>
 <EventID>310</EventID>
 <Operator>equals</Operator>
 <Type>Control event</Type>
-<With></With>
 </Action></Actions>
 <Category>Window Handling</Category>
 <Conditions>
@@ -171,18 +151,14 @@
 <Actions>
 <Action>
 <Action>Trigger Event</Action>
-<Compare></Compare>
 <EventID>309</EventID>
 <Operator>equals</Operator>
 <Type>Control event</Type>
-<With></With>
 </Action><Action>
 <Action>Trigger Event</Action>
-<Compare></Compare>
 <EventID>310</EventID>
 <Operator>equals</Operator>
 <Type>Control event</Type>
-<With></With>
 </Action></Actions>
 <Category>Window Handling</Category>
 <Conditions>
@@ -206,25 +182,19 @@
 <Actions>
 <Action>
 <Action>Disable Event</Action>
-<Compare></Compare>
 <EventID>309</EventID>
 <Operator>equals</Operator>
 <Type>Control event</Type>
-<With></With>
 </Action><Action>
 <Action>Disable Event</Action>
-<Compare></Compare>
 <EventID>310</EventID>
 <Operator>equals</Operator>
 <Type>Control event</Type>
-<With></With>
 </Action><Action>
 <Action>Disable Event</Action>
-<Compare></Compare>
 <EventID>311</EventID>
 <Operator>equals</Operator>
 <Type>Control event</Type>
-<With></With>
 </Action></Actions>
 <Category>Window Handling</Category>
 <Conditions>
@@ -241,7 +211,6 @@
 <Trigger>
 <Restart>0</Restart>
 <ShowProgress>0</ShowProgress>
-<Text></Text>
 <Time>2000</Time>
 <Type>Timer</Type>
 </Trigger>
@@ -688,58 +657,6 @@
 <Trigger>
 <Key>!Tab</Key>
 <Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
-<EventOnClickID>1685</EventOnClickID>
-<Icon>${Drive}</Icon>
-<Text>Click here to open the drive</Text>
-<Timeout>10</Timeout>
-<Title>${Drive} was added!</Title>
-<TrayToolTip>1</TrayToolTip>
-<Type>Show a tooltip</Type>
-</Action></Actions>
-<Category>Window Handling</Category>
-<Conditions>
-</Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description>This event displays a notification when a new device adds a volume so that the drive can be opened by clicking on it.</Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<EventComplexityLevel>0</EventComplexityLevel>
-<ID>1684</ID>
-<Name>Notify on new volume</Name>
-<OfficialEvent>80</OfficialEvent>
-<OneInstance>0</OneInstance>
-<Trigger>
-<ChangeType>Volume Added</ChangeType>
-<Drive>All</Drive>
-<Type>Device Changed</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
-<Command>explorer.exe ${Drive}</Command>
-<RunAsAdmin>0</RunAsAdmin>
-<Type>Run a program</Type>
-<WaitForFinish>0</WaitForFinish>
-<WorkingDirectory></WorkingDirectory>
-</Action></Actions>
-<Category>Window Handling</Category>
-<Conditions>
-</Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description>This event is called by clicking on the notification that gets shown when a new device adds a volume. It opens the new drive.</Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<EventComplexityLevel>0</EventComplexityLevel>
-<ID>1685</ID>
-<Name>Open added drive</Name>
-<OfficialEvent>81</OfficialEvent>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Type>Triggered by an action</Type>
 </Trigger>
 </Event></Events>
 <MajorVersion>2</MajorVersion>

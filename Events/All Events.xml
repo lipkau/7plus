@@ -763,7 +763,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Activate notification windows, flashing windows in the taskbar, or toggle between the current and the previously active window. Very useful for quickly responding to chats and switching back. Capslock state can still be changed by pressing a modifier key like CONTROL together with CAPSLOCK.&n;&n;This event is disabled by default to avoid confusing new users.</Description>
 <DisableAfterUse>0</DisableAfterUse>
-<Enabled>0</Enabled>
+<Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
 <ID>307</ID>
 <Name>Activate notification/flashing/previous window</Name>
@@ -780,43 +780,31 @@
 <ShowState>1</ShowState>
 <Type>Change window state</Type>
 <Value>100</Value>
-<WindowFilterClass></WindowFilterClass>
-<WindowFilterExecutable></WindowFilterExecutable>
-<WindowFilterTitle></WindowFilterTitle>
 <WindowMatchType>UnderMouse</WindowMatchType>
 </Action><Action>
 <Action>Start timer</Action>
-<Time></Time>
 <TimerID>311</TimerID>
 <Type>Control timer</Type>
 </Action><Action>
 <Action>Enable Event</Action>
-<Compare></Compare>
 <EventID>309</EventID>
 <Operator>equals</Operator>
 <Type>Control event</Type>
-<With></With>
 </Action><Action>
 <Action>Enable Event</Action>
-<Compare></Compare>
 <EventID>310</EventID>
 <Operator>equals</Operator>
 <Type>Control event</Type>
-<With></With>
 </Action><Action>
 <Action>Trigger Event</Action>
-<Compare></Compare>
 <EventID>309</EventID>
 <Operator>equals</Operator>
 <Type>Control event</Type>
-<With></With>
 </Action><Action>
 <Action>Trigger Event</Action>
-<Compare></Compare>
 <EventID>310</EventID>
 <Operator>equals</Operator>
 <Type>Control event</Type>
-<With></With>
 </Action></Actions>
 <Category>Window Handling</Category>
 <Conditions>
@@ -824,10 +812,6 @@
 <MouseOverType>Titlebar</MouseOverType>
 <Negate>0</Negate>
 <Type>Mouse over</Type>
-<WindowFilterClass></WindowFilterClass>
-<WindowFilterExecutable></WindowFilterExecutable>
-<WindowFilterTitle></WindowFilterTitle>
-<WindowMatchType></WindowMatchType>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Right click on the titlebar of a window to toggle its "Always on top" property. This is useful for keeping a window visible so that you can easily copy data from and to it.</Description>
@@ -851,18 +835,14 @@
 <WriteText>0</WriteText>
 </Action><Action>
 <Action>Disable Event</Action>
-<Compare></Compare>
 <EventID>311</EventID>
 <Operator>equals</Operator>
 <Type>Control event</Type>
-<With></With>
 </Action><Action>
 <Action>Disable Event</Action>
-<Compare></Compare>
 <EventID>310</EventID>
 <Operator>equals</Operator>
 <Type>Control event</Type>
-<With></With>
 </Action></Actions>
 <Category>Window Handling</Category>
 <Conditions>
@@ -886,18 +866,14 @@
 <Actions>
 <Action>
 <Action>Trigger Event</Action>
-<Compare></Compare>
 <EventID>309</EventID>
 <Operator>equals</Operator>
 <Type>Control event</Type>
-<With></With>
 </Action><Action>
 <Action>Trigger Event</Action>
-<Compare></Compare>
 <EventID>310</EventID>
 <Operator>equals</Operator>
 <Type>Control event</Type>
-<With></With>
 </Action></Actions>
 <Category>Window Handling</Category>
 <Conditions>
@@ -921,25 +897,19 @@
 <Actions>
 <Action>
 <Action>Disable Event</Action>
-<Compare></Compare>
 <EventID>309</EventID>
 <Operator>equals</Operator>
 <Type>Control event</Type>
-<With></With>
 </Action><Action>
 <Action>Disable Event</Action>
-<Compare></Compare>
 <EventID>310</EventID>
 <Operator>equals</Operator>
 <Type>Control event</Type>
-<With></With>
 </Action><Action>
 <Action>Disable Event</Action>
-<Compare></Compare>
 <EventID>311</EventID>
 <Operator>equals</Operator>
 <Type>Control event</Type>
-<With></With>
 </Action></Actions>
 <Category>Window Handling</Category>
 <Conditions>
@@ -956,7 +926,6 @@
 <Trigger>
 <Restart>0</Restart>
 <ShowProgress>0</ShowProgress>
-<Text></Text>
 <Time>2000</Time>
 <Type>Timer</Type>
 </Trigger>
@@ -3380,11 +3349,9 @@
 <Actions>
 <Action>
 <Action>Trigger Event</Action>
-<Compare></Compare>
 <EventID>1599</EventID>
 <Operator>equals</Operator>
 <Type>Control event</Type>
-<With></With>
 </Action></Actions>
 <Category>Taskbar</Category>
 <Conditions>
@@ -3402,7 +3369,6 @@
 <Icon>%SystemRoot%\system32\SHELL32.dll,266</Icon>
 <Menu>Tray</Menu>
 <Name>Start timer</Name>
-<Submenu></Submenu>
 <Type>Menu item clicked</Type>
 </Trigger>
 </Event><Event>
@@ -3411,24 +3377,19 @@
 <Cancel>1</Cancel>
 <DataType>Selection</DataType>
 <Placeholder>TimerType</Placeholder>
-<Rows>1</Rows>
 <Selection>Message timer|Shutdown timer|Run program timer</Selection>
 <Text>What type of timer would you like to start?</Text>
 <Title>Dynamic timer</Title>
 <Type>Ask for user input</Type>
 <Validate>1</Validate>
-<Width>200</Width>
 </Action><Action>
 <Cancel>1</Cancel>
 <DataType>Time</DataType>
 <Placeholder>TimerTime</Placeholder>
-<Rows>1</Rows>
-<Selection></Selection>
 <Text>Enter time [HH:MM:SS]:</Text>
 <Title>Dynamic timer - Enter time</Title>
 <Type>Ask for user input</Type>
 <Validate>1</Validate>
-<Width>200</Width>
 </Action><Action>
 <Action>Trigger Event</Action>
 <Compare>${TimerType}</Compare>
@@ -3470,7 +3431,6 @@
 <Actions>
 <Action>
 <Text>${TimerMessage}</Text>
-<Timeout>0</Timeout>
 <Title>Timer</Title>
 <Type>Message</Type>
 </Action></Actions>
@@ -3499,23 +3459,18 @@
 <Cancel>1</Cancel>
 <DataType>Text</DataType>
 <Placeholder>TimerMessage</Placeholder>
-<Rows>1</Rows>
-<Selection></Selection>
 <Text>Enter message text:</Text>
 <Title>Message text</Title>
 <Type>Ask for user input</Type>
 <Validate>1</Validate>
-<Width>200</Width>
 </Action><Action>
 <Action>Copy Event</Action>
-<Compare></Compare>
 <DeleteAfterUse>1</DeleteAfterUse>
 <EvaluateOnCopy>1</EvaluateOnCopy>
 <EventID>1600</EventID>
 <Operator>equals</Operator>
 <Placeholder>MessageTimer</Placeholder>
 <Type>Control event</Type>
-<With></With>
 </Action><Action>
 <Action>Set time</Action>
 <Time>${TimerTime}</Time>
@@ -3523,7 +3478,6 @@
 <Type>Control timer</Type>
 </Action><Action>
 <Action>Start timer</Action>
-<Time></Time>
 <TimerID>${MessageTimer}</TimerID>
 <Type>Control timer</Type>
 </Action></Actions>
@@ -3548,23 +3502,18 @@
 <Cancel>1</Cancel>
 <DataType>File</DataType>
 <Placeholder>TimerProgram</Placeholder>
-<Rows>1</Rows>
-<Selection></Selection>
 <Text>Enter program to launch</Text>
 <Title>Select program</Title>
 <Type>Ask for user input</Type>
 <Validate>1</Validate>
-<Width>200</Width>
 </Action><Action>
 <Action>Copy Event</Action>
-<Compare></Compare>
 <DeleteAfterUse>1</DeleteAfterUse>
 <EvaluateOnCopy>1</EvaluateOnCopy>
 <EventID>1604</EventID>
 <Operator>equals</Operator>
 <Placeholder>RunTimer</Placeholder>
 <Type>Control event</Type>
-<With></With>
 </Action><Action>
 <Action>Set time</Action>
 <Time>${TimerTime}</Time>
@@ -3572,7 +3521,6 @@
 <Type>Control timer</Type>
 </Action><Action>
 <Action>Start timer</Action>
-<Time></Time>
 <TimerID>${RunTimer}</TimerID>
 <Type>Control timer</Type>
 </Action></Actions>
@@ -3598,7 +3546,6 @@
 <RunAsAdmin>-1</RunAsAdmin>
 <Type>Run a program</Type>
 <WaitForFinish>0</WaitForFinish>
-<WorkingDirectory></WorkingDirectory>
 </Action></Actions>
 <Category>Taskbar</Category>
 <Conditions>
@@ -3649,14 +3596,12 @@
 <Actions>
 <Action>
 <Action>Copy Event</Action>
-<Compare></Compare>
 <DeleteAfterUse>1</DeleteAfterUse>
 <EvaluateOnCopy>1</EvaluateOnCopy>
 <EventID>1605</EventID>
 <Operator>equals</Operator>
 <Placeholder>ShutdownTimer</Placeholder>
 <Type>Control event</Type>
-<With></With>
 </Action><Action>
 <Action>Set time</Action>
 <Time>${TimerTime}</Time>
@@ -3664,7 +3609,6 @@
 <Type>Control timer</Type>
 </Action><Action>
 <Action>Start timer</Action>
-<Time></Time>
 <TimerID>${ShutdownTimer}</TimerID>
 <Type>Control timer</Type>
 </Action></Actions>
@@ -3825,12 +3769,12 @@
 <Type>Mouse over taskbar list</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
-<Description>Closes the window belonging to the taskbar button under the mouse.</Description>
+<Description>Closes the window belonging to the taskbar button under the mouse or toggles the mute state when over empty space</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
 <ID>1620</ID>
-<Name>Close window of task button under mouse</Name>
+<Name>On Taskbar: Close window or toggle mute</Name>
 <OfficialEvent>23</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -4383,7 +4327,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>This event takes a screenshot of an area that can be selected by the user and shows it in image converter for further processing.</Description>
 <DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
+<Enabled>0</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
 <ID>1638</ID>
 <Name>Take screenshot of custom area: Use Image Converter</Name>
@@ -4431,7 +4375,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>This event takes a screenshot of the active window and shows it in image converter for further processing.</Description>
 <DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
+<Enabled>0</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
 <ID>1639</ID>
 <Name>Take screenshot of window: Use Image Converter</Name>
@@ -5059,7 +5003,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Post a tweet from within the Accessor by writing "tweet Text". This event works in conjunction with the &lt;A HREF="www.ifttt.com"&gt;If this then that&lt;/A&gt; integration so it requires an account at this web service and you need to enter the login details of the email address you use for it &lt;A HREF="Settings:If this then that Integration"&gt;here&lt;/A&gt;. Additionally, you need to use &lt;A HREF="http://ifttt.com/recipes/50333"&gt;this recipe&lt;/A&gt;.</Description>
 <DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
+<Enabled>0</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
 <ID>1665</ID>
 <Name>Accessor & IFTTT: Post a tweet</Name>
@@ -5473,54 +5417,120 @@
 </Event><Event>
 <Actions>
 <Action>
-<EventOnClickID>1685</EventOnClickID>
-<Icon>${Drive}</Icon>
-<Text>Click here to open the drive</Text>
-<Timeout>10</Timeout>
-<Title>${Drive} was added!</Title>
-<TrayToolTip>1</TrayToolTip>
-<Type>Show a tooltip</Type>
+<KeyDelay>0</KeyDelay>
+<Keys>&n;	static __WikiLink := ""</Keys>
+<Type>Send keyboard input</Type>
+<WriteText>1</WriteText>
 </Action></Actions>
-<Category>Window Handling</Category>
+<Category>Uncategorized</Category>
 <Conditions>
 </Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
-<Description>This event displays a notification when a new device adds a volume so that the drive can be opened by clicking on it.</Description>
+<Description></Description>
 <DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
+<Enabled>0</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
 <ID>1684</ID>
-<Name>Notify on new volume</Name>
+<Name>New event</Name>
 <OfficialEvent>80</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
-<ChangeType>Volume Added</ChangeType>
-<Drive>All</Drive>
-<Type>Device Changed</Type>
+<Key>^B</Key>
+<Type>Hotkey</Type>
 </Trigger>
 </Event><Event>
 <Actions>
 <Action>
-<Command>explorer.exe ${Drive}</Command>
-<RunAsAdmin>0</RunAsAdmin>
-<Type>Run a program</Type>
-<WaitForFinish>0</WaitForFinish>
-<WorkingDirectory></WorkingDirectory>
+<KeyDelay>0</KeyDelay>
+<Keys>${Clip}</Keys>
+<Type>Send keyboard input</Type>
+<WriteText>0</WriteText>
 </Action></Actions>
-<Category>Window Handling</Category>
+<Category>Misc Hotkeys</Category>
 <Conditions>
 </Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
-<Description>This event is called by clicking on the notification that gets shown when a new device adds a volume. It opens the new drive.</Description>
+<Description>Paste Clipboard without formatting</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
 <ID>1685</ID>
-<Name>Open added drive</Name>
+<Name>Paste Unformatted</Name>
 <OfficialEvent>81</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
-<Type>Triggered by an action</Type>
+<Key>^#V</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<KeyDelay>0</KeyDelay>
+<Keys>{enter}^C{BackSpace}</Keys>
+<Type>Send keyboard input</Type>
+<WriteText>0</WriteText>
+</Action></Actions>
+<Category>Uncategorized</Category>
+<Conditions>
+<Condition>
+<Negate>0</Negate>
+<Type>Window active</Type>
+<WindowFilterClass>ConsoleWindowClass</WindowFilterClass>
+<WindowFilterExecutable></WindowFilterExecutable>
+<WindowFilterTitle></WindowFilterTitle>
+<WindowMatchType>Specific Window</WindowMatchType>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Make it possible to copy text in CMD by pressing CTRL+C.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
+<ID>1686</ID>
+<Name>CMD: CTRL+C to copy from clipboard</Name>
+<OfficialEvent>82</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>^C</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Button>Left</Button>
+<Double>0</Double>
+<Relative>1</Relative>
+<RestorePosition>1</RestorePosition>
+<Type>Mouse click</Type>
+<X>10</X>
+<Y>10</Y>
+</Action><Action>
+<KeyDelay>0</KeyDelay>
+<Keys>es</Keys>
+<Type>Send keyboard input</Type>
+<WriteText>0</WriteText>
+</Action></Actions>
+<Category>Uncategorized</Category>
+<Conditions>
+<Condition>
+<Negate>0</Negate>
+<Type>Window active</Type>
+<WindowFilterClass>ConsoleWindowClass</WindowFilterClass>
+<WindowFilterExecutable></WindowFilterExecutable>
+<WindowFilterTitle></WindowFilterTitle>
+<WindowMatchType>Specific Window</WindowMatchType>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Make it possible to select all in CMD by pressing CTRL+A.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
+<ID>1687</ID>
+<Name>CMD: CTRL+A to select all</Name>
+<OfficialEvent>83</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>^A</Key>
+<Type>Hotkey</Type>
 </Trigger>
 </Event></Events>
 <MajorVersion>2</MajorVersion>

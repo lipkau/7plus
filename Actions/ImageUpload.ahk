@@ -155,34 +155,37 @@ Imgur_Upload(image_file, byref output_XML="", Settings="")
     ; To acquire an anonymous API key, please register at http://imgur.com/register/api_anon.
     ; This function was written by [VxE] and relies on the HTTPRequest function, also by [VxE].
     ; HTTPRequest can be found at http://www.autohotkey.com/forum/viewtopic.php?t=73040
-    Static Imgur_Upload_Endpoint := "http://api.imgur.com/2/upload.xml"
-    Static Anonymous_API_Key := Decrypt("F5QTo=^aqmf^h|C}@ERLI;GG;T>sjV""t")
+    static Imgur_clientId := "711c5441e7355ea"
+    ApiURi := "https://api.imgur.com/3/image"
 
-    FileGetSize, size, % image_file
-    FileRead, output_XML, % "*c " image_file
-    ApiURi := Imgur_Upload_Endpoint "?key=" Anonymous_API_Key
-
-    Headers := "Content-Type: application/octet-stream`n"
-    Headers .= "Content-Length: " size "`n"
+    Headers := "Authorization: Client-ID " Imgur_clientId "`n"
+    Headers .= "Accept: application/json`n"
+    Headers .= "Content-Type: application/json`n"
     Headers .= "Referer: http://code.google.com/p/7plus/`n"
     ; if (Settings.Connection.UseProxy && Settings.Connection.ProxyUser)
         ; Headers .= "Proxy-Authorization: " (Settings.Connection.ProxyAuthType == 2 ? "NTLM " : "Basic ") Base64Encode(Settings.Connection.ProxyUser ":" decrypt(Settings.Connection.ProxyPassword)) "`n"
     Headers .= Settings.Connection.UseProxy && Settings.Connection.ProxyPassword ? "Proxy-Authorization: Basic " Base64Encode(Settings.Connection.ProxyUser ":" decrypt(Settings.Connection.ProxyPassword)) : ""
-    Options := "Method: POST`n"
-    Options .= "Callback: Imgur_Callback`n"
-    Options .= Settings.Connection.UseProxy ? "Proxy: " Settings.Connection.ProxyAddress ":" Settings.Connection.ProxyPort "`n" : ""
 
-    Outputdebug % "p: " decrypt(Settings.Connection.ProxyPassword)
+    Options := "Method: POST`n"
+    Options .= "Charset: UTF-8`n"
+    Options .= Settings.Connection.UseProxy ? "Proxy: " Settings.Connection.ProxyAddress ":" Settings.Connection.ProxyPort "`n" : ""
+    Options .= "Callback: Imgur_Callback`n"
+
     Debug("HTTPRequest request HEADER:", Headers)
     Debug("HTTPRequest request Options:", Options)
 
-    response := HTTPRequest(ApiURi, output_XML, Headers, Options)
+    FileRead, fileBin, *c %image_file%
+    POSTdata := "{""image"": """ Base64Encode(fileBin) """, ""type"": ""base64""}"
+    Debug("HTTPRequest request BODY:", POSTdata)
+
+    HTTPRequest(ApiURi, POSTdata, Headers, Options)
 
     Debug("HTTPRequest response HEADER:", Headers)
-    Debug("HTTPRequest response BODY:", output_XML)
+    Debug("HTTPRequest response BODY:", POSTdata)
 
-    if response && ( pos := InStr( output_XML, "<original>" ) )
-        return SubStr( output_XML, pos + 10, Instr( output_XML, "</original>", 0, pos ) - pos - 10 )
+    obj := Jxon_Load(POSTdata)
+    if (obj.success)
+        return obj.data.link
     else
         return ""
 }

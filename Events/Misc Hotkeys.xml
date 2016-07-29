@@ -364,7 +364,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>This event takes a screenshot of an area that can be selected by the user and shows it in image converter for further processing.</Description>
 <DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
+<Enabled>0</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
 <ID>1638</ID>
 <Name>Take screenshot of custom area: Use Image Converter</Name>
@@ -412,7 +412,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>This event takes a screenshot of the active window and shows it in image converter for further processing.</Description>
 <DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
+<Enabled>0</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
 <ID>1639</ID>
 <Name>Take screenshot of window: Use Image Converter</Name>
@@ -463,6 +463,30 @@
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>#T</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<KeyDelay>0</KeyDelay>
+<Keys>${Clip}</Keys>
+<Type>Send keyboard input</Type>
+<WriteText>0</WriteText>
+</Action></Actions>
+<Category>Misc Hotkeys</Category>
+<Conditions>
+</Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Paste Clipboard without formatting</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
+<ID>1685</ID>
+<Name>Paste Unformatted</Name>
+<OfficialEvent>81</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>^#V</Key>
 <Type>Hotkey</Type>
 </Trigger>
 </Event></Events>
