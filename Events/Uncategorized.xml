@@ -1,0 +1,100 @@
+<BugfixVersion>0</BugfixVersion>
+<BuildVersion>0</BuildVersion>
+<Events>
+<Event>
+<Actions>
+<Action>
+<KeyDelay>0</KeyDelay>
+<Keys>&n;	static __WikiLink := ""</Keys>
+<Type>Send keyboard input</Type>
+<WriteText>1</WriteText>
+</Action></Actions>
+<Category>Uncategorized</Category>
+<Conditions>
+</Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description></Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>0</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
+<ID>1684</ID>
+<Name>New event</Name>
+<OfficialEvent>80</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>^B</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<KeyDelay>0</KeyDelay>
+<Keys>{enter}^C{BackSpace}</Keys>
+<Type>Send keyboard input</Type>
+<WriteText>0</WriteText>
+</Action></Actions>
+<Category>Uncategorized</Category>
+<Conditions>
+<Condition>
+<Negate>0</Negate>
+<Type>Window active</Type>
+<WindowFilterClass>ConsoleWindowClass</WindowFilterClass>
+<WindowFilterExecutable></WindowFilterExecutable>
+<WindowFilterTitle></WindowFilterTitle>
+<WindowMatchType>Specific Window</WindowMatchType>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Make it possible to copy text in CMD by pressing CTRL+C.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
+<ID>1686</ID>
+<Name>CMD: CTRL+C to copy from clipboard</Name>
+<OfficialEvent>82</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>^C</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Button>Left</Button>
+<Double>0</Double>
+<Relative>1</Relative>
+<RestorePosition>1</RestorePosition>
+<Type>Mouse click</Type>
+<X>10</X>
+<Y>10</Y>
+</Action><Action>
+<KeyDelay>0</KeyDelay>
+<Keys>es</Keys>
+<Type>Send keyboard input</Type>
+<WriteText>0</WriteText>
+</Action></Actions>
+<Category>Uncategorized</Category>
+<Conditions>
+<Condition>
+<Negate>0</Negate>
+<Type>Window active</Type>
+<WindowFilterClass>ConsoleWindowClass</WindowFilterClass>
+<WindowFilterExecutable></WindowFilterExecutable>
+<WindowFilterTitle></WindowFilterTitle>
+<WindowMatchType>Specific Window</WindowMatchType>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Make it possible to select all in CMD by pressing CTRL+A.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
+<ID>1687</ID>
+<Name>CMD: CTRL+A to select all</Name>
+<OfficialEvent>83</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>^A</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event></Events>
+<MajorVersion>2</MajorVersion>
+<MinorVersion>6</MinorVersion>
