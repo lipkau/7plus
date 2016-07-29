@@ -175,9 +175,7 @@ Imgur_Upload(image_file, byref output_XML="", Settings="")
     Debug("HTTPRequest request Options:", Options)
 
     FileRead, fileBin, *c %image_file%
-    SplitPath, image_file ,,, fileExt,,
-    encodedFile := "data:image/" fileExt ";base64," Base64Encode(fileBin)
-    POSTdata := "{""image"": """ encodedFile """, ""type"": ""base64""}"
+    POSTdata := "{""image"": """ Base64Encode(fileBin) """, ""type"": ""base64""}"
     Debug("HTTPRequest request BODY:", POSTdata)
 
     HTTPRequest(ApiURi, POSTdata, Headers, Options)
@@ -186,11 +184,9 @@ Imgur_Upload(image_file, byref output_XML="", Settings="")
     Debug("HTTPRequest response BODY:", POSTdata)
 
     obj := Jxon_Load(POSTdata)
-    url := "https://imgur.com/gallery/" obj.data.id
-    Debug("IMGURL: ", url)
-    ; if response && ( pos := InStr( output_XML, "<original>" ) )
-    ;     return SubStr( output_XML, pos + 10, Instr( output_XML, "</original>", 0, pos ) - pos - 10 )
-    ; else
+    if (obj.success)
+        return obj.data.link
+    else
         return ""
 }
 
