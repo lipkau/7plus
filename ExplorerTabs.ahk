@@ -13,13 +13,12 @@ MButton::MouseCloseTab()
 CloseActiveTab()
 {
     global ExplorerWindows
-    outputdebug close active tab
+    Debug("close active tab")
     TabContainer := ExplorerWindows.GetItemWithValue("hwnd", WinExist("A")+0).TabContainer
     tab := TabContainer.tabs.GetItemWithValue("hwnd", WinExist("A")+0)
     if(tab)
     {
-        outputdebug tab found
-        outputdebug % "active tab " tab.path WinExist("A")+0
+        Debug("tab found", "active tab " tab.path WinExist("A")+0)
         TabContainer.CloseTab(tab)
     }
 }
@@ -42,17 +41,17 @@ IsMouseOverTabButton(ByRef TabContainer="")
         ;Tab Coords are relative
         x-=WinX
         y-=WinY
-        ; outputdebug correct window x%x% y%y%
+        ; Debug("correct window x" x "y" y )
         TabContainer:=ExplorerWindows.TabContainerList.GetItemWithValue("TabWindow", window+0)
         if(TabContainer)
         {
-            ; outputdebug tab container
+            ; Debug("tab container")
             Loop % TabContainer.tabs.MaxIndex()
             {
                 if(IsInArea(x,y,TabContainer.tabs[A_Index].x,TabContainer.tabs[A_Index].y,TabContainer.tabs[A_Index].width,TabContainer.tabs[A_Index].height))
                     return A_Index
             }
-            ; outputdebug not found
+            ; Debug("not found")
         }
     }
     ; CoordMode, Mouse, Screen
@@ -62,7 +61,7 @@ IsMouseOverTabButton(ByRef TabContainer="")
 MouseActivateTab()
 {
     index := IsMouseOverTabButton(TabContainer)
-    outputdebug mouse over tab button %index%
+    Debug("mouse over tab button " index)
     if(index && TabContainer && TabContainer.tabs[index].hwnd != TabContainer.active)
         TabContainer.ActivateTab(index)
 }
@@ -77,7 +76,7 @@ MouseCloseTab()
 CalculateTabText(tab)
 {
     global ExplorerWindows
-    outputdebug % "calculate tab text for " tab.hwnd+0
+    Debug("calculate tab text for " tab.hwnd+0)
     TabContainer := ExplorerWindows.GetItemWithValue("hwnd", tab.hwnd+0).TabContainer
     WinGetPos x,y,w,h,% "ahk_id " TabContainer.TabWindow
 
@@ -101,14 +100,14 @@ CalculateTabText(tab)
     StringSplit, RectF, RectF, |
     DrawText := tab.DisplayName
     drawcharcount := strlen(tab.DisplayName)
-    outputdebug % ExploreObj(tab)
+    Debug(ExploreObj(tab))
     while(RectF3 > (tab.width-2*ExplorerWindows.TabContainerList.hPadding))
     {
         oldcount := drawcharcount
         drawcharcount := max(min(oldcount-1,floor(strlen(tab.DisplayName) * (Tab.Width -2*ExplorerWindows.TabContainerList.hPadding)/ RectF3)),0)
         if(drawcharcount = 0)
         {
-            outputdebug clear drawtext
+            Debug("clear drawtext")
             drawtext := ""
             break
         }
@@ -117,7 +116,7 @@ CalculateTabText(tab)
         StringSplit, RectF, RectF, |
     }
     tab.DrawText := drawtext
-    outputdebug set drawtext to %drawtext%
+    Debug("set drawtext to " drawtext)
     ; Select the object back into the hdc
     SelectObject(hdc, obm)
 
@@ -133,7 +132,7 @@ CalculateTabText(tab)
 
 ;Called when a tab is activated
 ; TabEvent:
-; outputdebug activate tab %TabControl%, previous exp window is %hwnd%
+; Debug("activate tab " TabControl ", previous exp window is " hwnd)
 ; NoTabUpdate:=true
 ; OldTab:=TabControl
 ; Gui, %TabNum%:Submit
@@ -144,7 +143,7 @@ CalculateTabText(tab)
     ; class:=WinGetClass("ahk_id " hwnd)
     ; TabContainer:=TabContainerList.ContainsHWND(TabContainerList.active)
     ; CloseTab(TabContainer.tabs[TabControl],TabContainer)
-    ; outputdebug current tab: %class%
+    ; Debug("current tab: " class)
     ; WinActivate ahk_id %hwnd%
 ; }
 ; else
@@ -200,7 +199,7 @@ Class CTabContainer
     {
         global ExplorerWindows
         ;Critical
-        outputdebug Create tab window
+        Debug("Create tab window")
         this.TabNum:=GetFreeGUINum(10)
         Gui, % this.TabNum ":+LastFound +ToolWindow -Border -Resize -Caption +E0x80000"
         this.TabWindow := WinExist()+0
@@ -267,7 +266,7 @@ Class CTabContainer
     ActivateTab(pos)
     {
         global ExplorerWindows
-        ; outputdebug ActivateTab(%pos%)
+        ; Debug("ActivateTab(" pos ")")
         SetWinDelay, -1
         hwnd := this.tabs[pos].hwnd + 0
         ;DisableMinimizeAnim(1)
@@ -320,7 +319,7 @@ Class CTabContainer
                 pos+=this.tabs.MaxIndex()
             Else if(pos>this.tabs.MaxIndex())
                 pos-=this.tabs.MaxIndex()
-            outputdebug activate tab %pos%
+            Debug("activate tab " pos)
             this.ActivateTab(pos)
         }
         Else
@@ -332,7 +331,7 @@ Class CTabContainer
     UpdateTabs()
     {
         global ExplorerWindows
-        outputdebug updatetabs
+        Debug("updatetabs")
         ; global
         ; local TabContainer, hwnd,tabhwnd,folder,tabs
         ; WasCritical := A_IsCritical
@@ -371,14 +370,14 @@ Class CTabContainer
     UpdatePosition()
     {
         global ExplorerWindows
-        outputdebug updateposition
+        Debug("updateposition")
         ; global SuppressTabEvents, TabContainerList, TabControl, NoTabUpdate
         ; static gid=0   ;fid & gid are function id and global id. I use them to see if the function interupted itself.
         SetWinDelay -1
         /*
         if(SuppressTabEvents)
         {
-            outputdebug update suppressed
+            Debug("update suppressed")
             return
         }
         */
@@ -399,7 +398,7 @@ Class CTabContainer
         changedsize := this.w != w || this.h != h
         if(changed)
         {
-            outputdebug update coords to x%x% y%y% w%w% h%h%
+            Debug("update coords to x" x " y" y " w" w " h" h)
             this.state := state
             this.x := x
             this.y := y
@@ -418,7 +417,7 @@ Class CTabContainer
                 x := (x - 24) + (width / 2 - w / 2)
             }
             h:=ExplorerWindows.TabContainerList.height
-            outputdebug move tabwindow x%x% y%y% w%w% h%h%
+            Debug("move tabwindow x" x " y" y " w" w " h" h)
             WinMove, % "ahk_id " this.TabWindow,,%x%,%y%,%w%,%h%
 
             ;Limit drawing rate to make resizing more smoother
@@ -428,12 +427,12 @@ Class CTabContainer
             ; if (fid != gid)                 ;some newer instance of the function was running, so just return (function was interupted by itself). Without this, older instance will continue with old host window position and clients will jump to older location. This is not so visible with WinMove as it is very fast, but SetWindowPos shows this in full light.
                 ; return
         }
-            ;outputdebug updateposition() tab control: w%w%
+            ;Debug("updateposition() tab control: w" w)
             ;GuiControl, %TabNum%:Move, TabControl, w%w%
             ; WinGet, style, style, % "ahk_id " this.TabWindow
             ; if(!(style & 0x10000000)) ;WS_VISIBLE
             ; {
-                ; outputdebug show
+                ; Debug("show " this.TabNum)
                 ; Gui % this.TabNum ": Show", NA
             ; }
 
@@ -444,7 +443,7 @@ Class CTabContainer
             ; WinGet, style, style, ahk_id %TabWindow%
             ; if(style & 0x10000000)
             ; {
-                ; outputdebug hide %class% id %TabWindow%
+                ; Debug("hide " class " id " TabWindow)
                 ; WinHide ahk_id %TabWindow%
                 ; ;DllCall("AnimateWindow","Ptr",TabWindow,UInt,0,UInt,0x00010000)
             ; }
@@ -471,19 +470,19 @@ Class CTabContainer
             Sleep 100
         }
         ExplorerWindows.TabContainerList.TabCloseInProgress := false
-        outputdebug tab close event timeout
+        Debug("tab close event timeout")
     }
     CloseAllTabs()
     {
         global ExplorerWindows
         ; NoTabUpdate:=true
         ; SuppressTabEvents:=true
-        ; outputdebug close all tabs
+        ; Debug("close all tabs")
         ; TabContainerList.Print()
         ; index:=TabContainerList.indexOf(TabContainer)
         ExplorerWindows.TabContainerList.Delete(ExplorerWindows.TabContainerList.indexOf(this))
-        ; outputdebug index %index%
-        ; outputdebug after deletion:
+        ; Denug("index " index)
+        ; Debug("after deletion:")
         ; TabContainerList.Print()
         ExplorerWindows.TabContainerList.TabCloseInProgress := true
         loop % this.tabs.MaxIndex()
@@ -500,7 +499,7 @@ Class CTabContainer
             Sleep 100
         }
         ExplorerWindows.TabContainerList.TabCloseInProgress := false
-        outputdebug tab close event timeout
+        Debug("tab close event timeout")
         ; NoTabUpdate:=false
         ; SuppressTabEvents:=false
     }
@@ -524,7 +523,7 @@ Class CTabContainer
     {
         global ExplorerWindows
         WinGetPos x,y,w,h, % "ahk_id " this.TabWindow
-        outputdebug draw tab window current size x%x% y%y% w%w% h%h%
+        Debug("draw tab window current size x" x " y" y " w" w " h" h)
         count := this.tabs.MaxIndex()
         desiredwidth := 0
         loop % count
@@ -580,7 +579,7 @@ Class CTabContainer
             ; Draw background
             if(tab.hwnd = this.active)
             {
-                outputdebug % "draw active tab x"tab.x " y" tab.y "w "tab.width " h"tab.height
+                Debug("draw active tab x"tab.x " y" tab.y "w "tab.width " h"tab.height)
                 Gdip_FillRectangle(G, pBrushActive, tab.x, tab.y, tab.width, tab.height)
             }
             else
@@ -591,7 +590,7 @@ Class CTabContainer
                     pBrushGradient := Gdip_CreateLineBrushFromRect(0,0, tab.width, tab.height, 0xFFF8F8F8, 0xFFAAAAAA)
                 Gdip_FillRectangle(G, pBrushGradient, tab.x, tab.y, tab.width, tab.height)
                 Gdip_DeleteBrush(pBrushGradient)
-                outputdebug % "draw inactive tab x"tab.x " y" tab.y "w "tab.width " h"tab.height
+                Debug("draw inactive tab x"tab.x " y" tab.y "w "tab.width " h"tab.height)
             }
             Gdip_SetSmoothingMode(G, 1)
             Gdip_DrawLine(G, pPenBorder, tab.x, tab.y, tab.x+tab.width, tab.y)
@@ -628,12 +627,12 @@ Class CTabContainer
         ; DetectHiddenWindows, On
         ; NoTabUpdate:=true
         ; Folder:=Navigation.GetPath(hwnd)
-        ; outputdebug close %hwnd% %folder%
+        ; Debug("close " hwnd " " folder)
         ; TabContainerList.print()
         ; if(!TabContainer)
             ; TabContainer:=TabContainerList.ContainsHWND(hwnd)
-        ; outputdebug % "close tab " this.tabs.IndexOf(Tab)
-        outputdebug % "currently active tab" this.tabs.FindKeyWithValue("hwnd", this.active+0)
+        ; Debug("close tab " this.tabs.IndexOf(Tab))
+        Debug("currently active tab" this.tabs.FindKeyWithValue("hwnd", this.active+0))
         if(Tab.hwnd=this.active)
         {
             if(Settings.Explorer.Tabs.OnTabClose=1)
@@ -641,7 +640,7 @@ Class CTabContainer
             else if(Settings.Explorer.Tabs.OnTabClose=2)
                 this.CycleTabs(1)
         }
-        outputdebug % "currently active tab after cycling" this.tabs.FindKeyWithValue("hwnd", this.active+0)
+        Debug("currently active tab after cycling" this.tabs.FindKeyWithValue("hwnd", this.active+0))
 
         if(this.tabs.MaxIndex()=2)
         {
@@ -658,7 +657,7 @@ Class CTabContainer
         WinMove, % "ahk_id " Tab.hwnd,,-10000,-10000
         ExplorerWindows.TabContainerList.TabCloseInProgress++
         WinClose % "ahk_id " Tab.hwnd
-        ; outputdebug update closed
+        ; Debug("update closed")
         ; NoTabUpdate:=false
         this.UpdateTabs()
         Loop 100
@@ -668,13 +667,13 @@ Class CTabContainer
             Sleep 100
         }
         ExplorerWindows.TabContainerList.TabCloseInProgress := false
-        outputdebug tab close event timeout
+        Debug("tab close event timeout")
     }
     ;Called when a tab is closed manually (close button, alt+f4, ...)
     TabClosed(hwnd)
     {
         global ExplorerWindows
-        outputdebug tab closed manually %hwnd%
+        Debug("tab closed manually " hwnd)
         Tab := this.Tabs.GetItemWithValue("hwnd", hwnd)
         if(!Tab)
             return false
@@ -721,7 +720,7 @@ CreateTab(hwnd, path=-1,Activate=-1)
         path := ExplorerWindow.Path
     if(!TabContainer:=ExplorerWindow.TabContainer) ;Create new Tab Container if it doesn't exist yet
     {
-        outputdebug add new tab container
+        Debug("add new tab container")
         TabContainer := new CTabContainer(ExplorerWindow)
     }
     Prev_DetectHiddenWindows := A_DetectHiddenWindows
@@ -741,7 +740,7 @@ CreateTab(hwnd, path=-1,Activate=-1)
         if(hwndnew)
         {
             ExplorerWindows.TabContainerList.TabCreationInProgress := true        ;Set it to avoid ExplorerActivated function
-            outputdebug 1st loop %hwndnew% %hwnd%
+            Debug("1st loop " hwndnew " " hwnd)
             If (hwndnew <> hwnd )
                Break
         }
@@ -772,10 +771,10 @@ CreateTab(hwnd, path=-1,Activate=-1)
             Sleep 10
             WinGet,visible,style, ahk_id %hwndnew%
             WinGetPos,x,y,w,h,ahk_id %hwndnew%
-            outputdebug 2nd loop x%x% y%y% w%w% h%h%
+            Debug("2nd loop x" x " y" y " w" w " h" h)
             if(visible & 0x10000000) ;WS_VISIBLE
             {
-                outputdebug hide style %visible% title %title%
+                Debug("hide style " visible " title " title)
                 WinHide ahk_id %hwndnew%
                 ;DllCall("AnimateWindow","Ptr",hwndnew,UInt,0,UInt,0x00010000)
             }
@@ -788,7 +787,7 @@ CreateTab(hwnd, path=-1,Activate=-1)
                 return 0
             }
         }
-        outputdebug hide tab %hwndnew%
+        Debug("hide tab " hwndnew)
     }
 
     WinGetPlacement(hwnd,x,y,w,h,state)
@@ -810,7 +809,7 @@ CreateTab(hwnd, path=-1,Activate=-1)
         TabContainer.active:=hwndnew
         WinHide ahk_id %hwnd%
         ;DllCall("AnimateWindow","Ptr",hwnd,UInt,0,UInt,0x00010000)
-        ; outputdebug hide old tab
+        ; Debug("hide old tab")
     }
     RegisterExplorerWindows()
     TabContainer.CalculateVerticalTabPosition(TabContainer.tabs.FindKeyWithValue("hwnd", hwnd+0))
@@ -880,23 +879,23 @@ CreateTab(hwnd, path=-1,Activate=-1)
     ; w:=TabContainer.w
     ; h:=TabContainer.h
     ; state:=TabContainer.state
-    ; outputdebug Active: %active%
-    ; outputdebug state: %state%
-    ; outputdebug x: %x%
-    ; outputdebug y: %y%
-    ; outputdebug w: %w%
-    ; outputdebug h: %h%
+    ; Debug("Active: " active)
+    ; Debug("state: " state)
+    ; Debug("x: " x)
+    ; Debug("y: " y)
+    ; Debug("w: " w)
+    ; Debug("h: " h)
     ; Loop % TabContainer.tabs.MaxIndex()
     ; {
         ; path:=Navigation.GetPath(TabContainer.tabs[A_Index].hwnd)
         ; hwnd:=TabContainer.tabs[A_Index].hwnd
-        ; outputdebug %A_Tab%%A_Index% %hwnd%: %path%
+        ; Debug(A_Tab A_Index " " hwnd ": " path)
     ; }
 ; }
 ; TabContainerList_ContainsHWND(TabContainerList,hwnd)
 ; {
     ;;DecToHex(hwnd)
-    ;;outputdebug TabContainerList_ContainsHWND(%hwnd%)
+    ;;Debug("TabContainerList_ContainsHWND(" hwnd ")")
     ; Loop % TabContainerList.MaxIndex()
     ; {
         ; TabContainer:=TabContainerList[A_Index]
@@ -909,17 +908,17 @@ CreateTab(hwnd, path=-1,Activate=-1)
 ; }
 ; TabContainerList_Print(TabContainerList)
 ; {
-    ; outputdebug --------------------------------------------
+    ; Debug("--------------------------------------------")
     ; active:=TabContainerList.active
-    ; outputdebug Active: %active%
+    ; Debug("Active: " active)
     ; count:=TabContainerList.MaxIndex()
-    ; outputdebug tab container count: %count%
+    ; Debug("tab container count: " count)
     ; loop % TabContainerList.MaxIndex()
     ; {
         ; count:=TabContainerList[A_Index].tabs.MaxIndex()
-        ; outputdebug %A_Index%: %count% entries
+        ; Debug(A_Index ": " count " entries")
         ; TabContainerList[A_Index].Print()
     ; }
-    ; outputdebug --------------------------------------------
+    ; Debug("--------------------------------------------")
 ; }
 ; #t::ExploreObj(ExplorerWindows)

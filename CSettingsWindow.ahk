@@ -462,7 +462,7 @@ Finally, here are some settings that you're likely to change at the beginning:
         ;Used to suppress a redundant call to this function on init since it takes up 200-500ms on my PC.
         if(this.SupressFillEventsList)
             return
-        OutputDebug FillEventsList
+        Debug("FillEventsList")
         Page := this.Pages.Events.Tabs[1].Controls
         SelectedCategory := this.GetSelectedCategory()
         SelectedID := Page.listEvents.SelectedItem[2]

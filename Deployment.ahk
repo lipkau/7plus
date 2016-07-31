@@ -2,7 +2,7 @@
 AutoUpdate()
 {
     global MajorVersion,MinorVersion,BugfixVersion
-    outputdebug AutoUpdate
+    Debug("AutoUpdate")
     BaseURL := "http://7plus.googlecode.com"
     if(IsConnected())
     {
@@ -76,7 +76,7 @@ AutoUpdate()
 PostUpdate()
 {
     global MajorVersion, MinorVersion, BugfixVersion
-    outputdebug PostUpdate
+    Debug("PostUpdate")
     ;If there is an Updater.exe in 7plus temp directory, it is likely that an update was performed.
     if(FileExist(A_TEMP "\7plus\Updater.exe"))
     {

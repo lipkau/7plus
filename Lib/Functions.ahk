@@ -217,8 +217,7 @@ SysGet(Subcommand, Param3 = "") {
 Transform(Cmd, Value1, Value2 = "") {
     Transform, v, %Cmd%, %Value1%, %Value2%
     Return, v
-}
-WinGet(Cmd = "", WinTitle = "", WinText = "", ExcludeTitle = "", ExcludeText = "") {
+}WinGet(Cmd = "", WinTitle = "", WinText = "", ExcludeTitle = "", ExcludeText = "") {
     WinGet, v, %Cmd%, %WinTitle%, %WinText%, %ExcludeTitle%, %ExcludeText%
     Return, v
 }
@@ -260,9 +259,10 @@ MsgBox(Text)
 {
     MsgBox, %Text%
 }
-Debug(Title, InputObject, Delimiter = "`n")
+Debug(Title, InputObject = "", Delimiter = "`n")
 {
-    OutputDebug % Title
-    Loop, Parse, InputObject, %Delimiter%
-        OutputDebug % "    " A_LoopField
+    OutputDebug % "[7Plus] " Title
+    if (InputObject)
+        Loop, Parse, InputObject, %Delimiter%
+            OutputDebug % "    " A_LoopField
 }
