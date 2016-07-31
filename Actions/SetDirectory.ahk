@@ -46,7 +46,7 @@ Class CSetDirectoryAction Extends CAction
 
     GuiSubmit(GUI)
     {
-        outputdebug submit directory
+        Debug("submit directory")
         this.WindowFilterGUISubmit(GUI)
         Base.GUISubmit(GUI)
     }

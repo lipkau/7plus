@@ -61,7 +61,7 @@
         {
             if(Index = 1)
             {
-                outputdebug index
+                Debug("index")
                 Filter := strTrim(CAccessor.Instance.FilterWithoutTimer, this.Settings.Keyword " ")
                 this.Settings.DefaultLocation := Filter
             }
@@ -136,7 +136,7 @@ QueryWeatherResult()
     if(RegExMatch(Filter, "^\s*$"))
         Filter .= CWeatherPlugin.Instance.Settings.DefaultLocation
 
-    outputdebug Query Weather for %Filter%
+    Debug("Query Weather for " Filter)
 
     for index, ListEntry in CWeatherPlugin.Instance.List
         if(ListEntry.Icon)
@@ -190,7 +190,7 @@ QueryWeatherResult()
 
             if (!FileExist(A_Temp "\7plus\" Icon))
                 write_bin(WeatherIcon, A_Temp "\7plus\" Icon, size)
-            OutputDebug % "Does WeatherIcon File exist? " FileExist(A_Temp "\7plus\" Icon)
+            Debug("Does WeatherIcon File exist? " FileExist(A_Temp "\7plus\" Icon))
 
             pBitmap := Gdip_CreateBitmapFromFile(A_Temp "\7plus\" Icon, 1)
             hIcon := Gdip_CreateHICONFromBitmap(pBitmap)

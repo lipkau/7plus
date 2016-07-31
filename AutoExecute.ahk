@@ -48,7 +48,7 @@ if(!A_IsAdmin && Settings.Misc.RunAsAdmin = "Always/Ask")
 ;Start debugger
 if(Settings.General.DebugEnabled)
     DebuggingStart()
-outputdebug 7plus Starting...
+Debug("Starting...")
 
 ;If the current config path is set to the program directory but there is no write access because UAC is activated and 7plus is running as user,
 ;7plus cannot store its settings and warns the user about it
@@ -66,7 +66,7 @@ if(!FileExist(Settings.ConfigPath "\Settings.ini"))
 }
 
 ;initialize gdi+
-outputdebug starting gdip
+Debug("Starting GDIP")
 ApplicationState.pToken := Gdip_Startup()
 
 ;Exit Routine
@@ -81,7 +81,7 @@ if(!WindowList)
     WindowList := Object()
 
 ;Init event system
-outputdebug starting event system
+Debug("Starting Event system")
 global EventSystem := new CEventSystem()
 EventSystem.Startup()
 
@@ -104,7 +104,7 @@ FileDelete, %A_Temp%\7plus\hwnd.txt
 FileAppend, %A_ScriptHwnd%, %A_Temp%\7plus\hwnd.txt
 
 ;Register a shell hook to get messages when windows get activated, closed etc
-outputdebug % "7plus window handle: " A_ScriptHwnd
+Debug("7plus window handle: " A_ScriptHwnd)
 DllCall("RegisterShellHookWindow", "Ptr", A_ScriptHwnd)
 ApplicationState.ShellHookMessage := DllCall("RegisterWindowMessage", Str, "SHELLHOOK")
 OnMessage(ApplicationState.ShellHookMessage, "ShellMessage")
@@ -120,18 +120,18 @@ ApplicationState.WinEventHook3 := API_SetWinEventHook(0x000A,0x000B,0,Applicatio
 if(WinVer >= WIN_Vista && (ApplicationState.ClipboardListenerRegistered := DllCall("AddClipboardFormatListener", "PTR", A_ScriptHwnd)))
     OnMessage(0x031D, "OnClipboardChange")
 
-outputdebug Creating Slide Windows
+Debug("Creating Slide Windows")
 SlideWindows := new CSlideWindows()
 
 SetTimer, MouseMovePolling, 50
 
-outputdebug Creating ClipboardList
+Debug("Creating ClipboardList")
 ClipboardList := new CClipboardList()
 
-outputdebug Initializing Explorer Windows
+Debug("Initializing Explorer Windows")
 InitExplorerWindows()
 
-outputdebug Loading HotStrings
+Debug("Loading HotStrings")
 LoadHotstrings()
 
 ;Try closing the windows update window if needed on startup since it might already be there.
@@ -164,7 +164,7 @@ if(!Settings.Misc.HidetrayIcon)
 ;possibly start wizard
 if (Settings.General.Firstrun)
 {
-    ;outputdebug Registering Shell Extension
+    ;Debug("Registering Shell Extension")
     ;RegisterShellExtension(1)
     GoSub, wizardry
 }
@@ -174,10 +174,10 @@ ApplicationState.ProgramStartupFinished := true
 
 Suspend, Off
 ;Create settings window in advance to save some time when it is first shown.
-outputdebug Creating Settings Window
+Debug("Creating Settings Window")
 global SettingsWindow := new CSettingsWindow()
 
-outputdebug 7plus startup procedure finished, entering event loop.
+Debug("Startup procedure finished. Entering event loop.")
 ;Event loop
 SetTimer, EventScheduler, 10
 Return
@@ -215,7 +215,7 @@ ExitApp
 OnExit(reload=0)
 {
     global
-    outputdebug OnExit()
+    Debug(OnExit())
     if(ApplicationState.ProgramStartupFinished)
     {
         ClipboardList.Save()
@@ -249,7 +249,7 @@ wizardry:
 MsgBox, 4,,Welcome to 7plus!`nBefore we begin, would you like to see a list of features?
 IfMsgBox Yes
     run http://code.google.com/p/7plus/wiki/Features,,UseErrorlevel
-Notify("Open Settings?", "At the beginning you should take some minutes and check out the settings.`nDouble click on the tray icon or click here to open the settings window.", 10, NotifyIcons.Question, "ShowSettings")
+    Notify("Open Settings?", "At the beginning you should take some minutes and check out the settings.`nDouble click on the tray icon or click here to open the settings window.", 10, NotifyIcons.Question, "ShowSettings")
 return
 
 ProcessCommandLineParameters()

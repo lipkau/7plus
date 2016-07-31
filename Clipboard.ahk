@@ -20,7 +20,7 @@ OnClipboardChange()
     ; An example is the GetSelectedText() function. It might be useful to try waiting in this function to skip the event
     ; which apparently doesn't work right now.
     owner := GetProcessName(DllCall("GetClipboardOwner"))
-    outputdebug % "owner: " owner " index: " ToArray(Settings.Misc.IgnoredPrograms, "|").indexOf(owner)
+    Debug("owner: " owner " index: " ToArray(Settings.Misc.IgnoredPrograms, "|").indexOf(owner))
     if(ToArray(Settings.Misc.IgnoredPrograms, "|").indexOf(owner))
         return
 
@@ -63,7 +63,7 @@ CreateFileFromClipboard()
     else
     {
         ShowTip({Min : 14, Max : 15})
-        outputdebug a file is already in the clipboard
+        Debug("a file is already in the clipboard")
     }
     WaitForEvent("ClipboardChange", 100)
     MuteClipboardList := false

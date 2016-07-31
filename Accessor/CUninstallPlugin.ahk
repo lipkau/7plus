@@ -68,9 +68,9 @@ Class CUninstallPlugin extends CAccessorPlugin
         ;Lazy loading
         if(this.List.MaxIndex() = 0)
         {
-            outputdebug pre load
+            Debug("pre load")
             this.LoadUninstallEntries()
-            outputdebug post load
+            Debug("post load")
         }
         Results := Array()
         for index, ListEntry in this.List
@@ -87,7 +87,7 @@ Class CUninstallPlugin extends CAccessorPlugin
                 Results.Insert(Result)
             }
         }
-        outputdebug plugin refreshlist finish
+        Debug("plugin refreshlist finish")
         return Results
     }
 
@@ -109,7 +109,7 @@ Class CUninstallPlugin extends CAccessorPlugin
 
     LoadUninstallEntries()
     {
-        outputdebug LoadUninstallEntries start
+        Debug("LoadUninstallEntries start")
         Loop, HKLM , SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall, 2, 0
         {
             GUID := A_LoopRegName ;Note: This is not always a GUID but can also be a regular name. It seems that MSIExec likes to use GUIDs
@@ -133,14 +133,14 @@ Class CUninstallPlugin extends CAccessorPlugin
                     DisplayIcon := AppendPaths(InstallLocation, DisplayIcon)
                 else if(FileExist(A_WinDir "\Installer\" GUID "\ARPPRODUCTICON.exe"))
                     DisplayIcon := A_WinDir "\Installer\" GUID "\ARPPRODUCTICON.exe"
-                ;outputdebug % DisplayName ": " DisplayIcon ":" FileExist(DisplayIcon)
+                ;Debug("DisplayName ": " DisplayIcon ":" FileExist(DisplayIcon)")
                 if(!Number)
                     Number := 0
                 if(FileExist(DisplayIcon))
                 {
                     hIcon := LoadIcon(DisplayIcon)
                     ;if(DisplayIcon = A_WinDir "\Installer\" GUID "\ARPPRODUCTICON.exe")
-                        ;outputdebug % DisplayName ":" DisplayIcon ": " hIcon
+                        ;Debug("DisplayName ":" DisplayIcon ": " hIcon")
                     if(hIcon = 0)
                         hIcon := ExtractAssociatedIcon(Number, DisplayIcon, iIndex)
                 }
@@ -150,6 +150,6 @@ Class CUninstallPlugin extends CAccessorPlugin
                     this.List.Insert(Object("GUID", GUID, "DisplayName", DisplayName, "UninstallString", UninstallString, "InstallLocation", InstallLocation, "Icon", hIcon))
             }
         }
-        outputdebug LoadUninstallEntries end
+        Debug("LoadUninstallEntries end")
     }
 }

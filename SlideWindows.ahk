@@ -52,7 +52,7 @@ Class CSlideWindow
     ;This function slides a window into the screen, making it visible
     SlideIn()
     {
-        outputdebug Slide in
+        Debug("Slide in")
         DetectHiddenWindows, On
         ;Disable Minimize/Restore animation
         ;RegRead, Animate, HKCU, Control Panel\Desktop\WindowMetrics , MinAnimate
@@ -134,7 +134,7 @@ Class CSlideWindow
     SlideOut()
     {
         global PreviousWindow, SlideWindows
-        outputdebug Slide out
+        Debug("Slide out")
         DetectHiddenWindows, On
         ;Disable Minimize/Restore animation
         ;RegRead, Animate, HKCU, Control Panel\Desktop\WindowMetrics , MinAnimate
@@ -239,9 +239,9 @@ Class CSlideWindow
                 WinHide, ahk_id %hwnd%
             }
         ;~ WaitForEvent("SlideWindowResize", 1000)
-        ;outputdebug post minimize
+        ;Debug("post minimize")
         this.SlideState := SlideStates.HIDDEN
-        outputdebug slidestate set to HIDDEN
+        Debug("slidestate set to HIDDEN")
         ;Possibly activate Minimize animation again
         ;if(Animate = 1)
         ;{
@@ -304,7 +304,7 @@ Class CSlideWindow
         global SlideWindows
         if(!this.hwnd) ;Make sure the slide window was actually successfully created
             return
-        outputdebug Release Slide Window
+        Debug("Release Slide Window")
         DetectHiddenWindows, On
 
         ;Make sure that no window is accidently released outside of the screen.
@@ -557,7 +557,7 @@ Class CSlideWindows
         if(SlideWindow.SlideState = SlideStates.VISIBLE)
         {
             WinGetPos, , , w, h, % "ahk_id " slidewindow.hwnd
-            outputdebug % "release due to resize, state: " SlideWindow.SlideState ", w: " w ", h: " h
+            Debug("release due to resize, state: " SlideWindow.SlideState ", w: " w ", h: " h)
             SlideWindow.Release(SlideWindow.SlideState = SlideStates.VISIBLE)
         }
         RaiseEvent("SlideWindowResize")
@@ -573,7 +573,7 @@ Class CSlideWindows
             SlideWindow := this[index]
             if(!WinExist("ahk_id " SlideWindow.hwnd))
             {
-                outputdebug release due to close
+                Debug("release due to close")
                 SlideWindow.Release()
             }
             else
@@ -592,7 +592,7 @@ Class CSlideWindows
     {
         if(IsContextMenuActive()) ;Ignore context menus
             return
-        outputdebug Window activated
+        Debug("Window activated")
         hwnd := WinExist("A") + 0
         this.ActivatedWindow := hwnd
         SetTimer, CheckForNewChildWindows, -100
@@ -615,7 +615,7 @@ Class CSlideWindows
             WinGet, minstate , minmax, % "ahk_id " CurrentSlideWindow.hwnd
             if(minstate = -1 && CurrentSlideWindow.SlideState = SlideStates.VISIBLE) ;Release slide window that was minimized (but is not currently sliding)
             {
-                outputdebug % "release due to minimize, state: " CurrentSlideWindow.SlideState
+                Debug("release due to minimize, state: " CurrentSlideWindow.SlideState)
                 CurrentSlideWindow.Release(1)
             }
             else if(!CurrentSlideWindow.AutoSlideOut)

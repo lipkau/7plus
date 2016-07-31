@@ -442,7 +442,7 @@ Class CExplorerHistory extends CQueue
     ;Puts an item in the queue
     Push(item)
     {
-        outputdebug push
+        Debug("Pusinhing item to Queue", item)
         itemPosition := this.IndexOfEqual(item, 0, "Path")
         if(!itemPosition)
         {
@@ -529,20 +529,20 @@ RestoreExplorerSelection()
     {
         ExplorerWindow := ExplorerWindows.GetItemWithValue("hWnd",hwnd)
         if(!IsObject(ExplorerWindow.Selection.History))
-            outputdebug % "Explorer window " hwnd " is not registered!"
+            Debug("Explorer window " hwnd " is not registered!")
         if(ExplorerWindow.Selection.History.MaxIndex() > 1)
         {
-            outputdebug % "Explorer window " hwnd "restore selection"
+            Debug("Explorer window " hwnd "restore selecion")
             Selection := ExplorerWindow.Selection.History[ExplorerWindow.Selection.History.MaxIndex() - 1]
             ; A SelectionChanged event will be fired 2 times that needs to be suppressed?
             ;Why is it fired 2 times instead of one time for each file? -> Probably because of timing
             ExplorerWindow.Selection.IgnoreNextEvent := 2
-            outputdebug % "Explorer window " hwnd " expecting " ExplorerWindow.Selection.IgnoreNextEvent " selection events."
+            Debug("Explorer window " hwnd " expecting " ExplorerWindow.Selection.IgnoreNextEvent " selection events.")
             Navigation.SelectFiles(Selection, hwnd)
             ExplorerWindow.Selection.History.Delete(ExplorerWindow.Selection.History.MaxIndex())
         }
         else
-            outputdebug % "Explorer window " hwnd " is registered but has no history"
+            Debug("Explorer window " hwnd " is registered but has no history")
     }
 }
 
@@ -647,7 +647,7 @@ ExplorerPathChanged(ExplorerWindow)
         if(!ExplorerWindow)
             return
     }
-    outputdebug path change
+    Debug("path change")
     OldPath := ExplorerWindow.Path
     ExplorerWindow.RegisterSelectionChangedEvent() ;This will also refresh the path in ExplorerWindow
     Path := ExplorerWindow.Path
@@ -655,7 +655,7 @@ ExplorerPathChanged(ExplorerWindow)
         return
     ExplorerWindow.DisplayName := Navigation.GetDisplayName(ExplorerWindow.hwnd)
 
-    outputdebug change from %oldpath% to %path%
+    Debug("change from " oldpath " to " path)
     Entry := RichObject()
     Entry.Path := Path
     Entry.Usage := 0

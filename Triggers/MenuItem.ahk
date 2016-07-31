@@ -93,5 +93,5 @@ MenuItemTriggered(menu, item, pos)
             index++
         }
     }
-    outputdebug MenuItem: Event not found! menu: %menu%, item: %item%, pos: %pos%
+    Debug("MenuItem: Event not found! menu: " menu ", item: " item ", pos: " pos)
 }

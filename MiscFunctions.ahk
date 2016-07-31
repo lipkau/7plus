@@ -237,7 +237,7 @@ IsFullscreen(sWinTitle = "A", UseExcludeList = true, UseIncludeList=true) {
     iWinH := NumGet(iWinRect, 12) - NumGet(iWinRect, 4) ;Bottom-right coordinates are exclusive
     iCltX := 0, iCltY := 0 ;Client upper-left always (0,0)
     iCltW := NumGet(iCltRect, 8), iCltH := NumGet(iCltRect, 12)
-    ; outputdebug iCltW %iCltW% iCltH %iCltH%
+    ; Debug("iCltW " iCltW " iCltH " iCltH)
     ;Check in which monitor it lies
     iMidX := iWinX + Ceil(iWinW / 2)
     iMidY := iWinY + Ceil(iWinH / 2)
@@ -466,7 +466,7 @@ GetModuleFileNameEx(pid)
    h_process := DllCall("OpenProcess", "uint", 0x10|0x400, "int", false, "uint", pid, "Ptr")
    if (ErrorLevel || h_process = 0)
    {
-      outputdebug [OpenProcess] failed. PID = %pid%
+      Debug("[OpenProcess] failed. PID = " pid)
       return
    }
 
@@ -475,7 +475,7 @@ GetModuleFileNameEx(pid)
 
    result := DllCall("psapi.dll\GetModuleFileNameEx", "Ptr", h_process, "uint", 0, "str", name, "uint", name_size)
    if(ErrorLevel || result = 0)
-      outputdebug [GetModuleFileNameExA] failed
+      Debug("[GetModuleFileNameExA] failed")
 
    DllCall("CloseHandle", "Ptr", h_process)
    return name
@@ -590,7 +590,7 @@ WinGetPlacement(hwnd, ByRef x="", ByRef y="", ByRef w="", ByRef h="", ByRef stat
     w := NumGet(wp, 36, "int") - x
     h := NumGet(wp, 40, "int") - y
     state := NumGet(wp, 8, "UInt")
-    ;outputdebug get x%x% y%y% w%w% h%h% state%state%
+    ;Debug("get x" x " y" y " w" w " h" h " state " state)
 }
 
 ;Sets window position using workspace coordinates (-> no taskbar)
@@ -1063,7 +1063,7 @@ FindFreeFileName(FilePath)
 AttachToolWindow(hParent, GUINumber, AutoClose)
 {
     global ToolWindows
-    outputdebug AttachToolWindow %GUINumber% to %hParent%
+    Debug("AttachToolWindow " GUINumber " to " hParent)
     if(!IsObject(ToolWindows))
         ToolWindows := Object()
     if(!WinExist("ahk_id " hParent))

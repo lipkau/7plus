@@ -123,7 +123,7 @@ Class CEventSystem extends CRichObject
                 if(!Success)
                 {
                     this.EventSchedule.Remove(EventPos)
-                    outputdebug % "Conditions of event " event.id " were not fulfilled."
+                    Debug("Conditions of event " event.id " were not fulfilled.")
                     continue
                 }
                 else
@@ -137,7 +137,7 @@ Class CEventSystem extends CRichObject
         Loop % this.EventSchedule.MaxIndex()
         {
             Event := this.EventSchedule[EventPos]
-            outputdebug % "Process event ID: " Event.ID " Name: " Event.Name
+            Debug("Process event ID: " Event.ID " Name: " Event.Name)
 
             Loop % Event.Actions.MaxIndex()
             {
@@ -165,7 +165,7 @@ Class CEventSystem extends CRichObject
                     OriginalEvent.SetEnabled(false)
                 if(Event.DeleteAfterUse && OriginalEvent)
                     this.Events.Delete(OriginalEvent)
-                outputdebug % "Finished execution of event ID: " event.id " Name:" event.name
+                Debug("Finished execution of event ID: " event.id " Name:" event.name)
                 continue
             }
             EventPos++

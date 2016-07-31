@@ -60,7 +60,7 @@ IsMouseOverClock()
     result := false
     if(ControlUnderMouse = "TrayClockWClass1")
         result := true
-    outputdebug IsMouseOverClock()? %result%
+    Debug("IsMouseOverClock()? " result)
     return result
 }
 

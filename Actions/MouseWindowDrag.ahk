@@ -43,7 +43,7 @@ Class CMouseWindowDragAction Extends CAction
         GetKeyState, EscapeState, Escape, P
         if(EscapeState = "D" || WinExist("A") != this.tmpActiveWindow)  ; Escape has been pressed or another program was activated, so drag is cancelled.
         {
-            OutputDebug % "Active " WinExist("A") " temp: " this.tmpActiveWindow
+            Debug("Active " WinExist("A") " temp: " this.tmpActiveWindow)
             SetTimer, Action_MouseWindowDrag_Timer, off
             WinMove, % "ahk_id " this.tmpHWND,, % this.tmpOriginalWindowX, % this.tmpOriginalWindowY
             this.tmpDraggingWindow := false ;This will make Execute() return 1 to finish the drag action.

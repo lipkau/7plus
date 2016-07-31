@@ -178,7 +178,7 @@ ControlDeleteFix()
         CharType := 3
     Loop
     {
-        ;outputdebug char %char%
+        ;Debug("char " char)
         if(CharType = 0 && A_Index = 1)
         {
             count++

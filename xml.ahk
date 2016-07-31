@@ -12,7 +12,7 @@
 ;node2:= XML_Write("", "key", "value")
 ;node2:=XML_Write(node2, "key2", "value")
 ;xml:=XML_Write(xml,"Node2", "`r`n" node2)
-;outputdebug % xml
+;Debug(xml)
 ;obj := XML_Read(xml)
 ;exitapp
 

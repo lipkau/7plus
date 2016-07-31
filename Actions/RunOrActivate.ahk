@@ -15,12 +15,12 @@ Class CRunOrActivateAction Extends CAction
 
         if(Errorlevel != 0)
         {
-            Outputdebug RunOrActivate: %Name% is running with PID = %ErrorLevel%
+            Debug("RunOrActivate: " Name " is running with PID = " ErrorLevel)
             WinActivate ahk_pid %ErrorLevel%
         }
         else
         {
-            Outputdebug RunOrActivate: %Name% is not running and will now be started
+            Debug("RunOrActivate: " Name " is not running and will now be started")
             return this.RunExecute(Event)
         }
         return 1

@@ -83,7 +83,7 @@ _Notify_:
    Goto, _Update_Text_
  }
 
-outputdebug still here
+Debug("still here")
  GN := GF
  Loop
   IfNotInString, NotifyList, % "|" GN

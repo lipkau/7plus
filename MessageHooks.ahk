@@ -229,7 +229,7 @@ ShellMessage( wParam, lParam, Msg)
             ; newpath := Navigation.GetPath()
             ; if(newpath && newpath != Settings.Explorer.CurrentPath)
             ; {
-                ; outputdebug Explorer path changed from %ExplorerPath% to %newpath%
+                ; Debug("Explorer path changed from " ExplorerPath " to " newpath)
                 ; ExplorerPathChanged(Settings.Explorer.CurrentPath, newpath)
                 ; Settings.Explorer.PreviousPath := Settings.Explorer.CurrentPath
                 ; Settings.Explorer.CurrentPath := newpath

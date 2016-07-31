@@ -5,7 +5,7 @@ Class CORCondition Extends CCondition
     static __WikiLink := "OR"
     Evaluate()
     {
-        outputdebug % "Evaluate() should not get called on CORCondition!"
+        Debug("Evaluate() should not get called on CORCondition!")
         return true
     }
     DisplayString()

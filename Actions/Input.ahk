@@ -30,7 +30,7 @@ Class CInputAction Extends CAction
             Gui,%GuiNum%:+LastFound
             WinGet, InputBox_hwnd,ID
             DetectHiddenWindows, Off
-            ;outputdebug %A_IsCritical%
+            ;Debug(A_IsCritical)
             If(WinExist("ahk_id " InputBox_hwnd)) ;Box not closed yet, need more processing time
                 return -1
             else

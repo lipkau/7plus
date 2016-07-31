@@ -217,8 +217,7 @@ SysGet(Subcommand, Param3 = "") {
 Transform(Cmd, Value1, Value2 = "") {
     Transform, v, %Cmd%, %Value1%, %Value2%
     Return, v
-}
-WinGet(Cmd = "", WinTitle = "", WinText = "", ExcludeTitle = "", ExcludeText = "") {
+}WinGet(Cmd = "", WinTitle = "", WinText = "", ExcludeTitle = "", ExcludeText = "") {
     WinGet, v, %Cmd%, %WinTitle%, %WinText%, %ExcludeTitle%, %ExcludeText%
     Return, v
 }
@@ -245,7 +244,7 @@ WinMaximize(WinTitle = "", WinText = "", ExcludeTitle = "", ExcludeText = "") {
 }
 WinMinimize(WinTitle = "", WinText = "", ExcludeTitle = "", ExcludeText = "") {
     WinGet, style, style, %WinTitle%, %WinText%, %ExcludeTitle%, %ExcludeText%
-    outputdebug % "style " style " minimize " style & 0x20000
+    Debug("style " style " minimize " style & 0x20000)
     if(style & 0x20000)
         WinMinimize, %WinTitle%, %WinText%, %ExcludeTitle%, %ExcludeText%
 }
@@ -260,9 +259,10 @@ MsgBox(Text)
 {
     MsgBox, %Text%
 }
-Debug(Title, InputObject, Delimiter = "`n")
+Debug(Title, InputObject = "", Delimiter = "`n")
 {
-    OutputDebug % Title
-    Loop, Parse, InputObject, %Delimiter%
-        OutputDebug % "    " A_LoopField
+    OutputDebug % "[7Plus] " Title
+    if (InputObject)
+        Loop, Parse, InputObject, %Delimiter%
+            OutputDebug % "    " A_LoopField
 }

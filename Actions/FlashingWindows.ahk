@@ -35,7 +35,7 @@ FlashingWindows(Action)
         WinGetPos x, y, w, h, ahk_id %z%
         x += w / 2
         y += 5
-        outputdebug click trillian %x% %y%
+        Debug("click trillian " x " " y)
         MouseGetPos, mx, my
         ControlClick, , ahk_id %z%
         MouseMove %mx%, %my%, 0
@@ -46,13 +46,13 @@ FlashingWindows(Action)
         z := BlinkingWindows[1]
         WinActivate ahk_id %z%
         class := WInGetClass("ahk_id " z)
-        outputdebug flashingwindows found class %class%
+        Debug("flashingwindows found class " class)
         return 1
     }
     else if(Action.Notifications && z := FindWindow("", "OpWindow", 0x96000000, 0x88))
     {
         WinGetPos x, y, w, h, ahk_id %z%
-        outputdebug click opera
+        Debug("click opera")
         MouseGetPos, mx, my
         ControlClick, , ahk_id %z% ;for some reason clicking the notification window isn't enough, so we manually activate opera window
         MouseMove %mx%, %my%, 0
@@ -65,7 +65,7 @@ FlashingWindows(Action)
         WinGetPos x, y, w, h, ahk_id %z%
         x += w / 2
         y += h / 2
-        outputdebug click firefox/thunderbird %x% %y% %w% %h%
+        Debug("click firefox/thunderbird " x " " y " " w " " h)
         MouseGetPos, mx, my
         ControlClick, , ahk_id %z%
         MouseMove %mx%, %my%, 0
@@ -76,7 +76,7 @@ FlashingWindows(Action)
         WinGetPos x, y, w, h, ahk_id %z%
         x += w / 2
         y += h / 2
-        outputdebug click steam %x% %y%
+        Debug("click steam " x " " y)
         MouseGetPos, mx, my
         Click %x% %y%
         MouseMove %mx%, %my%, 0
@@ -87,7 +87,7 @@ FlashingWindows(Action)
         WinGetPos x, y, w, h, ahk_id %z%
         x += w / 2
         y += h / 2
-        outputdebug click skype %x% %y%
+        Debug("click skype " x " " y)
         MouseGetPos, mx, my
         Click %x% %y%
         MouseMove %mx%, %my%, 0
@@ -98,7 +98,7 @@ FlashingWindows(Action)
         WinGetPos x, y, w, h, ahk_id %z%
         x += w / 2
         y += h / 2
-        outputdebug click tooltip %x% %y%
+        Debug("click tooltip " x " " y)
         MouseGetPos, mx, my
         Click %x% %y%
         MouseMove %mx%, %my%, 0

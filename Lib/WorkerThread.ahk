@@ -81,7 +81,7 @@
 
             if(ErrorLevel != 1) ;If there is an error, return an empty object so this instance can exit
             {
-                outputdebug WT: Initialization error
+                Debug("WT: Initialization error")
                 return ""
             }
         }
@@ -121,7 +121,7 @@
                 this.Threads["" + PID] := this
             }
             else
-                outputdebug Error Starting worker thread
+                Debug("Error Starting worker thread")
         }
         return 1
     }
@@ -249,14 +249,14 @@ MainThread_Monitor(wParam, lParam, msg, hwnd)
                 return 0
             if(Data.Type = 1) ;Stop
             {
-                outputdebug % "Stop Message from " Data.PID " with Param[1]=" WorkerThread.Task.Parameters[1] ", status=" WorkerThread.State
+                Debug("Stop Message from " Data.PID " with Param[1]=" WorkerThread.Task.Parameters[1] ", status=" )WorkerThread.State
                 WorkerThread.State := "Stopped"
                 WorkerThread.Result := Data.Result
                 SetTimer, WorkerThread_OnStop, -0
             }
             else if(Data.Type = 2) ;Finish
             {
-                outputdebug % "Finish Message from " Data.PID " with Param[1]=" WorkerThread.Task.Parameters[1] ", status=" WorkerThread.State
+                Debug("Finish Message from " Data.PID " with Param[1]=" WorkerThread.Task.Parameters[1] ", status=" )WorkerThread.State
                 WorkerThread.State := "Finished"
                 WorkerThread.Result := Data.Result
                 SetTimer, WorkerThread_OnFinish, -0
@@ -380,7 +380,7 @@ return
 
 WorkerThread_OnStopOrFinish()
 {
-    outputdebug OnStopOrFinish beging
+    Debug("OnStopOrFinish beging")
     RemovePIDs := []
     n := 0
     nStopped := 0
@@ -401,10 +401,10 @@ WorkerThread_OnStopOrFinish()
                 RemovePIDs.Insert(pid)
         }
     }
-    outputdebug WorkerThread_OnStopOrFinish(): %n% worker threads, %nStopped% were stopped in this function call
+    Debug("WorkerThread_OnStopOrFinish(): %n% worker threads, %nStopped% were stopped in this function call")
     for i, pid in RemovePIDs
         CWorkerThread.Threads.Remove("" + pid)
-    outputdebug OnStopOrFinish end
+    Debug("OnStopOrFinish end")
 }
 
 ;Called from worker/main message handler when custom data is received so that OnData doesn't block the message handling function.
@@ -455,11 +455,11 @@ InitWorkerThread()
     DetectHiddenWindows, On
     if(Params.MaxIndex() = 2 && Params[1] = "-ActAsWorker:" && WinExist("ahk_id " params[2]))
     {
-        outputdebug WT: Running as worker thread
+        Debug("WT: Running as worker thread")
         WorkerThread := new CWorkerThread(params[2]) ;Avoid making the variable global if this code is not executed
         if(!WorkerThread)
             ExitApp
-        outputdebug WT: Initialized
+        Debug("WT: Initialized")
         while(true)
         {
             if(!WorkerThread.Task) ;Still waiting for start
@@ -475,7 +475,7 @@ InitWorkerThread()
             {
                 DetectHiddenWindows_Prev := A_DetectHiddenWindows
                 DetectHiddenWindows, On
-                outputdebug % "WT: send finish message to " WorkerThread.MainHWND
+                Debug("WT: send finish message to " WorkerThread.MainHWND)
                 Send_WM_COPYDATA(LSON({Type : 2, PID : WorkerThread.WorkerID, Result : result}), WorkerThread.MainHWND)
                 if(!DetectHiddenWindows_Prev)
                     DetectHiddenWindows, Off

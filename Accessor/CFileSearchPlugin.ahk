@@ -165,7 +165,7 @@ Class CFileSearchPlugin extends CAccessorPlugin
     {
         if(!KeywordSet)
             return
-        outputdebug File Search Refresh List
+        Debug("File Search Refresh List")
         Results := {}
         if(this.HasKey("SearchPath"))
             SearchPath := this.SearchPath
@@ -177,14 +177,14 @@ Class CFileSearchPlugin extends CAccessorPlugin
             SearchPath := SubStr(Filter, pos + 4)
             Filter := SubStr(Filter, 1, pos - 1)
         }
-        outputdebug filter %filter%
+        Debug("filter " filter)
         ;If there are results and they belong to the current query
         if(IsObject(this.Results) && this.Results.Query = Filter && this.Results.SearchPath = SearchPath)
         {
-            outputdebug search atleast partly finished
+            Debug("search atleast partly finished")
             if(this.Results.MaxIndex())
             {
-                outputdebug results available
+                Debug("results available")
                 for index, File in this.Results
                 {
                     Result := new this.CSearchResult(File.IsDir ? "Folder" : (File.IsExecutable ? "Executable" : "File"))
@@ -196,18 +196,18 @@ Class CFileSearchPlugin extends CAccessorPlugin
             }
             else if(this.Results.Finished) ;No results
             {
-                outputdebug no results found!
+                Debug("no results found!")
                 Results.Insert(new this.CNoResultsResult())
             }
             else ;Searching
             {
-                outputdebug searching, shouldn't be here
+                Debug("searching, shouldn't be here")
                 Results.Insert(new this.CSearchingResult())
             }
         }
         else if(StrLen(Filter) < 5 && !this.SearchAnyway)
         {
-            outputdebug filter too short for search
+            Debug("filter too short for search")
             Result := new this.CSearchInAccessorResult()
             if(SearchPath)
             {
@@ -220,7 +220,7 @@ Class CFileSearchPlugin extends CAccessorPlugin
         }
         else if((StrLen(Filter) >= 5 && !strEndsWith(Filter, " i") && !strEndsWith(Filter, " in")) || this.SearchAnyway)
         {
-            outputdebug start search
+            Debug("start search")
             this.SearchAnyway := false
             this.StartSearch(Filter, SearchPath)
             Results.Insert(new this.CSearchingResult())
@@ -238,7 +238,7 @@ Class CFileSearchPlugin extends CAccessorPlugin
         SplitPath, SearchPath, , , , , Drive
         Drive := SubStr(Drive, 1, 1)
         Drives := Drive ? [Drive] : this.GetIndexingDrives()
-        outputdebug % "drives: " Drives.ToString(", ")
+        Debug("drives: " Drives.ToString(", "))
         for index, Drive in Drives
         {
             WorkerThread := new CWorkerThread("AccessorFileSearch", 0, 1, 1)
@@ -249,11 +249,11 @@ Class CFileSearchPlugin extends CAccessorPlugin
             WorkerThread.Start(Query, Settings.ConfigPath "\" Drive ".index", SearchPath)
             ;if(WorkerThread.WaitForStart(5))
             ;{
-            ;    outputdebug Started worker thread for %Drive%
+            ;    Debug("Started worker thread for %Drive%")
             ;}
             ;else if(WorkerThread.State != "Finished")
             ;{
-            ;    outputdebug failed to wait for worker thread startup
+            ;    Debug("failed to wait for worker thread startup")
             ;    Notify("File search error!", "Couldn't start the searching process!", 5, NotifyIcons.Error)
             ;}
         }
@@ -261,15 +261,15 @@ Class CFileSearchPlugin extends CAccessorPlugin
 
     OnSearchThreadStopped(WorkerThread, Reason)
     {
-        outputdebug % "WorkerThread for drive " WorkerThread.Task.Parameters[2] " stopped"
+        Debug("WorkerThread for drive " WorkerThread.Task.Parameters[2] " stopped")
     }
 
     OnSearchThreadFinished(WorkerThread, Result)
     {
-        outputdebug % "WorkerThread for drive " WorkerThread.Task.Parameters[2] " finished"
+        Debug("WorkerThread for drive " WorkerThread.Task.Parameters[2] " finished")
         if(IsObject(Result) && !WorkerThread.ShouldStop)
         {
-            outputdebug results found
+            Debug("results found")
             ResultString := Result.Result
             Loop, Parse, ResultString, `n
             {
@@ -302,13 +302,13 @@ Class CFileSearchPlugin extends CAccessorPlugin
         this.SearchingThreads.Remove(this.SearchingThreads.IndexOf(WorkerThread))
         if(!this.SearchingThreads.MaxIndex())
             this.Results.Finished := true
-        outputdebug % "refresh list with" this.Results.MaxIndex() "results"
+        Debug("refresh list with" this.Results.MaxIndex() "results")
         CAccessor.Instance.RefreshList()
     }
 
     CancelSearch()
     {
-        outputdebug cancel previous search
+        Debug("cancel previous search")
         for Drive, Thread in this.SearchingThreads
         {
             Thread.Stop()
@@ -320,7 +320,7 @@ Class CFileSearchPlugin extends CAccessorPlugin
 
     OnClose(Accessor)
     {
-        outputdebug onclose
+        Debug("onclose")
         this.CancelSearch()
 
         ;Get rid of old icons from last queries
@@ -342,14 +342,14 @@ Class CFileSearchPlugin extends CAccessorPlugin
     ;Builds a database of all files on fixed drives
     BuildFileDatabase(LoadExisting = true)
     {
-        outputdebug build database
+        Debug("build database")
         if(this.hModule)
         {
-            outputdebug hmodule
+            Debug("hmodule: " this.hModule)
             NTFSDrives := this.GetIndexingDrives()
             DriveCount := NTFSDrives.MaxIndex()
             DrivesLeft := ""
-            outputdebug % exploreobj(NTFSDrives)
+            Debug(exploreobj(NTFSDrives))
             for index, Drive in NTFSDrives
             {
                 IndexPath := Settings.ConfigPath "\" Drive ".index"
@@ -361,7 +361,7 @@ Class CFileSearchPlugin extends CAccessorPlugin
                     if(Delta > 0 && Delta / 60 < this.Settings.IndexingFrequency && LoadExisting)
                         continue
                 }
-                Outputdebug Start worker thread to build index for %Drive%
+                Debug("Start worker thread to build index for %Drive%")
                 WorkerThread := new CWorkerThread("BuildFileDatabaseForDrive", 0, 1, 1)
                 ;WorkerThread.OnProgress.Handler := new Delegate(this, "ProgressHandler")
                 WorkerThread.OnStop.Handler := new Delegate(this, "OnStop")
@@ -372,7 +372,7 @@ Class CFileSearchPlugin extends CAccessorPlugin
                 WorkerThread.Start(Drive, IndexPath)
             }
 
-            outputdebug % this.IndexingWorkerThreads.Count()
+            Debug(this.IndexingWorkerThreads.Count())
             if(StrLen(DrivesLeft) && this.IndexingWorkerThreads.Count())
                 this.IndexingWorkerThreads.NotificationWindow := Notify("Indexing drives for file search", "Drives left: " DrivesLeft, "", NotifyIcons.Info)
 
@@ -408,13 +408,13 @@ Class CFileSearchPlugin extends CAccessorPlugin
             this.IndexingWorkerThreads.NotificationWindow.Close()
             this.IndexingWorkerThreads.Remove("NotificationWindow")
         }
-        outputdebug finished indexing %Drive%! Result: %Result%
+        Debug("finished indexing " Drive "! Result: " Result)
     }
     LoadDriveIndex(Drive, Path)
     {
         if(FileExist(Path) && this.hModule)
         {
-            outputdebug load file system index for %path%
+            Debug("load file system index for " path)
             if(DriveIndex := DllCall(this.DllPath "\LoadIndexFromDisk", "str", Path, "PTR"))
                 this.FileSystemIndex[Drive] := DriveIndex
             else
@@ -424,7 +424,7 @@ Class CFileSearchPlugin extends CAccessorPlugin
 
     OnFilterChanged(ListEntry, Filter, LastFilter)
     {
-        outputdebug filter changed from "%LastFilter%" to "%filter%"
+        Debug("filter changed from """ LastFilter """ to """ filter"""")
         this.CancelSearch()
         if(this.HasKey("SearchPath") && InStr(LastFilter, this.Settings.Keyword " ") = 1 && InStr(Filter, this.Settings.Keyword " ") != 1)
             this.Remove("SearchPath")
@@ -456,7 +456,7 @@ return
 ;Builds a database of all files on fixed drives
 BuildFileDatabaseForDrive(WorkerThread, Drive, Path)
 {
-    outputdebug WT: Start indexing drive %drive%
+    Debug("WT: Start indexing drive " drive)
     DllPath := A_ScriptDir "\lib" (A_PtrSize = 8 ? "\x64" : "" ) "\FileSearch.dll"
     hModule := DllCall("LoadLibrary", "Str", DllPath, "PTR")
     result := false
@@ -473,7 +473,7 @@ BuildFileDatabaseForDrive(WorkerThread, Drive, Path)
     }
     if(hModule)
         DllCall("FreeLibrary", "PTR", hModule)
-    outputdebug WT: Indexing for %Drive% finished with result %result%
+    Debug("WT: Indexing for " Drive " finished with result " result)
     return result
 }
 
@@ -482,26 +482,26 @@ AccessorFileSearch(WorkerThread, Query, IndexPath, SearchPath)
     strAllDrivesResult := ""
     hModule := DllCall("LoadLibrary", "Str", CFileSearchPlugin.DllPath, "PTR")
     SplitPath, IndexPath, Drive
-    outputdebug WT: Running for drive %Drive% and Query %Query%
+    Debug("WT: Running for drive " Drive " and Query " Query)
     if(hModule)
     {
-        outputdebug WT: Module loaded
+        Debug("WT: Module loaded")
         if(FileExist(IndexPath))
         {
-            outputdebug WT: Loading from %IndexPath%
+            Debug("WT: Loading from " IndexPath)
             DriveIndex := LoadDriveIndex(Drive, IndexPath, hModule)
             if(!DriveIndex)
                 return 0
-            outputdebug WT: Index loaded
+            Debug("WT: Index loaded")
             pResult := DllCall(CFileSearchPlugin.DllPath "\SearchIndex", "PTR", DriveIndex, "wstr", Query, SearchPath ? "wstr" : "ptr", SearchPath ? SearchPath : 0, "int", true, "int", true, "int", 100, "int*", nResults, PTR)
             strResult := StrGet(presult + 0)
-            outputdebug % "WT: " Drive ": Searched: " A_TickCount
+            Debug("WT: " Drive ": Searched: " A_TickCount)
             if(pResult)
             {
                 DllCall(CFileSearchPlugin.DllPath "\FreeResultsBuffer", "PTR", pResult)
                 if(strResult)
                 {
-                    outputdebug WT: Finished search and found results for drive %Drive% and Query %Query%
+                    Debug("WT: Finished search and found results for drive " Drive " and Query " Query)
                     return {Result : strResult, AllResults : (nResults != -1 ? nResults : -1)}
                 }
             }
@@ -514,11 +514,11 @@ LoadDriveIndex(Drive, Path, hModule)
 {
     if(FileExist(Path) && hModule)
     {
-        outputdebug WT: load file system index for %path%
+        Debug("WT: load file system index for " path)
         if(DriveIndex := DllCall(CFileSearchPlugin.DllPath "\LoadIndexFromDisk", "str", Path, "PTR"))
             return DriveIndex
         else
-            outputdebug WT: Failed to load %Path%!
+            Debug("WT: Failed to load " Path "!")
     }
 }
 

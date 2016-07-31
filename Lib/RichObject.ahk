@@ -175,7 +175,7 @@ Class CRichObject
         count := 0
         for key, value in this
             count++
-        outputdebug count %count%
+        Debug("count " count)
         return count
     }
 }
