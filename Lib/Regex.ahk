@@ -31,7 +31,7 @@ class RegEx
             for key, subpat in Groups
             {
                 This_Match := Match_%subpat%
-                OutputDebug Matches[%MatchIndex%, %subpat%] := %This_Match%`n%key%
+                Debug("Matches[" MatchIndex ", " subpat "] := " This_Match "`n" key)
                 Matches[MatchIndex, key] := This_Match
                 subpat_int := subpat+0
                 If subpat_int is not Integer

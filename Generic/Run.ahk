@@ -87,7 +87,7 @@ return
 
 Run(Target, WorkingDir = "", Mode = "", NonElevated = -1)
 {
-    outputdebug running: %Target%
+    Debug("running: " Target)
     ;run as current user
     if(WinVer < WIN_Vista || NonElevated = -1 || (!A_IsAdmin && NonElevated) || (A_IsAdmin && !NonElevated))
     {

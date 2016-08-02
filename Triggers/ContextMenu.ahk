@@ -118,7 +118,7 @@ RegisterShellExtension(Silent = 1)
 {
     if(!ApplicationState.IsPortable)
     {
-        outputdebug % "Registering Shell Extension" (Silent ? " quietly" : "")
+        Debug("Registering Shell Extension" (Silent ? " quietly" : ""))
         if(WinVer >= WIN_Vista)
             uacrep := DllCall("shell32\ShellExecute", uint, 0, str, "RunAs", str, "regsvr32", str, "/s """ Settings.DllPath "\ShellExtension.dll""", str, A_ScriptDir, int, 1)
         else
@@ -138,7 +138,7 @@ UnregisterShellExtension(Silent = 1)
 {
     if(!ApplicationState.IsPortable)
     {
-        outputdebug % "Unregistering Shell Extension" (Silent ? " quietly" : "")
+        Debug("Unregistering Shell Extension" (Silent ? " quietly" : ""))
         if(WinVer >= WIN_Vista)
             uacrep := DllCall("shell32\ShellExecute", uint, 0, str, "RunAs", str, "regsvr32", str, "/s /u """ Settings.DllPath "\ShellExtension.dll""", str, A_ScriptDir, int, 1)
         else

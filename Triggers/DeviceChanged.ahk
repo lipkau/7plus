@@ -23,7 +23,7 @@ Class CDeviceChangedTrigger Extends CTrigger
         );
         */
         hNotify := DllCall("Shell32.dll\SHChangeNotifyRegister", "Ptr", A_ScriptHWND, "INT", SHCNE_DISKEVENTS := 0x0002381F, "INT", (SHCNE_MEDIAREMOVED := 0x00000040) | (SHCNE_MEDIAINSERTED := 0x00000020) | (SHCNE_DRIVEADD := 0x00000100) | (SHCNE_DRIVEREMOVED := 0x00000080), "UINT", WM_MEDIA_CHANGE, "INT", 1, "PTR*", shcne, "UINT")
-        outputdebug % hNotify ", " A_LastError ", " Errorlevel
+        Debug(hNotify ", " A_LastError ", " Errorlevel)
         OnMessage(WM_MEDIA_CHANGE, "WM_MEDIA_CHANGE")
     }
 
@@ -95,7 +95,7 @@ WM_MEDIA_CHANGE(wParam, lParam, msg, hwnd)
 ;    static LastChangeType := ""
 ;    static LastMask := ""
 ;    static LastCall := ""
-;    outputdebug % wParam ", " lParam ", " msg ", " hwnd
+;    Debug(wParam ", " lParam ", " msg ", " hwnd)
 ;    if(wParam = 0x8000 || wParam = 0x8004)
 ;    {
 ;        Mask := NumGet(lParam + 12, "UINT")

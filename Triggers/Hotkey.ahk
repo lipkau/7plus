@@ -391,7 +391,7 @@ return
 #if
 HotkeyTrigger(key)
 {
-    outputdebug, % "Hotkey triggered, key: " A_ThisHotkey
+    Debug("Hotkey triggered, key: " A_ThisHotkey)
     if(!key)
         return 0
     if(!IsObject(HotkeyShouldFire(A_ThisHotkey)))

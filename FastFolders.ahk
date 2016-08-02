@@ -73,7 +73,7 @@ AddAllButtons(ToFolderBand, ToPlacesBar)
             FastFolders.WorkerThread.Repeat := true ;Mark for repetition with new data
         else
         {
-            outputdebug starting new worker thread to refresh FastFolder buttons
+            Debug("starting new worker thread to refresh FastFolder buttons")
             FastFolders.WorkerThread := new CWorkerThread("AddButtonsToFolderBandBar", 0, 0, 1)
             FastFolders.WorkerThread.OnFinish.Handler := "FastFolders_WorkerThread_OnFinish"
             FastFolders.WorkerThread.Start(FastFolders)
@@ -86,11 +86,11 @@ AddAllButtons(ToFolderBand, ToPlacesBar)
 FastFolders_WorkerThread_OnFinish(WorkerThread, Result)
 {
     global FastFolders
-    outputdebug Fast Folder buttons refresh finished
+    Debug("Fast Folder buttons refresh finished")
     if(WorkerThread.Repeat)
     {
         RemoveAllExplorerButtons("IsFastFolderButton")
-        outputdebug starting new worker thread to refresh FastFolder buttons
+        Debug("starting new worker thread to refresh FastFolder buttons")
         FastFolders.WorkerThread := new CWorkerThread("AddButtonsToFolderBandBar", 0, 0, 1)
         FastFolders.WorkerThread.OnFinish.Handler := "FastFolders_WorkerThread_OnFinish"
         FastFolders.WorkerThread.Start(FastFolders)
@@ -217,7 +217,7 @@ RemoveButton(Command, param="")
         }
     }
     if(!ButtonFound)
-        outputdebug % "Explorer button not found: " (param.Extends("CEvent") ? param.Name : Command)
+        Debug("Explorer button not found: " (param.Extends("CEvent") ? param.Name : Command))
     return ButtonFound
 }
 
@@ -225,7 +225,7 @@ RemoveButton(Command, param="")
 ;Other parameters are a ToolTip
 AddButton(Command, path, Args = "", Name = "", Tooltip = "", AddTo = "Both", ahk = 1, IterationsSelected = "", IterationsNoSelected = "")
 {
-    outputdebug addbutton command %command% path %path% args %args% name %name%
+    Debug("addbutton command " command " path " path " args " args " name " name)
     if(A_IsCompiled)
         ahk_path := """" A_ScriptDir "\7plus.exe"""
     else

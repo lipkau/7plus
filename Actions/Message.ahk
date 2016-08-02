@@ -23,11 +23,11 @@ Class CMessageAction Extends CAction
         else
         {
             GuiNum := this.tmpGuiNum
-            ;outputdebug waiting for messagebox close %guinum%
+            ;Debug("waiting for messagebox close " guinum)
             Gui,%GuiNum%:+LastFound
             WinGet, Msgbox_hwnd,ID
             DetectHiddenWindows, Off
-            ;outputdebug %A_IsCritical%
+            ;Debug(A_IsCritical)
             If(WinExist("ahk_id " Msgbox_hwnd)) ;Box not closed yet, need more processing time
             {
                 if(this.Timeout * 1000 > 0 && A_TickCount - this.Time > this.Timeout * 1000)

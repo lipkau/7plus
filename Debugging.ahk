@@ -36,12 +36,6 @@ DebuggingEnd()
     global ErrorCollector
     ErrorCollector.OnExit()
 }
-;output debug command->function wrapper
-OutputDebug(text)
-{
-    if(Settings.General.DebugEnabled)
-        OutputDebug %text%
-}
 
 Assert(Condition, Message="")
 {

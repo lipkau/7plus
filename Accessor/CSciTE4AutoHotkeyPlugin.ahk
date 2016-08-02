@@ -185,7 +185,7 @@ Class CSciTE4AutoHotkeyPlugin extends CAccessorPlugin
             WinActivate, % "ahk_id " scite.SciTEHandle
         }
         else
-            Outputdebug SciTE4AHK COM dispatch object not available.
+            Debug("SciTE4AHK COM dispatch object not available.")
     }
     GetListOfOpenSciTE4AutoHotkeyTabs()
     {

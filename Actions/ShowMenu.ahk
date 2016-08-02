@@ -161,7 +161,7 @@ BuildMenu(Name)
         {
             for index, Entry in FastFolders
             {
-                outputdebug % "path " Entry.Path
+                Debug("path " Entry.Path)
                 Menu, % "FastFolders_" Entry.Path, DeleteAll
                 Menu, % "FastFolders_" Entry.Path, Add, Paste, ClipboardMenu_DeepPasteHandler
                 Menu, % "FastFolders_" Entry.Path, Icon, Paste, % A_WinDir "\system32\shell32.dll", 2

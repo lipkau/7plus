@@ -102,12 +102,12 @@ WindowFilter_DisplayString(WindowFilter)
 
 WindowFilter_GuiShow(WindowFilter, WindowFilterGUI,GoToLabel="")
 {
-    outputdebug gui show
+    Debug("gui show")
     if(GoToLabel = "")
     {
         WindowFilter.tmpWindowFilterGUI := WindowFilterGUI
         WindowFilter.tmpPreviousSelection := ""
-        outputdebug % Exploreobj(WindowFilter)
+        Debug(Exploreobj(WindowFilter))
         WindowFilter.AddControl(WindowFilterGUI, "DropDownList", "WindowMatchType", "Specific Window|Any Window|Active|UnderMouse", "WindowFilter_SelectionChange", "Match Type:")
         x := WindowFilterGUI.x
         y := WindowFilterGUI.y
@@ -213,11 +213,11 @@ WindowFilter_GuiSubmit(WindowFilter, WindowFilterGUI)
 {
     Desc_WindowMatchType := WindowFilterGUI.Desc_WindowMatchType
     DropDown_WindowMatchType := WindowFilterGUI.DropDown_WindowMatchType
-    outputdebug % "gui submit " DropDown_WindowMatchType WinExist("Ahk_id " DropDown_WindowMatchType)
+    Debug("gui submit " DropDown_WindowMatchType WinExist("Ahk_id " DropDown_WindowMatchType))
 
     ControlGetText, WindowMatchType, , ahk_id %DropDown_WindowMatchType%
     WindowFilter.WindowMatchType := WindowMatchType
-    outputdebug % "matchtype: " windowmatchtype
+    Debug("matchtype: " windowmatchtype)
     WinKill, ahk_id %Desc_WindowMatchType%
     WinKill, ahk_id %DropDown_WindowMatchType%
 

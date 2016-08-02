@@ -306,22 +306,22 @@ FTPUploadThread(WorkerThread, EventScheduleID, ActionIndex, files, Hostname, Por
             this.AddSetting("ProxyMethod", 2)
 
         if (Settings.Connection.ProxyAddress) {
-            outputdebug % "adding Proxy Address"
+            Debug("adding Proxy Address")
             this.AddSetting("ProxyHost", Settings.Connection.ProxyAddress)
         }
 
         if (Settings.Connection.ProxyPort) {
-            outputdebug % "adding Proxy Address"
+            Debug("adding Proxy Address")
             this.AddSetting("ProxyPort", Settings.Connection.ProxyPort)
         }
 
         if (Settings.Connection.ProxyUser) {
-            outputdebug % "adding Proxy Address"
+            Debug("adding Proxy Address")
             this.AddSetting("ProxyUsername", Settings.Connection.ProxyUser)
         }
 
         if (Settings.Connection.ProxyPassword) {
-            outputdebug % "adding Proxy Address" decrypt(Settings.Connection.ProxyPassword)
+            Debug("adding Proxy Address" decrypt(Settings.Connection.ProxyPassword))
             this.AddSetting("ProxyPassword", decrypt(Settings.Connection.ProxyPassword))
         }
     }

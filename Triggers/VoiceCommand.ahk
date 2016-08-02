@@ -72,7 +72,7 @@ OnVoiceRecognition(StreamNum, StreamPos, RecogType, Result)
     pphrase := Result.PhraseInfo()
     sText := pphrase.GetText()
 
-    outputdebug Recognized voice command: %sText%
+    Debug("Recognized voice command: " sText)
     trigger := new CVoiceCommandTrigger()
     trigger.Command := sText
     EventSystem.OnTrigger(trigger)

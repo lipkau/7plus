@@ -208,7 +208,7 @@ Class CConsoleNavigationSource
         ; Get info about the active console screen buffer.
         if(!DllCall("GetConsoleScreenBufferInfo", "PTR", hConOut, "PTR", &info))
         {
-            OutputDebug GetConsoleScreenBufferInfo failed - error %A_LastError%.
+            Debug("GetConsoleScreenBufferInfo failed - error " A_LastError ".")
             this.FreeConsole(hConOut)
             return ""
         }
@@ -224,7 +224,7 @@ Class CConsoleNavigationSource
         ; Read text.
         if(!DllCall("ReadConsoleOutputCharacter", "PTR", hConOut, "str", text, "uint", ConWinWidth*ConWinHeight, "uint", 0, "PTR*", numCharsRead, "uint"))
         {
-            OutputDebug ReadConsoleOutputCharacter failed - error %A_LastError%.
+            Debug("ReadConsoleOutputCharacter failed - error " A_LastError ".")
             this.FreeConsole(hConOut)
             return ""
         }
@@ -288,7 +288,7 @@ Class CConsoleNavigationSource
         ; AttachConsole accepts a process ID.
         if(!DllCall("AttachConsole","uint",pid))
         {
-            OutputDebug AttachConsole failed - error %A_LastError%.
+            Debug("AttachConsole failed - error " A_LastError ".")
             return ""
         }
         ; If it succeeded, console functions now operate on the target console window.
@@ -296,7 +296,7 @@ Class CConsoleNavigationSource
         hConOut := DllCall("CreateFile", "str", "CONOUT$", "uint", 0xC0000000, "uint", 7, "PTR", 0, "uint", 3, "uint", 0, "PTR", 0, "PTR")
         if hConOut = -1 ; INVALID_HANDLE_VALUE
         {
-            OutputDebug CreateFile failed - error %A_LastError%.
+            Debug("CreateFile failed - error " A_LastError ".")
             return ""
         }
         return hConOut
@@ -580,7 +580,7 @@ Class CExplorerNavigationSource
         }
         catch e
         {
-            outputdebug Error getting path of current Explorer window
+            Debug("Error getting path of current Explorer window")
         }
     }
 
@@ -594,7 +594,7 @@ Class CExplorerNavigationSource
         }
         catch e
         {
-            outputdebug Error getting display name for current Explorer window path
+            Debug("Error getting display name for current Explorer window path")
         }
     }
 
@@ -616,7 +616,7 @@ Class CExplorerNavigationSource
                         SetTimerF("ExplorerPathChanged", -100)
                     }
                     catch e
-                        outputdebug Error setting Explorer Path to %Path%!
+                        Debug("Error setting Explorer Path to " Path "!")
                 }
     }
 
@@ -634,7 +634,7 @@ Class CExplorerNavigationSource
                 }
         }
         catch e
-            outputdebug Error getting selected filepaths in Explorer!
+            Debug("Error getting selected filepaths in Explorer!")
         return Files
     }
 
@@ -652,7 +652,7 @@ Class CExplorerNavigationSource
                 }
         }
         catch e
-            outputdebug Error getting selected filenames in Explorer!
+            Debug("Error getting selected filenames in Explorer!")
         return Files
     }
 
@@ -665,7 +665,7 @@ Class CExplorerNavigationSource
                     return Window.Document.FocusedItem.Path
         }
         catch e
-            outputdebug Error getting focused filepath in Explorer!
+            Debug("Error getting focused filepath in Explorer!")
     }
 
     GetFocusedFilename(hwnd)
@@ -677,7 +677,7 @@ Class CExplorerNavigationSource
                     return Window.Document.FocusedItem.Name
         }
         catch e
-            outputdebug Error getting focused filename in Explorer!
+            Debug("Error getting focused filename in Explorer!")
     }
 
     SelectFiles(Files, hWnd)
@@ -748,7 +748,7 @@ Class CExplorerNavigationSource
             }
         }
         catch e
-            outputdebug Error selecting files in Explorer!
+            Debug("Error selecting files in Explorer!")
         return 0
     }
 
@@ -765,7 +765,7 @@ Class CExplorerNavigationSource
                 }
         }
         catch e
-            outputdebug Error navigating backward in Explorer!
+            Debug("Error navigating backward in Explorer!")
     }
 
     GoForward(hwnd)
@@ -781,7 +781,7 @@ Class CExplorerNavigationSource
                 }
         }
         catch e
-            outputdebug Error navigating forward in Explorer!
+            Debug("Error navigating forward in Explorer!")
     }
 
     GoUpward(hwnd)
@@ -806,7 +806,7 @@ Class CExplorerNavigationSource
                 }
         }
         catch e
-            outputdebug Error refreshing Explorer!
+            Debug("Error refreshing Explorer!")
     }
 
     InvertSelection(hwnd)

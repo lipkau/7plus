@@ -84,9 +84,9 @@ unHTML_ConvertEntity2Number(sEntityName) {
 Deref_Umlauts( w, n=1 ) { ;By SKAN
     While n := instr( w, "\u",1,n )
     {
-        outputdebug deref %w%
+        Debug("eref " w)
         StringReplace, w, w, % ww := substr( w,n,6 ), % chr( "0x" substr( ww,3 ) ), all
-        outputdebug dereffed %w%
+        Debug("dereffed " w)
     }
     Return w
 }
