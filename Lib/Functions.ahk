@@ -261,8 +261,11 @@ MsgBox(Text)
 }
 Debug(Title, InputObject = "", Delimiter = "`n")
 {
-    OutputDebug % "[7Plus] " Title
-    if (InputObject)
-        Loop, Parse, InputObject, %Delimiter%
-            OutputDebug % "    " A_LoopField
+    if(Settings.General.DebugEnabled)
+    {
+        OutputDebug % "[7Plus] " Title
+        if (InputObject)
+            Loop, Parse, InputObject, %Delimiter%
+                OutputDebug % "    " A_LoopField
+    }
 }
